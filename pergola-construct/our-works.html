@@ -316,12 +316,16 @@
               </div>
               <div class="connection__ctrl">
                 <input
-                  type="phone"
-                  class="connection__input phone_input"
-                  placeholder="номер телефона"
+                        type="phone"
+                        name="phone"
+                        form="fast_call"
+                        class="connection__input phone_input"
+                        placeholder="номер телефона"
                 />
                 <div class="btn-panel btn-panel_white btn-panel_without-margin">
-                  <button class="stg-btn">Узнать</button>
+                  <form id="fast_call" class="fast_call" action="fast_call.php">
+                    <button class="stg-btn">Узнать</button>
+                  </form>
                   <div class="decoration"></div>
                 </div>
               </div>
@@ -502,7 +506,7 @@
         </div>
       </div>
     </footer>
-    <div class="modal">
+    <div class="modal form_request">
       <div class="modal__dialog">
         <div class="modal__content">
           <form class="form" action="form.php" method="POST">

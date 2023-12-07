@@ -6,8 +6,6 @@ $(document).ready(function () {
         var form = $(this);
         var data = form.serializeArray();
 
-        console.log('data, ', data);
-
         $.ajax({
             url: 'form.php',
             data: data,
@@ -16,14 +14,40 @@ $(document).ready(function () {
             success: function (response) {
                 var status = response.status;
                 if (status) {
-                    $('.modal').removeClass('show fade')
+                    $('.form_request').removeClass('show')
                     form[0].reset();
+                    $('.success_modal').addClass('show');
+                }
+            }
+        });
+    });
 
-                    $('.success_modal').show();
+    $(document).on('submit', '.fast_call', function (e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var data = form.serializeArray();
+
+        console.log('data', data)
+
+        $.ajax({
+            url: 'fast_call.php',
+            data: data,
+            type: "POST",
+            dataType: "json",
+            success: function (response) {
+                var status = response.status;
+                if (status) {
+                    form[0].reset();
+                    $('.success_modal').addClass('show');
 
                     console.log('status ', status)
                 }
             }
         });
-    })
+    });
+
+    $(document).on('click', '.modal__close', function (e) {
+        $('.success_modal').removeClass('show');
+    });
 });
