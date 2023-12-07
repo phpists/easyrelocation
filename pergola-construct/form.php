@@ -1,64 +1,77 @@
 <?php
 
-use PHPMailer\PHPMailer\PHPMailer;
-
-require 'vendor/autoload.php';
-
-
-
-
-function sendMail($to, $subject, $message)
+class TelegramBotService
 {
+    protected $token;
+    protected $base_url = 'https://api.telegram.org/bot';
 
+    public function __construct()
+    {
+        $token = '6863314391:AAEaYapS74WyHsjeyMccKDXF0lQshoe5Cgk'; // token - токен телеграм бота в который должны приходить сообщения
+        $this->chat_id = 474950625; // chat_id - пользователя которому нужно отправлять сообщения
+        $this->token = $token;
+        $this->base_url .= $token . '/';
+    }
 
-    try {
-        $mail = new PHPMailer();
-        $mail->SMTPDebug = 2;
-        $mail->isSMTP();
-        $mail->Host = '38.180.37.135';
-        $mail->SMTPAuth = true;
-        $mail->Port = 2525;
-        $mail->Username = 'admin@pergolaconstruct.ru';
-        $mail->Password = 'dS4dF8sS1n';
+    public function sendRequest($method, $params = [])
+    {
+        $url = $this->base_url . $method;
+        if (!empty($params)) {
+            $url .= '?' . http_build_query($params);
+        }
 
-        $mail->setFrom('admin@pergolaconstruct.ru', 'Pergola construct');
-        $mail->addAddress('andy.tsyupa@gmail.com', 'andy');
+        return json_decode(file_get_contents($url));
+    }
 
+    /**
+     * Відправолення повідомлень
+     * @param $chat_id
+     * @param $text
+     * @param array $params
+     * @return mixed
+     */
+    public function sendMessage($text, $params = [])
+    {
+        $bot = new TelegramBotService();
 
-
-        $mail->Subject = 'SSSSDSDADSADASDAS';
-        $mail->Body    = 'HTML message body in <b>bold</b> ';
-        $mail->AltBody = 'Body in plain text for non-HTML mail clients';
-        $mail->send();
-        echo "Mail has been sent successfully!";
-    } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        if ($this->chat_id) {
+            $bot->sendRequest('sendMessage', array_merge([
+                'chat_id' => $this->chat_id,
+                'text' => $text,
+            ], $params));
+        }
     }
 }
 
-
-if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST["name"];
-    $surname = $_POST["surname"];
-    $phone = $_POST["phone"];
-    $email = $_POST["email"];
-    $promo = $_POST["promo"];
-
-
-    $message = "Имя: $name <br>";
-    $message .= "Фамилия: $surname <br>";
-    $message .= "Телефон: $phone <br>";
-    $message .= "E-mail: $email <br>";
-    $message .= "Промокод: $promo <br>";
+if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET") {
+    $name = $_POST["name"] ?? null;
+    $surname = $_POST["surname"] ?? null;
+    $phone = $_POST["phone"] ?? null;
+    $email = $_POST["email"] ?? null;
+    $promo = $_POST["promo"] ?? null;
+    $text = $_POST["message"] ?? null;
 
 
-    $to = 'andy.tsyupa@gmail.com, chopeyyuriy@gmail.com';
-    $subject = "Pergola construct - Заявка от $name $surname";
-    $s = sendMail($to, $subject, $message);
+    $message = "<b>Новая заявка</b> \n";
+    $message .= "Имя: <b>$name</b> \n";
+    $message .= "Фамилия: <b>$surname</b> \n";
+    $message .= "Телефон: <b>$phone</b> \n";
+    $message .= "E-mail: <b>$email</b> \n";
+    $message .= "Промокод: <b>$promo</b> \n";
+    $message .= "Вопрос: <b>$text</b> \n";
+    $message .= "Дата: " . "<b>" . date('Y-m-d H:i:s') . "</b>";
 
-    echo $s;
-//    header('Location: https://38.180.37.135/');
+
+    $telegram = new TelegramBotService();
+    $send = $telegram->sendMessage($message, ['parse_mode' => 'HTML']);
+
+    $jsonData = json_encode(['status' => true]);
+    header('Content-Type: application/json');
+
+    echo $jsonData;
 }
+
+
 ?>
 
 
