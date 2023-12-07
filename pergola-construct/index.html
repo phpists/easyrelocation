@@ -16,6 +16,8 @@
     />
     <link rel="stylesheet" href="css/style.min.css?_v=20231202142830" />
     <title>Главная</title>
+    <script src="https://unpkg.com/imask"></script>
+    <script src="js/script.js"></script>
   </head>
   <body>
     <header class="header">
@@ -76,7 +78,7 @@
             </div>
             <div class="col-9 col-sm-5 col-md-4 col-lg-2 d-flex">
               <div class="logo">
-                <a href="#" class="logo__link">
+                <a href="https://pergolaconstruct.ru/" class="logo__link">
                   <img src="img/logo.svg" alt="logo" />
                 </a>
               </div>
@@ -933,7 +935,7 @@
               <div class="connection__ctrl">
                 <input
                   type="phone"
-                  class="connection__input"
+                  class="connection__input phone_input"
                   placeholder="номер телефона"
                 />
                 <div class="btn-panel btn-panel_white btn-panel_without-margin">
@@ -1165,6 +1167,19 @@
         </div>
       </div>
     </div>
+
+    <!-- ! Thanks modal -->
+    <div class="modal">
+      <div class="modal__dialog">
+        <div class="modal__content">
+          <form action="#">
+            <div class="modal__close" data-close="">×</div>
+            <div class="modal_title">Спасибо за отправку!</div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- ! Thanks modal -->
     <script
       src="https://code.jquery.com/jquery-3.7.1.slim.min.js?_v=20231202142830"
       integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
