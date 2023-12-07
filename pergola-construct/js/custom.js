@@ -49,5 +49,6 @@ $(document).ready(function () {
 
     $(document).on('click', '.modal__close', function (e) {
         $('.success_modal').removeClass('show');
+        $('.webp').css('overflow', '')
     });
 });
