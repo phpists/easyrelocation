@@ -9,6 +9,9 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500&display=swap&_v=20231116083442" rel="stylesheet">
         <link rel="stylesheet" href="css/style.css?_v=20231116083442">
+        <script src="https://unpkg.com/imask"></script>
+        <script src="./js/script.js"></script>
+
     </head>
     <body>
         <header class="header">
@@ -27,9 +30,9 @@
                                         <a href="#" class="dropdown-link">Услуга №23434324234</a>
                                     </div>
                                 </li>
-                                <li class="header__item"><a class="header__link" href="#">ДОП. УСЛУГИ</a></li>
-                                <li class="header__item"><a class="header__link" href="#">КАК МЫ РАБОТАЕМ</a></li>
-                                <li class="header__item"><a class="header__link" href="#">ВОПРОС/ОТВЕТ</a></li>
+                                <li class="header__item"><a class="header__link" href="#additionalWorks">ДОП. УСЛУГИ</a></li>
+                                <li class="header__item"><a class="header__link" href="#howWeWorks">КАК МЫ РАБОТАЕМ</a></li>
+                                <li class="header__item"><a class="header__link" href="#faq">ВОПРОС/ОТВЕТ</a></li>
                             </ul>
                         </div>
                     </nav>
@@ -175,7 +178,7 @@
             <section class="stg-section stg-section_margin">
                 <div class="container">
                     <div class="help-list">
-    <h2 class="help-list__title stg-h2">С чем можем помочь</h2>
+    <h2 class="help-list__title stg-h2" >С чем можем помочь</h2>
     <div class="container">
         <div class="row gy-5 gy-sm-4 gy-lg-0">
             <div class="col-12 col-sm-6 col-lg-3">
@@ -227,16 +230,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="connection-form-big__person-img-block">
-                    <picture><source srcset="img/big-person.webp" type="image/webp"><img src="img/big-person.png" alt="women" class="d-none d-lg-inline-block connection-form-big__person-img"></picture>
+            <div class="col" >
+                <div class="connection-form-big__person-img-block" >
+                    <picture ><source srcset="img/big-person.webp" type="image/webp"><img src="img/big-person.png" alt="women" class="d-none d-lg-inline-block connection-form-big__person-img"></picture>
                 </div>
             </div>
+           
         </div>
+        <div id="howWeWorks"></div>
     </div>
  </div>
+ 
             </section>
-            <section class="stg-section stg-section_margin">
+            <section class="stg-section stg-section_margin" >
                 <div class="container">
                     <div class="advantages-list-big">
     <h2 class="advantages-list-big__title stg-h2">С НАМИ ПРОЩЕ</h2>
@@ -323,20 +329,20 @@
                 <li class="support-list__list-item">Удаленное оформление документов</li>
             </ul>
         </div>
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-6" >
             <div class="support-list__connection-form">
                 <p class="support-list__connection-form-title">ОСТАВЛЯЙТЕ ЗАЯВКУ И НАШ МЕНЕДЖЕР СВЯЖЕТСЯ С ВАМИ В БЛИЖАЙШЕЕ ВРЕМЯ, УТОЧНИТ ДЕТАЛИ, ОТВЕТИТ НА ВАШИ ВОПРОСЫ</p>
-                <button data-modal class="stg-btn stg-btn_without-discount support-list__connection-form-btm">Оставить заявку</button>
+                <button id="additionalWorks" data-modal class="stg-btn stg-btn_without-discount support-list__connection-form-btm">Оставить заявку</button>
             </div>
         </div>
     </div>
 </div>
                 </div>
             </section>
-            <section class="stg-section stg-section_margin">
+            <section class="stg-section stg-section_margin" >
                 <div class="container">
                     <div class="additional-services">
-    <h2 class="stg-h2 additional-services__title">Что еще мы можем предложить</h2>
+    <h2 class="stg-h2 additional-services__title" >Что еще мы можем предложить</h2>
     <div class="row gy-4 gy-sm-0">
         <div class="col-12 col-sm-4">
             <div class="additional-services__item">
@@ -378,12 +384,12 @@
         </div>
     </div>
 </div>
-
+<div id="faq"></div>
 
 
                 </div>
             </section>
-            <section class="stg-section stg-section_margin">
+            <section class="stg-section stg-section_margin" >
                 <div class="container">
                     <div class="faq">
     <h2 class="faq__title stg-h2">
@@ -497,22 +503,22 @@
             <div class="col-md-5 order-0 order-md-2 col-12">
                 <p class="footer__menu-title">Гражданство</p>
                 <ul class="footer__menu-list">
-                    <li class="footer__menu-item"><a class="footer__menu-link">Мальта</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Турция</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Египет</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Парагвай</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Сент-Китс и Невис</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Антигуа и Барбуда</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Сент-Люсия</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Доминикачу</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Гренада</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Вануату</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Все программы</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Недвижимость</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Выбор объекта</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Гайд по странам</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Вид на жительство</a></li>
-                    <li class="footer__menu-item"><a class="footer__menu-link">Португалия</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Мальта</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Турция</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Египет</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Парагвай</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Сент-Китс и Невис</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Антигуа и Барбуда</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Сент-Люсия</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Доминикачу</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Гренада</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Вануату</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Все программы</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Недвижимость</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Выбор объекта</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Гайд по странам</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Вид на жительство</a></li>
+                    <li data-modal class="footer__menu-item"><a class="footer__menu-link">Португалия</a></li>
                 </ul>
             </div>
         </div>
@@ -526,7 +532,7 @@
                 <div class="modal__close" data-close>&times;</div>
                 <input required placeholder="Ваше имя" name="name" type="text" class="modal__input">
                 <input required placeholder="Ваша фамилия" name="surname" type="text" class="modal__input">
-                <input required placeholder="Ваш номер телефона" name="phone" type="phone" class="modal__input">
+                <input required placeholder="Ваш номер телефона" name="phone" type="phone" class="modal__input phone_input">
                 <input required placeholder="Ваше E-mail" name="email" type="email" class="modal__input">
                 <input required placeholder="Ваедите промокод" name="promo" type="text" class="modal__input">
                 <button class="stg-btn stg-btn_big modal__btn">Оставить Заявку</button>
