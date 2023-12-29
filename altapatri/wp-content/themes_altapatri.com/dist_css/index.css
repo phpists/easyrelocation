@@ -1,36 +1,5 @@
 @charset "UTF-8";
-@font-face {
-  font-family: "Montserrat";
-  src: url("/wp-content/themes/altapatri.com/src/fonts/Montserrat.woff2")
-    format("woff2");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/wp-content/themes/altapatri.com/src/fonts/Montserrat.woff2")
-    format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/wp-content/themes/altapatri.com/src/fonts/Montserrat.woff2")
-    format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Montserrat";
-  src: url("/wp-content/themes/altapatri.com/src/fonts/Montserrat.woff2")
-    format("woff2");
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
-}
+
 .form-section-title {
   text-transform: uppercase;
   line-height: 48px;
