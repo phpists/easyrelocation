@@ -1,0 +1,139 @@
+.price-section {
+    padding: 50px 0;
+    .container {
+    }
+  
+    &__title {
+  
+    }
+  
+    &__wrapper {
+      width: 100%;
+      border: 3px solid $white;
+      position: relative;
+      margin: 70px auto 70px;
+      @media (max-width: 768px) {
+        margin: 0;
+      }
+      @media (min-width: 992px) {
+        width: 920px;
+      }
+  
+    }
+  
+    &__header {
+      @include main_font_bold;
+      color: #121c29;
+      font-size: 21px;
+      background: $white;
+      height: auto;
+      padding: 10px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      @media (max-width: 520px) {
+        font-size: 16px;
+      }
+  
+      @media (min-width: 768px) {
+        height: 94px;
+        padding: 0;
+      }
+    }
+  
+    .prices {
+      padding: 45px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 25px;
+  
+      &__title{
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        @include main_font_regular;
+        font-size: 24px;
+        color: $white;
+  
+      }
+  
+      &__items{
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        flex-wrap: wrap;
+        .item{
+          width: 33%;
+          display: flex;
+          list-style: none;
+          flex-direction: column;
+          align-items: center;
+          border-right: 2px solid $white;
+  
+          &:last-child{
+            border-right: unset;
+          }
+  
+          &__title{
+            text-transform: uppercase;
+            @include main_font_regular;
+            text-align: center;
+            font-size: 18px;
+            color:$white;
+          }
+          &__descr{
+          @include main_font_bold;
+            color:$white;
+            strong{
+              font-size: 48px;
+            }
+  
+          }
+  
+          @media (max-width: 767px) {
+            border-right: unset;
+            margin-bottom: 30px;
+            width: 100%;
+            &:last-child{
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+  
+    }
+  
+  
+    .list{
+      padding: 50px;
+      border-bottom: 3px solid $white;
+      list-style: disc;
+      @media (max-width: 420px) {
+        padding: 30px;
+      }
+  
+      &__item{
+        padding: 12px 0;
+        @include main_font_regular
+      }
+    }
+  
+    .form-submit {
+        position: absolute;
+      bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 50%);
+        margin-bottom: -30px;
+        z-index: 1;
+      @include styled-button($margin: auto , $padding:20px 50px);
+      @media (max-width: 420px) {
+        @include styled-button($margin: auto, $padding: 20px 10px);
+      }
+    }
+  }
+  
+  
+  
+  

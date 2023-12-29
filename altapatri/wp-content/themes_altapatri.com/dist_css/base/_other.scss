@@ -1,0 +1,47 @@
+.container {
+    width: 100%;
+    max-width: 1290px;
+    padding: 0 15px;
+    margin: 0 auto;
+  
+  
+  }
+  
+  .overflow-hidden {
+    overflow: hidden;
+  }
+  
+  .paralax-content {
+    position: relative;
+  
+    &__img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -100;
+      object-fit: cover;
+  
+      background-color: #0f294c;
+    }
+  
+  
+  }
+  
+  .contanct-bg {
+    background: #0F294C;
+  }
+  
+  .loaded {
+    outline: 2px solid green;
+  }
+  
+  .error-validation {
+    display: flex;
+    font-size: 12px;
+    position: absolute;
+    width: 370px;
+    max-width: 100%;
+    right: 0;
+    bottom: 0;
+    color: #f00;
+  }

@@ -1,0 +1,64 @@
+@import '../../../../../../node_modules/swiper/swiper';
+
+.document-slider-section {
+  padding: 100px 0;
+  .container {
+    position: relative;
+    padding: 0 50px;
+    @media (max-width: 480px) {
+      padding: 0;
+    }
+  }
+  &__description{
+    text-align: center;
+  }
+  &__title{
+    margin: 30px 0 50px;
+  }
+
+  .document-slider-container {
+    position: relative;
+    width: 100%;
+
+    overflow: hidden;
+    margin: 70px 0 30px;
+
+    @media (max-width: 480px) {
+      margin: 30px 0 ;
+    }
+
+  }
+  .document-slider-item {
+
+    &__text {
+
+    }
+
+    &__img {
+      width: 100%;
+      object-fit: contain;
+      height: 100px;
+
+    }
+    .wrapper{
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

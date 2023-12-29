@@ -1,0 +1,77 @@
+
+.form-section-title {
+    text-transform: uppercase;
+    line-height: 48px;
+    color: $white;
+  
+    @media (max-width: 768px) {
+      line-height: 1.6;
+    }
+  
+  
+  
+    h1,h2,h3,h4,h5,h6,p {
+      @include main_font_regular;
+      @include font-size($form-section-title);
+  
+      em{
+        @include main_font_regular;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 22px;
+        @media (max-width: 520px) {
+          font-size: 18px;
+        }
+        strong {
+          font-size: 32px;
+          @media (max-width: 520px) {
+            font-size: 20px;
+          }
+        }
+  
+      }
+    }
+    strong {
+      @include main_font_bold;
+      @media (max-width: 520px) {
+        font-size: 18px;
+      }
+    }
+  
+  }
+  .section-title{
+    word-wrap: break-word;
+    color: $white;
+    line-height: 1.3;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+    h1,h2,h3,h4,h5,h6,p{
+      @include main_font_regular;
+      @include font-size($section-title);
+      @media (max-width: 480px) {
+        display: grid;
+      }
+    }
+  
+    strong {
+      color: #183052;
+      background: $white;
+      @include main_font_medium;
+    }
+  }
+  .content-title{
+    word-wrap: break-word;
+    color: $white;
+    line-height: 30px;
+    font-size: 18px;
+  }
+  .content-text{
+    word-wrap: break-word;
+    color: $white;
+    line-height: 25px;
+    @include main_font_regular;
+    @include font-size($content-text);
+  
+  }
+  
+  

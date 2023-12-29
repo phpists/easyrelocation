@@ -1,0 +1,31 @@
+.banner-section{
+    padding: 30px 0;
+    @media (min-width: 480px){
+      padding: 75px 0;
+    }
+    &__wrap{
+      border: 2px solid #fff;
+      padding: 25px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      justify-content: space-between;
+      flex-direction: column;
+      text-align:center;
+  
+      @media (min-width: 768px){
+        flex-direction: row;
+        text-align:left;
+      }
+    }
+    &__text{
+      width: 70%;
+      text-transform: uppercase;
+  
+    }
+  
+    .form-submit{
+      @include styled-button($margin:0)
+    }
+  }

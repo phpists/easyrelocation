@@ -1,0 +1,106 @@
+// normalize.scss
+
+// Reset default browser styles
+html {
+    box-sizing: border-box;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+  
+  // Remove default margin and padding
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ol,
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  
+  // Set font-size to 100% to ensure consistent sizing
+  html {
+    font-size: 100%;
+  }
+  
+  // Set default font-family and line-height
+  body {
+    z-index: -999;
+    position: relative;
+    @include main_font_regular;
+  
+    line-height: 1.5;
+  
+    &::-webkit-scrollbar {
+      width: 0.5em;
+      background-color: #F5F5F5;
+    }
+  
+    overflow-y: scroll;
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: #000000;
+    }
+  }
+  
+  * {
+    &:focus {
+      outline: none;
+    }
+  }
+  
+  // Remove list-style on ordered and unordered lists
+  ol,
+  ul {
+    list-style: none;
+  }
+  
+  // Remove default hyperlink styles
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  // Remove default border on images and other media elements
+  img,
+  video {
+    border-style: none;
+  }
+  
+  // Remove user agent styles for form elements
+  button,
+  input,
+  select,
+  textarea {
+    background-color: transparent;
+    border: none;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  
+  // Remove default padding on buttons and input elements
+  button,
+  input[type="button"],
+  input[type="reset"],
+  input[type="submit"] {
+    padding: 0;
+  }
+  
+  // Remove default vertical alignment on progress elements
+  progress {
+    vertical-align: baseline;
+  }
+  

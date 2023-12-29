@@ -1,0 +1,114 @@
+@import '../../../../../../node_modules/swiper/swiper';
+
+
+.slider-review{
+  padding: 50px 0;
+  .container{
+    position:relative;
+    padding: 0 50px;
+    @media (max-width: 480px){
+      padding: 0;
+    }
+  }
+
+  .slider-item{
+    display: flex;
+    background-color: #fff;
+    padding: 0 15px 20px;
+    border-radius: 10px;
+    min-height: 300px;
+
+    @media (max-width: 350px) {
+      min-height: 355px;
+
+    }
+    .padding-block{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .header{
+      display: flex;
+      align-items: center;
+      position: relative;
+      width: 100%;
+
+      &__quote{
+        max-width: 50px;
+        position: absolute;
+        left: 0;
+        top: 25%;
+        transform: translate(0, -50%);
+      }
+    }
+    .user-logo{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto;
+      position: relative;
+      top: -33px;
+      z-index: 999;
+      width: 100%;
+      text-align: center;
+
+      &__avatar{
+        max-width: 66px !important;
+        height: 66px;
+        object-fit: cover;
+        margin-bottom: 10px;
+        border-radius: 50%;
+      }
+      &__name{
+        @include main_font_semibold;
+        font-size: 16px;
+        line-height: 28px;
+        letter-spacing: 0.01em;
+        color: #0F294C;
+      }
+    }
+    .content{
+      flex: 1; /* use flexbox to ensure the content fills the available space */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0 15px;
+      &__text{
+        text-align: left;
+        @include main_font_regular;
+        font-size: 16px;
+        margin-top: -10px;
+        line-height: 28px;
+        color: #0F294C;
+        @media (max-width: 520px) {
+          font-size: 14px;
+        }
+      }
+    }
+    .read-more-btn{
+      cursor: pointer;
+      @include main_font_medium;
+      font-size: 15px;
+      line-height: 28px;
+      color: #AC1721;
+      margin: 5px 0;
+      display: block;
+      @media (max-width:768px) {
+        font-size: 13px;
+      }
+    }
+
+  }
+  .swiper-slide {
+    width: calc(100% / 3);
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 2rem;
+
+    padding: 45px 0 0 0;
+  }
+}
+
+
+

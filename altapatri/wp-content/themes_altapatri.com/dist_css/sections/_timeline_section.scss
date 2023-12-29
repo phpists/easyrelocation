@@ -1,0 +1,292 @@
+
+.timeline-section {
+    padding: 30px 0;
+    @media (min-width: 480px){
+      padding: 50px 0;
+    }
+  
+    .container {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .timeline-header {
+  
+    }
+  
+    .timeline-title {
+      margin-bottom: 10px;
+    }
+  
+    .add_text{
+      margin: 30px 0;
+    }
+  
+    .block {
+      display: flex;
+      flex-wrap: wrap;
+      position: relative;
+      margin: 70px 0  0;
+  
+      @media (max-width: 480px) {
+        margin: 30px 0  0;
+      }
+  
+  
+      &:after {
+        content: "";
+        position: absolute;
+        display: inline-block;
+        width: 3000px;
+        height: 2px;
+        background-color: $white;
+        top: 0;
+        right: 15%;
+        z-index: -1;
+        @media (max-width: 680px) {
+          content: none;
+        }
+      }
+  
+  
+      @media (max-width: 680px) {
+        justify-content: center;
+        gap: 30px;
+        text-align: center;
+      }
+  
+  
+  
+      &--4items{
+        justify-content: space-around;
+        .item-wrapper {
+          max-width: 50%;
+          width: 50%;
+  
+  
+  
+          @media (min-width: 993px) {
+            @include rounds_the_left_side(4, 6);
+            @include rounds_the_right_side(2,3);
+            &:nth-child(3){
+              &:before{
+                content: none;
+              }
+            }
+            &:nth-child(4){
+              &:before{
+                width: 100%;
+              }
+            }
+  
+  
+            $my-element-order: (1,2,4,3);
+  
+            @each $index in $my-element-order {
+              &:nth-child(#{$index}) {
+                order: nth($my-element-order, $index);
+                @if $index >= 3 {
+                  .timeline-count{
+                    img{
+                      transform: rotate(180deg);
+                      right: 5px;
+                    }
+                  }
+                }
+              }
+            }
+  
+          }
+  
+  
+          @media(max-width: 992px) {
+            @include rounds_the_left_side(3, 4);
+            @include rounds_the_right_side(2, 8);
+            max-width: 50%;
+          }
+          @media(max-width: 680px) {
+            @include rounds_the_left_side(1, 1);
+            @include rounds_the_right_side(1, 2);
+            max-width: 100%;
+            width: 100%;
+          }
+  
+  
+        }
+      }
+  
+    }
+    .item {
+  
+      margin: 70px 15px;
+      font-size: 20px;
+      color: #fff;
+      position: relative;
+      padding: 0 15px;
+  
+      &__text{
+        @include main_font_semibold;
+        margin-bottom: 10px;
+        font-size: 20px;
+      }
+  
+  
+      @media(max-width: 680px) {
+        @include rounds_the_left_side(1, 1);
+        @include rounds_the_right_side(1, 2);
+        margin: 60px 0 30px 0;
+      }
+    }
+  
+  
+    .item-wrapper {
+      max-width: 33.3%;
+      position: relative;
+  
+  
+      @media (min-width: 992px) {
+        @include rounds_the_left_side(6, 6);
+        @include rounds_the_right_side(3, 6);
+  
+        $my-element-order: (1, 2, 3, 6, 5, 4);
+  
+        @each $index in $my-element-order {
+          &:nth-child(#{$index}) {
+            order: nth($my-element-order, $index);
+            @if $index >= 4 {
+              .timeline-count{
+                img{
+                  transform: rotate(180deg);
+                  right: 5px;
+                }
+              }
+            }
+          }
+        }
+      }
+  
+  
+      @media(max-width: 992px) {
+        @include rounds_the_left_side(3, 4);
+        @include rounds_the_right_side(2, 4);
+        max-width: 50%;
+      }
+      @media(max-width: 680px) {
+        @include rounds_the_left_side(1, 1);
+        @include rounds_the_right_side(1, 2);
+        max-width: 100%;
+        width: 100%;
+      }
+  
+  
+    }
+  
+  
+  
+    .timeline-count__wrap {
+      position: absolute;
+      top: -38px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  
+    .timeline-count {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80px;
+      height: 75px;
+      color: #0f294c;
+      padding-right: 10px;
+      line-height: 0;
+      font-size: 30px;
+      font-weight: 700;
+      z-index: 10;
+  
+      &__wrap {
+  
+        @media (max-width: 699px) {
+          display: flex;
+          width: 100%;
+          justify-content: center;
+        }
+      }
+  
+      img {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: -1;
+        transition: all 0.3s ease;
+      }
+  
+      @media (max-width: 992px) {
+        width: 84px;
+        height: 75px;
+        padding: 0;
+        margin: 0 0 15px 0;
+        img {
+          transition: all 0.3s ease;
+          transform: rotate(90deg)
+        }
+  
+      }
+    }
+  
+    .timeline-footer {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+  
+  
+    }
+    .form-submit {
+      &:before{
+        content: '';
+        position: absolute;
+        display: inline-block;
+        border: 15px solid transparent;
+        border-left: 25px solid #fff;
+        left: -20px;
+  
+        bottom: 0;
+        top: 0;
+        height: 15px;
+        margin: auto;
+        @media (max-width: 768px) {
+  content: none;
+        }
+      }
+  
+  
+  
+      @include styled-button($margin: auto);
+      position: absolute;
+      top: -25px;
+      @media (max-width: 680px){
+        @include styled-button($margin: 50px auto 0, $fs: 14px);
+        position: static;
+  
+      }
+    }
+    .timeline-description {
+      @include main_font_regular;
+      font-size: 16px;
+      line-height: 24px;
+    }
+  
+  
+  
+  
+  
+  }
+  
+  
+  
+  
+  
+  
+  

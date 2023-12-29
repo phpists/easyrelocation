@@ -1,0 +1,104 @@
+@mixin main_font_bold {
+    font-weight: 700;
+    font-family: $bold_font;
+  }
+  
+  
+  @mixin main_font_regular {
+    font-weight: 400;
+    font-family: $regular_font;
+  }
+  
+  @mixin main_font_semibold {
+    font-weight: 600;
+    font-family: $semibold_font;
+  }
+  
+  @mixin main_font_medium {
+    font-weight: 500;
+    font-family: $medium_font
+  }
+  
+  
+  @mixin font-size($fs-map) {
+    @each $fs-breakpoint, $fs-font-size in $fs-map {
+      @if $fs-breakpoint == null {
+        font-size: $fs-font-size;
+      } @else {
+        @media screen and (min-width: $fs-breakpoint) {
+          font-size: $fs-font-size;
+        }
+      }
+    }
+  }
+  
+  @mixin rounds_the_left_side($start, $interval, $end: null) {
+    $end: if($end == null, $start, $end); // Встановлення значення за замовчуванням, якщо $end не визначено
+    @for $i from $start through $end {
+      @if $i == $start or ($i - $start) % $interval == 0 {
+        &:nth-child(#{$i}) {
+  
+          &:before {
+            left: 0;
+            border-radius: 100px 0 0 100px;
+            border-color: $white;
+            content: "";
+            position: absolute;
+            width: 140%;
+            top: -2px;
+            bottom: -2px;
+            border-width: 2px;
+            border-style: solid;
+            border-right: none;
+            z-index: -1;
+            @media (min-width: 992px) {
+              width: 140%;
+            }
+            @media (max-width: 680px) {
+              content: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  @mixin rounds_the_right_side($start, $interval, $end: null) {
+    $end: if($end == null, $start + 4, $end); // Встановлення значення за замовчуванням, якщо $end не визначено
+    @for $i from $start through $end {
+      @if $i == $start or ($i - $start) % $interval == 0 {
+        &:nth-child(#{$i}) {
+  
+          &:before {
+            right: 0;
+            border-radius: 0 100px 100px 0;
+            border-color: $white;
+  
+            content: "";
+            position: absolute;
+            width: 125%;
+            top: 0;
+            bottom: 0;
+            border-width: 2px;
+            border-style: solid;
+            border-left: none;
+            z-index: -1;
+  
+            @media (min-width: 992px) {
+              width: 175%;
+            }
+            @media (max-width: 680px) {
+              content: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  
+  
+  
+  
+  
+  

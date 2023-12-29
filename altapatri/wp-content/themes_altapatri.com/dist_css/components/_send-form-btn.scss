@@ -1,0 +1,39 @@
+$button-bg-color: #AC1721;
+$button-text-color: #FFFFFF;
+$fs1: 18;
+
+@mixin styled-button(
+  $bg-color:$button-bg-color,
+  $fs:$fs1,
+  $text-color:$button-text-color,
+  $margin,
+  $padding:15px 37px,) {
+  width: max-content;
+  cursor: pointer;
+  background: $bg-color;
+  border-radius: 38px;
+  @include main_font_medium;
+  font-size: $fs;
+  line-height: 22px;
+  text-transform: uppercase;
+  color: $text-color;
+  outline: none;
+  margin: $margin;
+  padding: $padding;
+  box-shadow: 0 5px 20px rgba(0, 4, 11, .25);
+  border: 1px solid rgba(172, 23, 33, .77);
+  transition: all .3s ease;
+
+  &:hover,
+  &:focus {
+    background-color: #fafafa;
+    color: #ac1721;
+    border: 1px solid rgba(230, 230, 230, 1);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, .3);
+  }
+}
+
+.form-submit {
+  @include styled-button($button-bg-color, 16px, $button-text-color, 50px -33px);
+}
+
