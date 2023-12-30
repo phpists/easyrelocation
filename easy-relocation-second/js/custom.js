@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $(document).on("submit", ".get-form", function (e) {
+    $(document).on("submit", ".form", function (e) {
         e.preventDefault();
 
         var form = $(this);
@@ -13,15 +13,16 @@ $(document).ready(function () {
             success: function (response) {
                 var status = response.status;
                 if (status) {
+                    $(".modal").removeClass("show");
                     form[0].reset();
-                    console.log('some');
-                    $("#modal-success").addClass("hystmodal--active");
+                    $(".success_modal").addClass("show");
                 }
             },
         });
     });
 
-    $(document).on('click', '.close-main', function (e) {
-        $("#modal-success").removeClass("hystmodal--active");
+    $(document).on('click', '.modal__close', function (e) {
+        $('.success_modal').removeClass('show');
+        $('body').css('overflow', '');
     });
 });
