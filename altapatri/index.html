@@ -434,7 +434,7 @@
                 <input type="hidden" name="location" value="/" />
 
                 <div class="btn-wrap">
-                  <button class="form-submit" onclick="" type="submit">
+                  <button class="form-submit"  type="submit">
                     Оставить заявку
                   </button>
                 </div>
@@ -1713,6 +1713,7 @@
         head.appendChild(script);
 
         setTimeout(script04, 200);
+        setTimeout(script05, 200);
       }
 
       function script04() {
@@ -1725,7 +1726,18 @@
         head.appendChild(script);
       }
 
+      function script05() {
+        const script = document.createElement("SCRIPT"),
+                head = document.getElementsByTagName("head")[0];
+        script.type = "text/javascript";
+        script.src = "./script/custom.js";
+        script.async = false;
+        script.defer = true;
+        head.appendChild(script);
+      }
+
       script01();
+
     </script>
   </body>
 </html>
