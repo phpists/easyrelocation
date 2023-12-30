@@ -125,6 +125,7 @@ function initSwiper(selector) {
 if (typeof Swiper !== "undefined") {
   initSwiper(".review-slider-container");
   initSwiper(".document-slider-container");
+  console.log("hrer");
 }
 
 const MAX_SHORT_DESCR_LENGTH = 100;
