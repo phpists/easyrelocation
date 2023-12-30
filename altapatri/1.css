@@ -372,7 +372,6 @@ progress {
 .header .breadcrumbs__separator {
     fill: #fff;
     margin: 0 10px;
-    transform: rotate(450deg);
     stroke: #fff;
     height: 15px;
     width: 13px
@@ -687,7 +686,6 @@ progress {
 .navigation .breadcrumbs__separator {
     fill: #fff;
     margin: 0 10px;
-    transform: rotate(450deg);
     stroke: #fff;
     height: 15px;
     width: 13px
@@ -5824,3 +5822,7 @@ progress {
 }
 
 
+
+.breadcrumbs use {
+   height: 16px;
+}
