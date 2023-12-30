@@ -13,16 +13,15 @@ $(document).ready(function () {
             success: function (response) {
                 var status = response.status;
                 if (status) {
-                    $(".modal").removeClass("show");
+                    $('#form_modal').removeClass("show");
                     form[0].reset();
-                    $(".success_modal").addClass("show");
+                    $("#success_modal").addClass("show");
                 }
             },
         });
     });
 
     $(document).on('click', '.modal__close', function (e) {
-        $('.success_modal').removeClass('show');
-        $('body').css('overflow', '');
+        $("#success_modal").removeClass("show");
     });
 });
