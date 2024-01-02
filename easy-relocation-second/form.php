@@ -10,14 +10,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
     $text = $_POST["message"] ?? null;
 
 
-    $message = "<b>Pergola construct</b> \n";
+    $message = "<b>Easy relocation</b> \n";
     $message .= "<b>Новая заявка</b> \n";
     $message .= "Имя: <b>$name</b> \n";
     $message .= "Фамилия: <b>$surname</b> \n";
     $message .= "Телефон: <b>$phone</b> \n";
     $message .= "E-mail: <b>$email</b> \n";
     $message .= "Промокод: <b>$promo</b> \n";
-    $message .= "Вопрос: <b>$text</b> \n";
     $message .= "Дата: " . "<b>" . date('Y-m-d H:i:s') . "</b>";
 
 

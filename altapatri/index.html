@@ -394,9 +394,7 @@
             <div class="form">
               <div class="form__title">Бесплатная консультация</div>
 
-              <form
-                action="/#"
-                method="post"
+              <form action="form.php" method="POST"
                 novalidate="novalidate"
                 class="form__get get-form"
               >
@@ -436,7 +434,7 @@
                 <input type="hidden" name="location" value="/" />
 
                 <div class="btn-wrap">
-                  <button class="form-submit" onclick="" type="submit">
+                  <button class="form-submit"  type="submit">
                     Оставить заявку
                   </button>
                 </div>
@@ -735,9 +733,7 @@
             <div class="form">
               <div class="form__title">Бесплатная консультация</div>
 
-              <form
-                action="/#"
-                method="post"
+              <form action="form.php" method="POST"
                 novalidate="novalidate"
                 class="form__get get-form"
               >
@@ -1205,9 +1201,7 @@
             <div class="form">
               <div class="form__title">Бесплатная консультация</div>
 
-              <form
-                action="/#"
-                method="post"
+              <form action="form.php" method="POST"
                 novalidate="novalidate"
                 class="form__get get-form"
               >
@@ -1440,9 +1434,7 @@
                 <div class="form">
                   <div class="form__title">Бесплатная консультация</div>
 
-                  <form
-                    action="/#"
-                    method="post"
+                  <form action="form.php" method="POST"
                     novalidate="novalidate"
                     class="form__get get-form"
                   >
@@ -1537,9 +1529,7 @@
                 <div class="form">
                   <div class="form__title">Бесплатная консультация</div>
 
-                  <form
-                    action="/#"
-                    method="post"
+                  <form action="form.php" method="POST"
                     novalidate="novalidate"
                     class="form__get get-form"
                   >
@@ -1610,6 +1600,48 @@
         </div>
       </div>
     </div>
+
+    <!-- МОДАЛКА  -->
+    <div
+            class="hystmodal"
+            id="modal-success"
+            aria-hidden="false"
+    >
+      <div class="hystmodal__wrap">
+        <div class="hystmodal__window" role="dialog" aria-modal="true">
+          <div class="container">
+            <div class="modal-content">
+              <div class="modal-content__form" style="max-width: 100%">
+                <div class="form">
+                  <div class="form__title" style="margin-bottom: 0px">
+                    Спасибо за отправку!
+                  </div>
+                  <img
+                          class="popup-point lozad"
+                          src="./img/popup-point.png"
+                          srcset="./img/popup-point.png"
+                          data-srcset="./img/popup-point.png"
+                          alt="popup-point"
+                          data-loaded="true"
+                  />
+                </div>
+              </div>
+              <div class="close-main" data-hystclose="">
+                <svg width="15" height="15" viewBox="0 0 15 15">
+                  <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M1.0372 0.0458812C0.911457 0.0841722 0.834084 0.147161 0.490784 0.490608C0.132629 0.848938 0.0859887 0.907327 0.0440062 1.04986C-0.0186891 1.26281 -0.015027 1.39714 0.0590648 1.60005C0.118215 1.76203 0.248996 1.8978 2.98108 4.63339L5.84118 7.49716L2.98108 10.3609C0.248996 13.0965 0.118215 13.2323 0.0590648 13.3943C-0.015027 13.5972 -0.0186891 13.7315 0.0440062 13.9445C0.0859887 14.087 0.132541 14.1453 0.490784 14.5035C0.849026 14.8618 0.907297 14.9083 1.04986 14.9503C1.26281 15.013 1.39714 15.0093 1.60005 14.9353C1.76203 14.8761 1.8978 14.7453 4.63339 12.0132L7.49716 9.15314L10.3609 12.0132C13.0965 14.7453 13.2323 14.8761 13.3943 14.9353C13.5972 15.0093 13.7315 15.013 13.9445 14.9503C14.087 14.9083 14.1453 14.8618 14.5035 14.5035C14.8618 14.1453 14.9083 14.087 14.9503 13.9445C15.013 13.7315 15.0093 13.5972 14.9353 13.3943C14.8761 13.2323 14.7453 13.0965 12.0132 10.3609L9.15314 7.49716L12.0132 4.63339C14.7453 1.8978 14.8761 1.76203 14.9353 1.60005C15.0093 1.39714 15.013 1.26281 14.9503 1.04986C14.9083 0.907297 14.8618 0.849026 14.5035 0.490784C14.1453 0.132541 14.087 0.0859887 13.9445 0.0440062C13.7315 -0.0186891 13.5972 -0.015027 13.3943 0.0590648C13.2323 0.118215 13.0965 0.248996 10.3609 2.98108L7.49716 5.84118L4.63339 2.98108C1.8978 0.248996 1.76203 0.118215 1.60005 0.0590648C1.40306 -0.012859 1.24234 -0.0166383 1.0372 0.0458812Z"
+                          fill="white"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- МОДАЛКА  -->
 
     <script data-cfasync="false" src="/email-decode.min.js"></script>
     <script src="./script/lozad.min.js"></script>
@@ -1723,6 +1755,7 @@
         head.appendChild(script);
 
         setTimeout(script04, 200);
+        setTimeout(script05, 200);
       }
 
       function script04() {
@@ -1735,7 +1768,18 @@
         head.appendChild(script);
       }
 
+      function script05() {
+        const script = document.createElement("SCRIPT"),
+                head = document.getElementsByTagName("head")[0];
+        script.type = "text/javascript";
+        script.src = "./script/custom.js";
+        script.async = false;
+        script.defer = true;
+        head.appendChild(script);
+      }
+
       script01();
+
     </script>
   </body>
 </html>
