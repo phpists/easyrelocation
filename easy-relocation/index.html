@@ -840,10 +840,10 @@
         <div class="copyright">
     <p class="copyright__text">© 2006 - 2023 Иммигрант Инвест. Все права защищены</p>
 </div>
-        <div class="modal">
+        <div class="modal form_request">
     <div class="modal__dialog">
         <div class="modal__content">
-            <form action="#">
+            <form class="form" action="form.php">
                 <div class="modal__close" data-close>&times;</div>
                 <input required placeholder="Ваше имя" name="name" type="text" class="modal__input">
                 <input required placeholder="Ваша фамилия" name="surname" type="text" class="modal__input">
@@ -855,7 +855,19 @@
         </div>
     </div>
 </div>
-        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js?_v=20231123091646" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+        <!-- МОДАЛКА  -->
+        <div id="success_modal" class="modal">
+            <div class="modal__dialog" style="max-width: 90%; min-width: 400px;">
+                <div class="modal__content main-info__title stg-h1" style="text-align: center; font-size: 25px;">
+                    <div class="modal__close" data-close>&times;</div>
+                    Спасибо за заявку
+                </div>
+            </div>
+        </div>
+        <!-- МОДАЛКА  -->
+
+        <script src="js/jquery-3.7.1.min.js"></script>
         <script src="js/app.min.js?_v=20231123091646"></script>
+        <script src="js/custom.js?_v=20231123091646"></script>
     </body>
 </html>
