@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>easyRelocation</title>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css?_v=20231123091646">
-        <link rel="stylesheet" href="css/style.css?_v=20231123091646">
+        <link rel="stylesheet" href="css/style.css?_v=2023211423091646">
         <script src="https://unpkg.com/imask"></script>
         <script src="./js/script.js"></script>
     </head>
@@ -63,26 +63,29 @@
                     </div>
                 </div>
             </nav>
-            <div class="d-none d-xl-block">
-                <div class="language-ctrl">
-    <a class="language-ctrl__link" href="#whatsapp">
-        <img src="img/whatsapp.svg" class="language-ctrl__whats-icon" alt="icon-whatsapp">
-    </a>
-    <a class="language-ctrl__link" href="#telegram">
-        <img src="img/telegram.svg" class="language-ctrl__telegram-icon" alt="icon-telegram">
-    </a>
-
-   
-</div>
-            </div>
+           
             <div class="d-flex align-items-center">
                 <div class="d-none d-sm-inline-block d-xl-none header__burger-right">
                     <div class="burger">
     <span></span>
 </div>
                 </div>
-                <button class="stg-btn stg-btn_small d-none d-sm-block" data-modal>Напишите нам</button>
+                <div class="d-flex align-items-center">
+                    <div class="d-none d-xl-block" style="margin-right: 15px;">
+                        <div class="language-ctrl">
+            <a class="language-ctrl__link" href="#whatsapp">
+                <img src="img/whatsapp.svg" class="language-ctrl__whats-icon" alt="icon-whatsapp">
+            </a>
+            <a class="language-ctrl__link" href="#telegram">
+                <img src="img/telegram.svg" class="language-ctrl__telegram-icon" alt="icon-telegram">
+            </a>
+        
+           
+        </div>
+                    </div>
+                    <button class="stg-btn stg-btn_small d-none d-sm-block" data-modal>Напишите нам</button>
                 <button class="stg-btn stg-btn_small d-block d-sm-none" data-modal>Напишите</button>
+                </div>
             </div>
         </div>
     </div>
@@ -792,43 +795,35 @@
         <div class="col-6 col-md-4 order-0 order-md-1">
             <h4 class="stg-h4 footer__menu-title">Гражданство</h4>
             <ul class="footer__menu-list">
-                <li class="footer__menu-item"><a class="footer__menu-link">Мальта</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Турция</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Египет</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Парагвай</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Сент-Китс и Невис</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Антигуа и Барбуда</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Сент-Люсия</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Доминикачу</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Гренада</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Вануату</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Все программы</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Недвижимость</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Выбор объекта</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Гайд по странам</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Вид на жительство</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Португалия</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Мальта</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Турция</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Египет</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Парагвай</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Сент-Китс и Невис</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Антигуа и Барбуда</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Сент-Люсия</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Доминикачу</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Гренада</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Вануату</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Все программы</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Недвижимость</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Выбор объекта</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Гайд по странам</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Вид на жительство</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Португалия</a></li>
             </ul>
         </div>
         <div class="col-6 col-md-4 order-1 order-md-2">
             <h4 class="stg-h4 footer__menu-title">Вид на жительство</h4>
             <ul class="footer__menu-list">
-                <li class="footer__menu-item"><a class="footer__menu-link">Мальта, ПМЖ</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Греция</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Кипр</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Италия</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Мальта, ВНЖ</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Андорра</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Австрия</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Португалия, виза D7 </a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Португалия, Digital</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Nomad</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Испания</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">ОАЭ</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">США</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Все программы</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Ресурсы</a></li>
-                <li class="footer__menu-item"><a class="footer__menu-link">Блог</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Мальта, ПМЖ</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Греция</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Кипр</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Италия</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Мальта, ВНЖ</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Андорра</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Австрия</a></li>
+                <li class="footer__menu-item" data-modal><a class="footer__menu-link">Португалия, виза D7 </a></li>
             </ul>
         </div>
     </div>
