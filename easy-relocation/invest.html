@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>easyRelocation</title>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css?_v=20231116083611">
-        <link rel="stylesheet" href="css/style.css?_v=20231116083611">
+        <link rel="stylesheet" href="css/style2.css?_v=20231116083611">
         <script src="https://unpkg.com/imask"></script>
         <script src="./js/script.js"></script>
     </head>
@@ -27,37 +27,43 @@
                     <div class="row">
                         <div class="col-md-12 col-lg-10 col-xl-12">
                             <ul class="header__menu">
-                               <li class="header__menu-item">
-                                    <a href="invest.html" class="header__menu-link">Гражданство</a>
-                                </li>
-                                  <li class="header__menu-item">
-                                    <a href="index.html" class="header__menu-link">ВНЖ</a>
-                                </li>
-                                <!-- <li class="header__menu-item">
-                                    <a href="#" class="header__menu-link">Сравнение</a>
-                                </li>
                                 <li class="header__menu-item">
-                                    <a href="#" class="header__menu-link">Недвижимость</a>
-                                </li>
-                                <li class="header__menu-item">
-                                    <a href="#" class="header__menu-link">Истории клиентов</a>
-                                </li> -->
-                                <li class="header__menu-item">
-                                    <a href="about-us.html" class="header__menu-link">О нас</a>
-                                </li>
-                            </ul>
+                                     <a href="invest.html" class="header__menu-link">Гражданство</a>
+                                 </li>
+                                 <li class="header__menu-item">
+                                     <a href="index.html" class="header__menu-link">ВНЖ</a>
+                                 </li>
+                                 <!-- <li class="header__menu-item">
+                                     <a href="#" class="header__menu-link">Сравнение</a>
+                                 </li>
+                                 <li class="header__menu-item">
+                                     <a href="#" class="header__menu-link">Недвижимость</a>
+                                 </li>
+                                 <li class="header__menu-item">
+                                     <a href="#" class="header__menu-link">Истории клиентов</a>
+                                 </li> -->
+                                 <li class="header__menu-item">
+                                     <a href="about-us.html" class="header__menu-link">О нас</a>
+                                 </li>
+                             </ul>
                         </div>
                         <div class="col-md-12 col-lg-2 col-xl-2 d-flex d-xl-none justify-content-start justify-content-md-center justify-content-lg-end mt-3 mt-lg-0">
-                            <div class="language-ctrl">
+                            <!-- <div class="language-ctrl">
     <a class="language-ctrl__link" href="#whatsapp">
         <img src="img/whatsapp.svg" class="language-ctrl__whats-icon" alt="icon-whatsapp">
     </a>
     <a class="language-ctrl__link" href="#telegram">
         <img src="img/telegram.svg" class="language-ctrl__telegram-icon" alt="icon-telegram">
     </a>
-   
+    <div class="language-ctrl__translation-block dropdown">
+        <button class="dropbtn"></button>
+        <div class="dropdown-content">
+            <a href="#" class="dropdown-link">ENG</a>
+            <a href="#" class="dropdown-link">RU</a>
+        </div>
+    </div>
 
-</div>
+</div> -->
                         </div>
                     </div>
                 </div>
@@ -70,7 +76,13 @@
     <a class="language-ctrl__link" href="#telegram">
         <img src="img/telegram.svg" class="language-ctrl__telegram-icon" alt="icon-telegram">
     </a>
-   
+    <div class="language-ctrl__translation-block dropdown">
+        <button class="dropbtn"></button>
+        <div class="dropdown-content">
+            <a href="#" class="dropdown-link">ENG</a>
+            <a href="#" class="dropdown-link">RU</a>
+        </div>
+    </div>
 
 </div>
             </div>
@@ -763,10 +775,10 @@
         <div class="copyright">
     <p class="copyright__text">© 2006 - 2023 Иммигрант Инвест. Все права защищены</p>
 </div>
-        <div class="modal form_request">
+        <div class="modal">
     <div class="modal__dialog">
         <div class="modal__content">
-            <form class="form" action="form.php">
+            <form action="form.php">
                 <div class="modal__close" data-close>&times;</div>
                 <input required placeholder="Ваше имя" name="name" type="text" class="modal__input">
                 <input required placeholder="Ваша фамилия" name="surname" type="text" class="modal__input">
@@ -778,20 +790,8 @@
         </div>
     </div>
 </div>
-
-        <!-- МОДАЛКА  -->
-        <div id="success_modal" class="modal">
-            <div class="modal__dialog" style="max-width: 90%; min-width: 400px;">
-                <div class="modal__content main-info__title stg-h1" style="text-align: center; font-size: 25px;">
-                    <div class="modal__close" data-close>&times;</div>
-                    Спасибо за заявку
-                </div>
-            </div>
-        </div>
-        <!-- МОДАЛКА  -->
-
-        <script src="js/jquery-3.7.1.min.js"></script>
-        <script src="js/app.min.js?_v=20231123091646"></script>
-        <script src="js/custom.js?_v=20231123091646"></script>
+        
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js?_v=20231116083611" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+        <script src="js/app.min.js?_v=20231116083611"></script>
     </body>
 </html>
