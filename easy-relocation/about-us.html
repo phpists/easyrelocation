@@ -1225,7 +1225,7 @@
             <h2 class="stg-h2 big-connection-form__title">
               Станьте нашим партнером сегодня
             </h2>
-            <form>
+            <form class="form" action="form.php">
               <div class="row">
                 <div class="col-12 col-md-7">
                   <textarea
@@ -1437,10 +1437,10 @@
         </footer>
       </div>
     </footer>
-    <div class="modal">
+    <div class="modal form_request">
       <div class="modal__dialog">
         <div class="modal__content">
-          <form action="#">
+          <form class="form" action="form.php">
             <div class="modal__close" data-close>&times;</div>
             <input
               required
@@ -1484,12 +1484,21 @@
         </div>
       </div>
     </div>
-    <script
-      src="https://code.jquery.com/jquery-3.7.1.slim.min.js?_v=20231123091646"
-      integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
-      crossorigin="anonymous"
-    ></script>
+
+    <!-- МОДАЛКА  -->
+    <div id="success_modal" class="modal">
+      <div class="modal__dialog" style="max-width: 90%; min-width: 400px;">
+        <div class="modal__content main-info__title stg-h1" style="text-align: center; font-size: 25px;">
+          <div class="modal__close" data-close>&times;</div>
+          Спасибо за заявку
+        </div>
+      </div>
+    </div>
+    <!-- МОДАЛКА  -->
+
+    <script src="js/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js?_v=20231123091646"></script>
     <script src="js/app.min.js?_v=20231123091646"></script>
+    <script src="js/custom.js?_v=20231123091646"></script>
   </body>
 </html>
