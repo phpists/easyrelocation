@@ -7118,3 +7118,19 @@ body {
 .webp .section__main-menu {
   background-image: url(../img/main-info.webp);
 }
+
+.webp .section__main-menu {
+  background-position: -61px -1px;
+  background-repeat: no-repeat;
+  background-size: 58vw 107%;
+}
+
+.success_modal_title {
+  color: #0f6580;
+  font-family: Gilroy;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-align: center;
+}

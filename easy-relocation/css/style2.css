@@ -6409,3 +6409,13 @@ body {
 .webp .section__main-menu { background-image: url(../img/bg-main-info.webp); }
 
 .webp .connection-form { background-image: url(../img/bg-connection.webp); }
+
+.success_modal_title {
+    color: #0F6580;
+    font-family: Gilroy;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-align: center;
+}
