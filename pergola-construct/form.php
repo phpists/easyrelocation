@@ -8,6 +8,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
     $email = $_POST["email"] ?? null;
     $promo = $_POST["promo"] ?? null;
     $text = $_POST["message"] ?? null;
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $site = 'pergolaconstruct.ru';
 
 
     $message = "<b>Pergola construct</b> \n";
@@ -18,6 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
     $message .= "E-mail: <b>$email</b> \n";
     $message .= "Промокод: <b>$promo</b> \n";
     $message .= "Вопрос: <b>$text</b> \n";
+    $message .= "IP: <b>$ip</b> \n";
+    $message .= "Сайт: <b>$site</b> \n";
     $message .= "Дата: " . "<b>" . date('Y-m-d H:i:s') . "</b>";
 
 
