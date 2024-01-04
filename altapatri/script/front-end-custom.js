@@ -10,19 +10,19 @@ document.addEventListener("DOMContentLoaded", function () {
           if (targetElement) {
             switch (item.insertion) {
               case "inside_start":
-                targetElement.insertAdjacentHTML("afterbegin", item.html);
+                targetElement.insertAdjacentHTML("afterbegin", item);
                 break;
               case "inside_end":
-                targetElement.insertAdjacentHTML("beforeend", item.html);
+                targetElement.insertAdjacentHTML("beforeend", item);
                 break;
               case "before":
-                targetElement.insertAdjacentHTML("beforebegin", item.html);
+                targetElement.insertAdjacentHTML("beforebegin", item);
                 break;
               case "after":
-                targetElement.insertAdjacentHTML("afterend", item.html);
+                targetElement.insertAdjacentHTML("afterend", item);
                 break;
               case "replace":
-                targetElement.innerHTML = item.html;
+                targetElement.innerHTML = item;
                 break;
               default:
                 console.log(
