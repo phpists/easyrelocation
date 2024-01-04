@@ -5852,3 +5852,10 @@ progress {
 }
 
 
+#modal-success .modal-content__form{
+    flex: 1 !important;
+}
+
+#modal-success .popup-point  {
+    display: none  !important;
+}
