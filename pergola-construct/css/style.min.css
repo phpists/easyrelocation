@@ -1256,7 +1256,7 @@ a:hover {
   -webkit-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  background: url(../img/arrow.svg);
+  background: url(.../img/arrow.svg);
 }
 .portfolio__next:hover,
 .portfolio__prev:hover {
@@ -1450,7 +1450,7 @@ a:hover {
   -webkit-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  background: url(../img/arrow.svg);
+  background: url(.../img/arrow.svg);
 }
 .varieties .swiper-next:hover,
 .varieties .swiper-prev:hover {

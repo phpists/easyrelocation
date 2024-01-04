@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
     $email = $_POST["email"] ?? null;
 
 
-    $message = "<b>Altapatri</b> \n";
+    $message = "<b>GetVisa</b> \n";
     $message .= "<b>Новая заявка</b> \n";
     $message .= "Имя: <b>$name</b> \n";
     $message .= "Телефон: <b>$phone</b> \n";

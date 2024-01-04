@@ -201,7 +201,7 @@ function openModalById(modalId, content) {
     }
 
     const body = document.getElementsByTagName("body")[0];
-    body.classList.add("overflow-hidden");
+    // body.classList.add("overflow-hidden");
   }
 
   history.pushState(null, "", modalId);
@@ -212,9 +212,9 @@ function openModalById(modalId, content) {
 }
 
 function closeModalById(modalId) {
-  myModal.close(modalId);
   const body = document.getElementsByTagName("body")[0];
   body.classList.remove("overflow-hidden");
+  myModal.close(modalId);
 }
 
 document.addEventListener(

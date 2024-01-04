@@ -1414,7 +1414,7 @@ a {
 }
 
 .swiper-button-prev {
-  background-image: url("../img/arrow-l.svg") !important;
+  background-image: url(".../img/arrow-l.svg") !important;
   height: 17px !important;
   width: 10px !important;
   display: inline-block !important;
@@ -1425,7 +1425,7 @@ a {
 }
 
 .swiper-button-next {
-  background-image: url("../img/arrow-r.svg") !important;
+  background-image: url(".../img/arrow-r.svg") !important;
   height: 17px !important;
   width: 10px !important;
   display: inline-block !important;
@@ -1670,7 +1670,7 @@ body {
 }
 
 .no-webp .section__main-menu {
-  background-image: url("../img/main-info.png");
+  background-image: url(".../img/main-info.png");
 }
 
 .section__main-menu {
@@ -2112,7 +2112,7 @@ body {
   content: "";
   display: block;
   position: absolute;
-  background-image: url("../img/arrow-down.svg");
+  background-image: url(".../img/arrow-down.svg");
   width: 8px;
   height: 5px;
   top: 8px;
@@ -2176,7 +2176,7 @@ body {
   position: absolute;
   width: 20px;
   height: 20px;
-  background: url("../img/translation.svg") center center/cover no-repeat;
+  background: url(".../img/translation.svg") center center/cover no-repeat;
   top: 0;
   left: 0;
 }
@@ -7116,7 +7116,7 @@ body {
 }
 
 .webp .section__main-menu {
-  background-image: url(../img/main-info.webp);
+  background-image: url(.../img/main-info.webp);
 }
 
 .webp .section__main-menu {

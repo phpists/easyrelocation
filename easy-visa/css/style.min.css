@@ -1156,7 +1156,7 @@ html {
   overflow-x: hidden;
 }
 .no-webp .section_main-windows {
-  background-image: url(../img/bg-main-info.png);
+  background-image: url(.../img/bg-main-info.png);
 }
 .section_main-windows {
   background-position: 100% 0;
@@ -1211,7 +1211,7 @@ html {
   content: "";
   height: 5px;
   width: 8px;
-  background-image: url(../img/down-arrow.svg);
+  background-image: url(.../img/down-arrow.svg);
   display: inline-block;
   margin-bottom: 2px;
   margin-left: 2px;
@@ -1236,7 +1236,7 @@ html {
   width: auto;
 }
 .no-webp .main-windows {
-  background-image: url(../img/airplane.png);
+  background-image: url(.../img/airplane.png);
 }
 .main-windows {
   background-position: 5% 95%;
@@ -1244,7 +1244,7 @@ html {
   background-size: 272px auto;
 }
 .no-webp .main-windows .container {
-  background-image: url(../img/img-main-info.png);
+  background-image: url(.../img/img-main-info.png);
 }
 .main-windows .container {
   background-position: 100% 0;
@@ -1331,7 +1331,7 @@ html {
   line-height: normal;
 }
 .no-webp .services-list {
-  background-image: url(../img/bg-support-two.png);
+  background-image: url(.../img/bg-support-two.png);
 }
 .services-list {
   background: #eee;
@@ -1409,7 +1409,7 @@ html {
   display: inline-block;
 }
 .no-webp .help-list::after {
-  background-image: url(../img/bg-support-two.png);
+  background-image: url(.../img/bg-support-two.png);
 }
 .help-list::after {
   content: "";
@@ -1421,7 +1421,7 @@ html {
   z-index: 1;
 }
 .no-webp .help-list::before {
-  background-image: url(../img/bg-support-one.png);
+  background-image: url(.../img/bg-support-one.png);
 }
 .help-list::before {
   content: "";
@@ -1454,7 +1454,7 @@ html {
   z-index: 2;
 }
 .no-webp .connection-form-big {
-  background-image: url(../img/bg-connection.png);
+  background-image: url(.../img/bg-connection.png);
 }
 .connection-form-big {
   background-position: 0 0;
@@ -1504,7 +1504,7 @@ html {
   position: relative;
 }
 .no-webp .advantages-list-big::after {
-  background-image: url(../img/advantages-шьп.png);
+  background-image: url(.../img/advantages-шьп.png);
 }
 .advantages-list-big::after {
   content: "";
@@ -1564,7 +1564,7 @@ html {
   text-align: center;
 }
 .no-webp .support-list::before {
-  background-image: url(../img/bg-support-two.png);
+  background-image: url(.../img/bg-support-two.png);
 }
 .support-list::before {
   content: "";
@@ -1577,7 +1577,7 @@ html {
   bottom: 0;
 }
 .no-webp .support-list::after {
-  background-image: url(../img/bg-support-one.png);
+  background-image: url(.../img/bg-support-one.png);
 }
 .support-list::after {
   content: "";
@@ -1888,7 +1888,7 @@ html {
   border-radius: 5px;
 }
 .no-webp .connection-form-small__img-block::after {
-  background-image: url(../img/connection-small-img.png);
+  background-image: url(.../img/connection-small-img.png);
 }
 .connection-form-small__img-block::after {
   content: "";
@@ -5020,7 +5020,7 @@ html {
     padding: 36px 10px 39px 10px;
   }
   .no-webp .connection-form-small__img-block::after {
-    background-image: url(../img/connection-small-img.png);
+    background-image: url(.../img/connection-small-img.png);
   }
   .connection-form-small__img-block::after {
     content: "";
@@ -5392,41 +5392,41 @@ html {
   }
 }
 .webp .section_main-windows {
-  background-image: url(../img/bg-main-info.webp);
+  background-image: url(.../img/bg-main-info.webp);
 }
 .webp .main-windows {
-  background-image: url(../img/airplane.webp);
+  background-image: url(.../img/airplane.webp);
 }
 .webp .main-windows .container {
-  background-image: url(../img/img-main-info.webp);
+  background-image: url(.../img/img-main-info.webp);
 }
 .webp .services-list {
-  background-image: url(../img/bg-support-two.webp);
+  background-image: url(.../img/bg-support-two.webp);
 }
 .webp .help-list::after {
-  background-image: url(../img/bg-support-two.webp);
+  background-image: url(.../img/bg-support-two.webp);
 }
 .webp .help-list::before {
-  background-image: url(../img/bg-support-one.webp);
+  background-image: url(.../img/bg-support-one.webp);
 }
 .webp .connection-form-big {
-  background-image: url(../img/bg-connection.webp);
+  background-image: url(.../img/bg-connection.webp);
 }
 .webp .advantages-list-big::after {
-  background-image: url(../img/advantages-шьп.webp);
+  background-image: url(.../img/advantages-шьп.webp);
 }
 .webp .support-list::before {
-  background-image: url(../img/bg-support-two.webp);
+  background-image: url(.../img/bg-support-two.webp);
 }
 .webp .support-list::after {
-  background-image: url(../img/bg-support-one.webp);
+  background-image: url(.../img/bg-support-one.webp);
 }
 .webp .connection-form-small__img-block::after {
-  background-image: url(../img/connection-small-img.webp);
+  background-image: url(.../img/connection-small-img.webp);
 }
 @media (max-width: 1229.98px) {
   .webp .connection-form-small__img-block::after {
-    background-image: url(../img/connection-small-img.webp);
+    background-image: url(.../img/connection-small-img.webp);
   }
 }
 html {
