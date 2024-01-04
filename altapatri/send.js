@@ -82,10 +82,10 @@ if (!document.cookie.includes("utm_source")) {
         document.cookie = "utm_source=google; path=/";
         document.cookie = "utm_medium=seo; path=/";
         break;
-      case curReferer.indexOf("yandex") != -1:
-        document.cookie = "utm_source=yandex; path=/";
-        document.cookie = "utm_medium=seo; path=/";
-        break;
+      // case curReferer.indexOf("yandex") != -1:
+      //   document.cookie = "utm_source=yandex; path=/";
+      //   document.cookie = "utm_medium=seo; path=/";
+      //   break;
       case curReferer.indexOf("rambler") != -1:
         document.cookie = "utm_source=rambler; path=/";
         document.cookie = "utm_medium=seo; path=/";
@@ -197,7 +197,7 @@ forms &&
       e.preventDefault();
       let data = new FormData(form);
       data.append("location", window.location.href.split("?")[0]);
-      fetch("/justdoit.php", {
+      fetch("/form.php", {
         method: "POST",
         body: data,
       })
@@ -205,7 +205,7 @@ forms &&
         .then((resData) => {
           if (!resData.error) {
             // Отримання нової utm_source з justdoit-email.php
-            fetch("/justdoit.php")
+            fetch("/form.php")
               .then((response) => response.json())
               .then((utmData) => {
                 if (utmData.utm_source) {
