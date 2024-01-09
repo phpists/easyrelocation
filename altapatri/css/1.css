@@ -441,7 +441,7 @@ progress {
 .header .logo__image {
     display: block;
     max-height: 100%;
-    max-width: 190px;
+    max-width: 77px;
     width: 100%;
     height: 100%;
     -o-object-fit: contain;
@@ -450,7 +450,7 @@ progress {
 
 @media (min-width: 1224px) {
     .header .logo__image {
-        max-width:222px
+        max-width: 77px;
     }
 }
 
