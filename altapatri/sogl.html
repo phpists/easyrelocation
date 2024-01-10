@@ -1496,6 +1496,7 @@
         }
 
         setTimeout(script03, 200);
+        setTimeout(script05, 200);
       }
     </script>
     <script>
@@ -1508,6 +1509,15 @@
         script.defer = true;
         head.appendChild(script);
       }
+      function script05() {
+        const script = document.createElement("SCRIPT"),
+                head = document.getElementsByTagName("head")[0];
+        script.type = "text/javascript";
+        script.src = "./script/custom.js";
+        script.async = false;
+        script.defer = true;
+        head.appendChild(script);
+      }
     </script>
 
     <script>
@@ -1516,7 +1526,6 @@
       });
       setTimeout(script01, 2300);
     </script>
-    <script src="/send.js"></script>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
