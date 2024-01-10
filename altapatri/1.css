@@ -404,7 +404,6 @@ progress {
 @media (min-width: 1025px) {
     .header .logo {
         padding:30px 38px 40px;
-        box-shadow: 0 1px 6px rgba(0,4,10,.4)
     }
 }
 
