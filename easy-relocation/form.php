@@ -29,15 +29,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
 
 
 // Database -------------------------------------------------------------------//
-    // $servername = "localhost";  //38.180.37.135
-    // $username = "mariadb";
-    // $password = "2D55rAgk3c";
-    // $dbname = "myDBPDO";
-
     $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "easyrelocation";
+    $username = "easyrelocation_db";
+    $password = "2D55rAgk3c";
+    $dbname = "easyrelocation_db";
+
+  // $servername = "localhost";
+  // $username = "root";
+  // $password = "";
+  // $dbname = "easyrelocation";
 
     try {
       $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
