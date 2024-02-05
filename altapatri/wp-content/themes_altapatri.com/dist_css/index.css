@@ -836,6 +836,7 @@ progress {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 @media (min-width: 1025px) {
   .navigation .sub-menu {
