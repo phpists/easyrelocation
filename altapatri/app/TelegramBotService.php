@@ -9,8 +9,8 @@ class TelegramBotService
     public function __construct()
     {
         $token = '6863314391:AAEaYapS74WyHsjeyMccKDXF0lQshoe5Cgk'; // token - токен телеграм бота в который должны приходить сообщения
-        $this->chat_id = 474950625; // chat_id - пользователя которому нужно отправлять сообщения
-//        $this->chat_id = 6049065299; // chat_id - пользователя которому нужно отправлять сообщения
+//        $this->chat_id = 474950625; // chat_id - пользователя которому нужно отправлять сообщения
+        $this->chat_id = 6049065299; // chat_id - пользователя которому нужно отправлять сообщения
         $this->token = $token;
         $this->base_url .= $token . '/';
     }
