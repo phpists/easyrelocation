@@ -1,0 +1,24 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const phoneInput = document.querySelectorAll(
+    'input[name="contactOrderPopup"]'
+  );
+  if (phoneInput.length > 0) {
+    const maskPhone = {
+      mask: '+{7}(000)000-00-00',
+      lazy: false,
+    };
+    phoneInput.forEach(e => {
+      IMask(e, maskPhone);
+    });
+  }
+
+  const upBtn = document.querySelector('.up-btn');
+
+  window.addEventListener('scroll', function () {
+    if (window.scrollY <= 100) {
+      upBtn.style.display = 'none';
+    } else {
+      upBtn.style.display = 'block';
+    }
+  });
+});
