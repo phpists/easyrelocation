@@ -9,6 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
     $promo = $_POST["promo"] ?? null;
     $text = $_POST["message"] ?? null;
     $ip = $_SERVER['REMOTE_ADDR'];
+    $ipLink = 'http://www.ip2location.com/demo/' . $_SERVER['REMOTE_ADDR'];
     $site = 'pergolaconstruct.ru';
 
 
@@ -17,10 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
     $message .= "Имя: <b>$name</b> \n";
     $message .= "Фамилия: <b>$surname</b> \n";
     $message .= "Телефон: <b>$phone</b> \n";
-    $message .= "E-mail: <b>$email</b> \n";
-    $message .= "Промокод: <b>$promo</b> \n";
-    $message .= "Вопрос: <b>$text</b> \n";
-    $message .= "IP: <b>$ip</b> \n";
+    $message .= "IP: <a href='$ipLink'>$ip</a> \n";
     $message .= "Сайт: <b>$site</b> \n";
     $message .= "Дата: " . "<b>" . date('Y-m-d H:i:s') . "</b>";
 
