@@ -8733,9 +8733,6 @@ catalog__head .category-select {
   background: url(../../img/right-arrow.svg) center/contain no-repeat;
 }
 
-.header__pic.header__pic_blue {
-  display: none !important;
-}
 
 .main__play {
   display: none !important;
