@@ -8,7 +8,7 @@
 			<api name="Movable Type" blogID="1" preferred="false" apiLink="https://phuket-cheap-tour.ru/xmlrpc.php" />
 			<api name="MetaWeblog" blogID="1" preferred="false" apiLink="https://phuket-cheap-tour.ru/xmlrpc.php" />
 			<api name="Blogger" blogID="1" preferred="false" apiLink="https://phuket-cheap-tour.ru/xmlrpc.php" />
-				<api name="WP-API" blogID="1" preferred="false" apiLink="https://phuket-cheap-tour.ru/wp-json/" />
+				<api name="WP-API" blogID="1" preferred="false" apiLink="https://phuket-cheap-tour.ru./wp-json/" />
 			</apis>
 	</service>
 </rsd>
