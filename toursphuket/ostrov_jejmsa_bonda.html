@@ -4160,13 +4160,7 @@
                 alt="Tours Phuket в Tours Phuket в YouTube"
               />
             </a>
-            <a
-              href="https://www.instagram.com/phuketcheaptour/"
-              rel="nofollow"
-              target="_blank"
-              title="Tours Phuket в Instagram"
-              class="footer__social-item footer__social-item_fb"
-            >
+
               <img
                 src="./wp-content/uploads/2023/09/instagram_footer.svg"
                 alt="Tours Phuket в Tours Phuket в Instagram"
@@ -4196,7 +4190,7 @@
 
     <div class="popup popup_price js-popup js-popup-order">
       <div class="popup__catalog popup__catalog2 js-popup-wrap">
-        <form class="order-form-popup" method="post">
+        <form action="form_modal.php" class="order-form-popup" method="post">
           <input
             name="linkOrderPopup"
             type="hidden"
@@ -4212,7 +4206,7 @@
               <div class="field">
                 <div class="field__wrap">
                   <input
-                    name="nameOrderPopup"
+                    name="name"
                     class="field__input"
                     type="text"
                     placeholder="Ваше имя"
@@ -4226,7 +4220,7 @@
               <div class="field">
                 <div class="field__wrap">
                   <input
-                    name="contactOrderPopup"
+                    name="phone"
                     class="field__input"
                     type="text"
                     placeholder="Ваш номер телефона"
@@ -4252,7 +4246,7 @@
                         class="message-checkbox__input js-check-order-popup"
                         type="checkbox"
                         value="WhatsApp"
-                        name="messOrderPopup[]"
+                        name="callback"
                       /><span class="message-checkbox__btn"
                         ><span
                           class="message-checkbox__icon icon-whatsapp"
@@ -4270,7 +4264,7 @@
                         class="message-checkbox__input js-check-order-popup"
                         type="checkbox"
                         value="Telegram"
-                        name="messOrderPopup[]"
+                        name="callback"
                       /><span class="message-checkbox__btn"
                         ><span
                           class="message-checkbox__icon icon-telegram"

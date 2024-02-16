@@ -1757,7 +1757,6 @@
               <div class="price__head-bread">
                 <h1 class="title">
                   <span class="title__font">Контакты</span> <br />Tours Phuket
-                  Tour
                 </h1>
                 <p id="breadcrumbs">
                   <span
@@ -1780,20 +1779,13 @@
             <div class="price__top-title">
               <strong>Отправьте нам сообщение:</strong>
             </div>
-            <form class="order-form-popup" method="post">
-              <input
-                name="linkOrderPopup"
-                type="hidden"
-                value="http://phuket-cheap-tour.ru/contacts"
-              />
-              <input name="titleOrderPopup" type="hidden" value="" />
-              <input name="themePopup" type="hidden" value="КОНТАКТ" />
+            <form action="form.php"  method="post" >
               <div class="popup__row">
                 <div class="popup__col">
                   <div class="field">
                     <div class="field__wrap">
                       <input
-                        name="nameOrderPopup"
+                        name="name"
                         class="field__input"
                         type="text"
                         placeholder="Ваше имя"
@@ -1807,7 +1799,7 @@
                   <div class="field">
                     <div class="field__wrap">
                       <input
-                        name="contactOrderPopup"
+                        name="phone"
                         class="field__input parsley-success"
                         type="text"
                         placeholder="Ваш номер телефона"
@@ -1829,7 +1821,7 @@
                     min-height: 80px;
                   "
                   class="field__input"
-                  name="messageText"
+                  name="text"
                   placeholder="Оставьте сообщение (не обязательно)"
                 ></textarea>
               </div>
@@ -1851,7 +1843,7 @@
                             class="message-checkbox__input js-check-order-popup"
                             type="checkbox"
                             value="WhatsApp"
-                            name="messOrderPopup[]"
+                            name="callback"
                           /><span class="message-checkbox__btn"
                             ><span
                               class="message-checkbox__icon icon-whatsapp"
@@ -1869,7 +1861,7 @@
                             class="message-checkbox__input js-check-order-popup"
                             type="checkbox"
                             value="Telegram"
-                            name="messOrderPopup[]"
+                            name="callback"
                           /><span class="message-checkbox__btn"
                             ><span
                               class="message-checkbox__icon icon-telegram"
@@ -1886,105 +1878,13 @@
                 </div>
                 <div class="popup__col">
                   <button
-                    class="popup__btn btn btn_blue js-button-order"
-                    type="submit"
-                    onclick="ym(7513753,'reachGoal','callback'); return true;"
-                  >
+                    class="popup__btn btn btn_blue "
+                    type="submit">
                     Оставить заявку
                   </button>
                 </div>
               </div>
             </form>
-          </div>
-
-          <br /><br />
-
-          <div class="price__top">
-            <div class="price__top-title">
-              <strong>Телефон:</strong> +6697 783 0620
-            </div>
-            <br />
-            <br />
-            <div class="price__top-title"><strong>Мессенджеры:</strong></div>
-            <div class="msn">
-              <div class="msn__bl msn__VK">
-                <a href="https://vk.me/phuketcheaptour" class="msn__link">
-                  <img
-                    class="msn__icon"
-                    src="./wp-content/uploads/2023/09/i_vkm.svg"
-                    alt="Связаться Вконтакте"
-                  />
-                  <div class="msn__text">VK</div>
-                </a>
-              </div>
-
-              <div class="msn__bl msn__Instagram">
-                <a
-                  href="https://www.instagram.com/phuketcheaptour/"
-                  class="msn__link"
-                >
-                  <img
-                    class="msn__icon"
-                    src="./wp-content/uploads/2023/09/i_ins.svg"
-                    alt="Связаться в Instagram"
-                  />
-                  <div class="msn__text">Instagram</div>
-                </a>
-              </div>
-
-              <div class="msn__bl msn__Whatsapp">
-                <a
-                  href="https://api.whatsapp.com/send?phone=66977830620"
-                  class="msn__link"
-                >
-                  <img
-                    class="msn__icon"
-                    src="./wp-content/uploads/2023/09/i_wtp.svg"
-                    alt="Связаться по Whatsapp"
-                  />
-                  <div class="msn__text">Whatsapp</div>
-                </a>
-              </div>
-
-              <div class="msn__bl msn__Telegram">
-                <a
-                  href="https://tlgg.ru/phuketcheaptour_chat"
-                  class="msn__link"
-                >
-                  <img
-                    class="msn__icon"
-                    src="./wp-content/uploads/2023/09/i_tlg.svg"
-                    alt="Связаться по Telegram"
-                  />
-                  <div class="msn__text">Telegram</div>
-                </a>
-              </div>
-
-              <div class="msn__bl msn__Facebook">
-                <a
-                  href="https://www.messenger.com/t/phuketcheaptour"
-                  class="msn__link"
-                >
-                  <img
-                    class="msn__icon"
-                    src="./wp-content/uploads/2023/09/i_fbm.svg"
-                    alt="Связаться по Facebook Messenger"
-                  />
-                  <div class="msn__text">Facebook</div>
-                </a>
-              </div>
-            </div>
-            <br />
-            <br />
-            <!-- <div class="price__top-title">
-              <strong>QR-код, для быстрой связи через телефон:</strong>
-            </div>
-            <div style="text-align: center">
-              <img
-                src="./wp-content/uploads/2023/09/qrcode.png"
-                alt="QR-код, для быстрой связи через телефон"
-              />
-            </div> -->
           </div>
 
           <br /><br />
@@ -2124,13 +2024,7 @@
                 alt="Tours Phuket в Tours Phuket в YouTube"
               />
             </a>
-            <a
-              href="https://www.instagram.com/phuketcheaptour/"
-              rel="nofollow"
-              target="_blank"
-              title="Tours Phuket в Instagram"
-              class="footer__social-item footer__social-item_fb"
-            >
+
               <img
                 src="./wp-content/uploads/2023/09/instagram_footer.svg"
                 alt="Tours Phuket в Tours Phuket в Instagram"
@@ -2160,103 +2054,47 @@
 
     <div class="popup popup_price js-popup js-popup-order">
       <div class="popup__catalog popup__catalog2 js-popup-wrap">
-        <form class="order-form-popup" method="post">
-          <input name="linkOrderPopup" type="hidden" value="./contacts" />
-          <input name="titleOrderPopup" type="hidden" value="" />
-          <input name="themePopup" type="hidden" value="ПОПАП" />
-          <div class="title">
-            <span class="title__font">Оставьте заявку</span> <br />прямо сейчас!
-          </div>
+        <form action="form.php" method="post">
+          <input name="linkOrderPopup" type="hidden" value="http://phuket-cheap-tour.ru/">
+          <input name="titleOrderPopup" type="hidden" value="">
+          <input name="themePopup" type="hidden" value="ЗВОНОК">
           <div class="popup__row">
             <div class="popup__col">
               <div class="field">
-                <div class="field__wrap">
-                  <input
-                    name="nameOrderPopup"
-                    class="field__input"
-                    type="text"
-                    placeholder="Ваше имя"
-                    required
-                    data-parsley-errors-messages-disabled
-                  />
-                </div>
+                <div class="field__wrap"><input name="name" class="field__input" type="text" placeholder="Ваше имя" required data-parsley-errors-messages-disabled></div>
               </div>
             </div>
             <div class="popup__col">
               <div class="field">
-                <div class="field__wrap">
-                  <input
-                    name="contactOrderPopup"
-                    class="field__input"
-                    type="text"
-                    placeholder="Ваш номер телефона"
-                    required
-                  />
-                </div>
+                <div class="field__wrap"><input name="phone" class="field__input" type="text" placeholder="Ваш номер телефона"  required></div>
               </div>
             </div>
+          </div>
+          <div class="popup__row">
+            <textarea style="margin: 0 0.625em 0 0.625em; padding-top: 10px;padding-bottom: 10px; min-height: 80px;" class="field__input" name="text" placeholder="Оставьте сообщение (не обязательно)"></textarea>
+          </div>
+          <div class="popup__row">
             <div class="popup__col">
               <div class="messenger">
                 <div class="messenger__info">
-                  <div class="messenger__desc">
-                    Как с вами удобнее связаться?
-                  </div>
+                  <div class="messenger__desc">Как с вами удобнее связаться?</div>
                 </div>
                 <div class="message-list mt50">
                   <!--<div class="message-list__item">
-				<label class="message-checkbox"><input class="message-checkbox__input js-check-order-popup" type="checkbox" value="Viber" name="messOrderPopup[]"><span class="message-checkbox__btn"><span class="message-checkbox__icon message-checkbox__icon_viber icon-viber-phone"></span></span><span class="message-checkbox__text-wrap"><span class="message-checkbox__text">Viber</span></span></label>
-			  </div>-->
+                    <label class="message-checkbox"><input class="message-checkbox__input js-check-order-popup" type="checkbox" value="Viber" name="messOrderPopup[]"><span class="message-checkbox__btn"><span class="message-checkbox__icon message-checkbox__icon_viber icon-viber-phone"></span></span><span class="message-checkbox__text-wrap"><span class="message-checkbox__text">Viber</span></span></label>
+                  </div>-->
                   <div class="message-list__item">
-                    <label class="message-checkbox"
-                      ><input
-                        class="message-checkbox__input js-check-order-popup"
-                        type="checkbox"
-                        value="WhatsApp"
-                        name="messOrderPopup[]"
-                      /><span class="message-checkbox__btn"
-                        ><span
-                          class="message-checkbox__icon icon-whatsapp"
-                        ></span></span
-                      ><span class="message-checkbox__text-wrap"
-                        ><span class="message-checkbox__text"
-                          >WhatsApp</span
-                        ></span
-                      ></label
-                    >
+                    <label class="message-checkbox"><input class="message-checkbox__input js-check-order-popup" type="checkbox" value="WhatsApp" name="callback"><span class="message-checkbox__btn"><span class="message-checkbox__icon icon-whatsapp"></span></span><span class="message-checkbox__text-wrap"><span class="message-checkbox__text">WhatsApp</span></span></label>
                   </div>
                   <div class="message-list__item">
-                    <label class="message-checkbox"
-                      ><input
-                        class="message-checkbox__input js-check-order-popup"
-                        type="checkbox"
-                        value="Telegram"
-                        name="messOrderPopup[]"
-                      /><span class="message-checkbox__btn"
-                        ><span
-                          class="message-checkbox__icon icon-telegram"
-                        ></span></span
-                      ><span class="message-checkbox__text-wrap"
-                        ><span class="message-checkbox__text"
-                          >Telegram</span
-                        ></span
-                      ></label
-                    >
+                    <label class="message-checkbox"><input class="message-checkbox__input js-check-order-popup" type="checkbox" value="Telegram" name="callback"><span class="message-checkbox__btn"><span class="message-checkbox__icon icon-telegram"></span></span><span class="message-checkbox__text-wrap"><span class="message-checkbox__text">Telegram</span></span></label>
                   </div>
                 </div>
               </div>
             </div>
             <div class="popup__col">
-              <button
-                class="popup__btn btn btn_blue js-button-order"
-                type="submit"
-                onclick="ym(7513753,'reachGoal','from-excursion-page'); return true;"
-              >
-                Оставить заявку
-              </button>
-              <p class="messenger__desc">
-                Нажимая на кнопку вы соглашаетесь на обработку персональных
-                данных
-              </p>
+              <button class="popup__btn btn btn_blue js-button-order" type="submit">Оставить заявку</button>
+              <p class="messenger__desc">Нажимая на кнопку вы соглашаетесь на обработку персональных данных</p>
             </div>
           </div>
         </form>
