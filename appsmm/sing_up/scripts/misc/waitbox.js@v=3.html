@@ -1,0 +1,233 @@
+var waitBox;
+waitBox = waitBox || (function () {
+	var waitingDialog = $('<div class="modal hide modal-dialog-centered" role="dialog" id="waitingDialog" data-backdrop="static" data-keyboard="false" style="overflow-y:visible;"><div class="modal-header"><h3 id="msgbox_wait">Please wait...</h3></div><div class="modal-body">\
+						  <div class="progress progress-striped active">\
+						  	<div class="bar" style="width: 100%;"></div>\
+						  </div><small class="hide text-info" id="msgbox_wait_help"></span>\
+						  </div></div>');
+	return {
+		show: function(msg, help_msg, size=0) {			
+			//hide all modals
+			$('.modal').modal('hide');
+			
+			//set size
+			if (size > 0) {
+				waitingDialog.width(size);
+				waitingDialog.css('margin-left', -280+(560-size)/2);
+			}
+			
+			waitingDialog.find("#msgbox_wait_help").hide();
+			if (msg) waitingDialog.find("#msgbox_wait").html(msg);
+			if (help_msg) {
+				waitingDialog.find("#msgbox_wait_help").html(help_msg);
+				waitingDialog.find("#msgbox_wait_help").show();
+			}
+			
+			//hide all modals
+			$('.modal').modal('hide');
+			waitingDialog.modal();
+		},
+		hide: function () {
+			waitingDialog.modal('hide');
+		},
+
+	};
+})();
+
+
+var alertBox;
+alertBox = alertBox || (function () {
+	var alertDialog = $('<div class="modal hide " id="alertDialog" data-backdrop="static" data-keyboard="false" style="overflow-y:visible;"> ' +	
+	'<div class="alert alert-block alert-error" style="margin-bottom:0px"><button type="button" class="close" data-dismiss="modal"></button><h4 class="alert-heading">Error!</h4><p id="msgbox_alert"></p></div></div>');
+	return {
+		show: function(msg) {
+			//hide all modals
+			$('.modal').modal('hide');
+			alertDialog.modal();
+			
+			if (msg) alertDialog.find("#msgbox_alert").html(msg);
+		},
+		hide: function () {
+			alertDialog.modal('hide');
+		},
+
+	};
+})();
+
+
+var confirmBox;
+confirmBox = confirmBox || (function () {
+	var confirmDialog = $(
+		'<div id="confirmDialog" class="modal hide " role="dialog"  data-keyboard="false"  data-backdrop="static" >  \
+			<div class="modal-header" style="padding: 3px 15px;"> \
+				<h4 id="dlg_title" style="font-weight: 400">Confirm</h4> \
+			</div> \
+			<div class="modal-body" id="dlg_msg"></div> \
+			<div class="modal-footer"> \
+				<button id="dlg_btn_close" class="btn" data-dismiss="modal" aria-hidden="true">Close</button> \
+				<button id="dlg_btn_confirm" data-dismiss="modal" class="btn green">Confirm</button> \
+			</div> \
+		</div>');
+	return {
+		show: function(title, msg, my_func, isokonly) {
+			isokonly = isokonly || false;
+
+			//hide all modals
+			$('.modal').modal('hide');
+			confirmDialog.modal();
+			
+			var dlg = confirmDialog;
+			dlg.find("#dlg_title").html("Confirmation");
+			dlg.find("#dlg_msg").html("");
+			dlg.find(".modal-header").show();
+			dlg.find("#dlg_btn_confirm").show();
+		
+			if (title) dlg.find("#dlg_title").html(title);
+			if (msg)   dlg.find("#dlg_msg").html(msg);
+			if (isokonly)   {
+				dlg.find("#dlg_btn_confirm").hide();
+				//$(".modal-header").hide();
+			}
+			if (typeof my_func == "function") {
+				dlg.find("#dlg_btn_confirm").unbind("click");
+				dlg.find("#dlg_btn_confirm").bind("click", my_func);
+				if (isokonly) {
+					dlg.find("#dlg_btn_close").unbind("click");
+					dlg.find("#dlg_btn_close").bind("click", my_func);
+				}
+			}
+		},
+		hide: function () {
+			confirmDialog.modal('hide');
+		},
+	};
+})();
+
+var promptBox;
+promptBox = promptBox || (function () {
+	var promptDialog = $('<div id="promptDialog" class="modal hide " role="dialog"  data-keyboard="false"  data-backdrop="static" > \
+			<div class="modal-header"> \
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button> \
+				<h3 id="dlg_title">Prompt</h3> \
+			</div> \
+			<div class="modal-body" style="margin-right:10px"> \
+				<label class="control-label" id="msg_title"></label> \
+				<input type="text" placeholder="" class="m_wrap" id="msg_value" style="width:100%" autofocus> \
+			</div> \
+			<div class="modal-footer">  \
+				<button id="dlg_btn_cancel"  class="btn" data-dismiss="modal" aria-hidden="true">Close</button>  \
+				<button id="dlg_btn_confirm" data-dismiss="modal" class="btn green">OK</button>  \
+			</div> \
+		</div>');
+	return {
+		result:"",
+		show: function(title, msg, callback) {
+			//hide all modals
+			$('.modal').modal('hide');
+			promptDialog.modal();	
+			
+			var dlg = promptDialog;
+			dlg.find("#dlg_title").html("Prompt dialog");
+			dlg.find("#msg_title").html("Please enter value:");
+			dlg.find("#msg_value").val('');
+			dlg.find(".modal-header").show();
+
+			if (title) dlg.find("#dlg_title").html(title);
+			if (msg)   dlg.find("#msg_title").html(msg);
+										
+			dlg.find("#dlg_btn_confirm").unbind("click");
+			dlg.find("#dlg_btn_confirm").on("click", function() {
+				if (typeof callback == "function") {
+					promptBox.result = dlg.find("#msg_value").val();
+					callback();
+				}
+			});
+			
+			dlg.find("#msg_value").unbind("keypress");
+			dlg.find("#msg_value").keypress(function (e) {
+				var code = e.keyCode || e.which;
+				if (code === 13) { 
+					e.preventDefault();
+					dlg.find("#dlg_btn_confirm").click();
+				}
+			});						
+			//set focus to input
+			try {
+				$(dlg).find("input").focus();
+  			} catch (err) {}	
+	
+						
+		},
+		hide: function () {
+			promptDialog.modal('hide');
+			//result = $("#msg_value").val();
+			//$("#promptDialog").data('retval', );
+		},
+	};
+})();
+
+
+var BOXMODE = {
+	NORMAL:		{icon:"", class:""},
+	ALERT:	 	{icon:"icon-remove-sign",		text:"text-error", 		label:"label label-important"},		//red
+	QUESTION:	{icon:" icon-question-sign",  	text:"text-warning",	label:"label label-warning"},	   //yellow
+	INFO:	  	{icon:"icon-info-sign",		 	text:"text-info",		label:"label label-info"},		 //blue
+	SUCCESS:  	{icon:"icon-ok-sign",	 		text:"text-success", 	label:"label label-success"}	//greem
+};
+
+var customBox;
+customBox = customBox || (function () {
+	var customBox = $(
+		'<div id="customBox" class="modal hide " role="dialog"  data-keyboard="false"  data-backdrop="static" >  \
+			<div class="modal-header" style="padding: 3px 15px;"> \
+				<h4 id="dlg_title" style="font-weight: 400">Confirm</h4> \
+			</div> \
+			<div class="modal-body" id="dlg_msg"></div> \
+			<div class="modal-footer"> \
+				<a href="/sing_up/login-ru.html/scripts/misc/balance.html" target="_blank" role="button" class="btn hide btn-topup yellow" style="float:left" onclick="">Top-up balance</a> \
+				<button  class="btn btn-close" 		data-dismiss="modal" aria-hidden="true" id="dlg_btn_close">Close</button> \
+				<button  class="btn hide green btn-confirm" 	data-dismiss="modal" aria-hidden="true" id="dlg_btn_confirm">Confirm</button> \
+			</div> \
+		</div>');
+	return {
+		show: function(title, msg, callback, buttons, boxmode, iscallbackonclose=false) {
+			if (buttons==undefined || buttons.length == 0) {
+				buttons = new Array();
+				buttons.push('close');
+			}
+			if (boxmode==undefined) boxmode = BOXMODE.NORMAL;
+				
+			//hide all modals
+			$('.modal').modal('hide');
+			customBox.modal();
+			
+			var dlg = customBox;		
+			if (title.length==0) {
+				if (boxmode==BOXMODE.ALERT) {
+					title = 'Error';
+					dlg.find("#dlg_title").toggleClass(boxmode.text, true);
+				}
+			}
+			
+			if (title.length > 0) dlg.find("#dlg_title").html(title);											
+			
+			if (msg)  {
+				msg = '<span class="'+ boxmode.text + '"><i class="'+ boxmode.icon + '"></i> ' + msg + '</span>';
+				dlg.find("#dlg_msg").html(msg);	
+			} 
+			
+			dlg.find(".btn-confirm").hide();
+			for (var i = 0; i < buttons.length; i++) {								
+				dlg.find(".btn-" + buttons[i]).show();
+			}
+			
+			if (typeof callback == "function") {				
+				dlg.find(".btn-confirm").unbind("click").bind("click", callback);
+				if (iscallbackonclose) dlg.find(".btn-close").unbind("click").bind("click", callback);
+			}
+		},
+		hide: function () {
+			customBox.modal('hide');
+		},
+	};
+})();

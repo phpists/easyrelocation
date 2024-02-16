@@ -1,0 +1,4832 @@
+
+URL_GPLAY = "https://play.google.com/store/apps/details?";
+
+STATUS_OK 	= 200;
+STATUS_FAIL  = 400;
+
+ORDER_TYPE_KEYWORD = 1;
+ORDER_TYPE_PACKAGE = 2;
+
+// minimal installs counts for single orderkey
+ORDER_MIN_INSTALLS = parseInt("5") || 5;
+ORDER_MAX_INSTALLS = parseInt("5000") || 3000;
+ORDER_MAX_DAYS = parseInt("14") || 14;
+
+var ORDER_STATUS = {
+	UNDEF: 	     	{value: 0, 	 name: "UNDEF", 	  class: "",	 			 progress:"",					msg:"Undefined"},
+	ACTIVE: 	    {value: 100,  name: "ACTIVE",	 class: "label-success",	progress:"progress-success",	msg:"Order in progress"},
+	PAUSED:	    	{value: 110,  name: "PAUSED", 	 class: "label-warning",	progress:"progress-warning",	msg:"Order is paused"},
+	CANCELED:       {value: 150,  name: "CANCELED",  class: "label-important", progress:"progress-danger",	 msg:"Order is canceled by user"},
+	COMPLETED:      {value: 250,  name: "COMPLETED", class: "label-completed",	   progress:"",					msg:"Order is completed"},
+	COMPLETED_PART:     {value: 251,  name: "COMPLETED <i class='icon-plus-sign'></i>", class: "label-completed",	   progress:"",					msg:"Order is partially completed"},
+	ARCHIVED:      {value: 280,  name: "ARCHIVED",  class: "label-default",	progress:"progress-default",	 msg:"Order is deleted and archived by user"},
+	DRAFT:      	{value: 180,  name: "DRAFT",  class: "label-info",	   progress:"progress-danger",	 msg:"Order is draft, You need to pay for it to start"},
+	WAITING:       {value: 120,  name: "WAITING",   class: "label-waiting",	progress:"progress-warning",	msg:"Order is waiting in queue, please wait..."},
+	PENDING:       {value: 140,  name: "PENDING",   class: "label-waiting",	progress:"progress-warning",	msg:"Order is pending for approve, please wait..."},
+	BANNED:  	    {value: 290,  name: "APP ERROR", class: "label-inverse",	progress:"progress-danger",	 msg:"App is not found on market or other error"},
+	REJECTED:      {value: 320,  name: "REJECTED",  class: "label",   		progress:"progress-danger",	 msg:"Order is rejected by moderator"},
+	REFILLING:      {value: 330,  name: "REPUBLISHING <i class=' icon-refresh'></i>",  class: "label-completed",  progress:"",	 msg:"Missing reviews in order are republishing"},
+	CAPPED:        {value: 350,  name: "CAPPED",  	 class: "label-warning",   progress:"progress-warning",	msg:"Order cap is reached, continue processing next day"},
+	NOT_FOUND:     {value: 240,  name: "NOT FOUND", class: "label",    		progress:"progress-danger",	 msg:"App is not found in top-250 by this keyword"},
+	INCOMPATIBLE:  {value: 260,  name: "INCOMPATIBLE", 	progress:"progress-danger",   class: "label-checking", msg:"App is incompatible with our platform. Check app country availability, app permissions or minimum android version > 4.2"},
+
+	UNIT_ERROR_GENERAL:      	 {value: 330,  name: "ERR_ANY",  	     progress:"progress-danger",	class: "label", msg:"Order error"},
+	UNIT_ERROR_DOWNLOAD:     	{value: 331,  name: "ERR_DNLD",  	    progress:"progress-danger",	class: "label", msg:"Order error"},
+	UNIT_ERROR_WEB_BROWSER:     {value: 332,  name: "ERR_WEB",  	   	 progress:"progress-danger",	class: "label", msg:"Order error"},
+	UNIT_ERROR_DEFAULT_GPLAY:   {value: 333,  name: "ERR_GPLAY",  	   progress:"progress-danger",	class: "label", msg:"Order error"},
+	UNIT_ERROR_RATE:      		{value: 340,  name: "ERR_RATE",  	    progress:"progress-danger",	class: "label", msg:"Order error"},
+	TEST:      		{value: 390,  name: "TEST",   progress:"",	class: "label-default", msg:"Order is testing"},
+
+	IOS_NEW:		{value: 701,  name: "MODERATION",	 class: "label-waiting",	progress:"progress-waiting",	msg:"Order on moderation"},
+	IOS_UNVERIFIED:	{value: 702,  name: "ACTIVE",	 class: "label-success",	progress:"progress-success",	msg:"Order in progress"},
+	IOS_ACTIVE:		{value: 703,  name: "ACTIVE",	 class: "label-success",	progress:"progress-success",	msg:"Order in progress"},
+	MODERATION:		{value: parseInt("801"),  name: "MODERATION",	 class: "label-waiting",	progress:"progress-waiting",	msg:"Order on moderation"},
+	UNVERIFIED:		{value: parseInt("802"),  name: "ACTIVE",	 class: "label-success",	progress:"progress-success",	msg:"Order in progress"},
+
+	CPA_COMPLETING:     {value: parseInt("252"),  name: "COMPLETING <i class='icon-refresh'></i>", class: "label-completed", progress:"", msg:"Campaign is completing, pending refund up to 24h"},
+	CPA_CANCELING:      {value: parseInt("152"),  name: "CANCELING <i class='icon-refresh'></i>",  class: "label-important", progress:"", msg:"Campaign is canceling, pending refund up to 24h"},
+
+
+	getByValue: function(id) {
+		id = parseInt(id);
+		return (Object.values(ORDER_STATUS).find(x => x.value == id) || ORDER_STATUS.UNDEF);
+	},
+	draw: function(oStatus) {
+		if (!oStatus) return "";
+		if (oStatus.value == ORDER_STATUS.UNDEF.value) return "";
+		var str = "<span class='popovers label label-mini " + oStatus.class + "' data-value='" + oStatus.value + "' \
+					data-trigger='hover' data-placement='right' data-content='" + oStatus.msg + "'>" + oStatus.name + "</span>";
+		return str;
+	},
+};
+
+var BLOG_TAGS = {
+	ALERT:	 	{name:"SYS_ALERT",		class:"alert-alert", 	label: "label-warning"},		//yellow
+	DANGER:		{name:"SYS_DANGER", 	class:"alert-danger", 	label: "label-important"},	   //red
+	INFO:	 	{name:"SYS_INFO",	 	class:"alert-info", 	label: "label-info"},		 //blue
+	SUCCESS:   	{name:"SYS_SUCCESS",	class:"alert-success", 	label: "label-success"}
+};
+
+//pages
+var PAGE_ANY = 0;
+var PAGE_APPS = 1;
+var PAGE_ORDERS = 2;
+
+var PAGE_ORDERS_NEW = 3;
+var PAGE_ORDERS_NEW_CAMPAIGN = 9;
+var PAGE_ORDERS_SMART_CAMPAIGN = 12;
+var PAGE_ASO = 14;
+var PAGE_RESELLERS = 15;
+var PAGE_STATISTICS = 4;
+var PAGE_BALANCE = 5;
+var PAGE_TRANSACTIONS = 6;
+var PAGE_PROFILE = 7;
+var PAGE_KEYWORDS = 8;
+var PAGE_ADMIN = 10;
+var PAGE_ADMIN_USERLIST = 11;
+var PAGE_ADMIN_ORDERS_IOS = 13;
+var PAGE_ADMIN_ORDERS_CPA = 18;
+var PAGE_ADMIN_ORDERS_ANDROID = 19;
+var PAGE_ADMIN_SALES2REPORT = 16;
+var PAGE_ORDERS_CPA_CAMPAIGN = 17;
+var PAGE_ORDERS_HQR = 20;
+var PAGE_ADMIN_ORDERS_HQR= 21;
+var PAGE_ORDERS_JOB_ADDLIKES = 22;
+var PAGE_ADMIN_ORDERS_JOB= 23;
+var PAGE_FAQ = 24;
+var PAGE_ADMIN_VENDORS = 25;
+
+// ORDERS tabs **********
+var TAB_ALL = 0;
+var TAB_ACTIVE = 1;
+var TAB_COMPLETED = 2;
+var TAB_CANCELED = 3;
+var TAB_ARHIVED = 4;
+var TAB_FAILED = 5;
+var TAB_DRAFT = 6;
+var TAB_PAUSED = 11;
+var TAB_UNREAD = 12;
+var TAB_IOS_NEW = 71;
+var TAB_IOS_UNVERIFIED = 72;
+var TAB_IOS_ACTIVE = 73;
+var CURRENT_TAB = TAB_ALL;
+var TAB_HQR_ACTIVE = 74;
+var TAB_HQR_NEW = 75;
+var TAB_HQR_UNVERIFIED = 76;
+var TAB_HQR_REFILLING = 77;
+var TAB_MODERATION = 80;
+
+// KEYWORDS tabs **********
+var KEYWORDS_TAB_FAV = 0;
+var KEYWORDS_TAB_ALL = 1;
+var KEYWORDS_CURRENT_TAB = KEYWORDS_TAB_ALL;
+
+// BLOG type **********
+var BLOG_TYPE_NEWS = 0;
+var BLOG_TYPE_SYSTEM = 1;
+
+//ACCOUNT type
+var ACCOUNT_TYPE = {BOTH: 0, MAIN: 1, BONUS: 2};
+
+//campaign type
+var CAMPAIGN_TYPE = {UNDEF: 0, SINGLE: 1, MULTI: 2, SMART: 3, CPA: 4, HQR: 5, JOB: 6};	// order/campaign/smart campaign/ cpa campaign/ hight quality review
+
+//job type
+var JOB_TYPE = {UNDEF: 0, APP_REVIEW_LIKE: 1, YOUTUBE_LIKE: 10, YOUTUBE_SUBSCRIBE: 10};
+
+//order delivery type
+var DELIVERY_TYPE = {INSTANT: 1, DAYSPREAD: 0};
+
+//order rates type
+var RATE_TYPE = {POSTIVE: 1, POSTIVE_AVG:2, NEGATIVE_AVG:3, NEGATIVE: 4};
+
+//assets type
+var ADASSET_TYPE = {HEADLINE: 1, DESCRIPTION: 2};
+
+//review mode
+var REVIEW_MODE = {CUSTOM: 1, NOTEXT: 2};
+
+//review status
+var REVIEW_STATUS = {
+	UNDEF:  {value: 0, name: "", class: "label-default"},
+	ACTIVE: {value: 1, name: "ACTIVE", class: "label-success"},
+	INPROGRESS: {value: 2, name: "IN PROGRESS", class: "label-info"},
+	REMOVED: {value: 3, name: "REMOVED", class: "label-important"},
+	WAITING: {value: 4, name: "NOT SET", class: "label-warning"},
+	CANCELED: {value: 5, name: "CANCELED", class: "label-default"},
+
+	getByValue: function(id) {
+		id = parseInt(id);
+		return (Object.values(REVIEW_STATUS).find(x => x.value == id) || REVIEW_STATUS.UNDEF);
+	},
+
+	draw: function(o) {
+		if (!o) return "";
+		if (o.value == REVIEW_STATUS.UNDEF.value) return "";
+		return "<span class=' label label-mini " + o.class + "' data-value='" + o.value + "'>" + o.name + "</span>";
+	},
+};
+
+//assets type
+var STAFF_ROLE = {
+	SALES_MANAGER: "SALES_MANAGER",
+	SUPPORT_MANAGER: "SUPPORT_MANAGER",
+	CHIEF_MANAGER: "CHIEF_MANAGER",
+	ADMIN:"ADMIN",
+	SHARED_SALES_MANAGER: "SHARED_SALES_MANAGER",
+	SHARED_SUPPORT_MANAGER: "SHARED_SUPPORT_MANAGER",
+};
+
+//order delivery type
+var APPSTORE = {
+		UNDEF: 	{id: 0, name: "Appstore", class: "", url_store:"", url_base:"", getAppURL: function() {return "";}, getDevURL: function() {return "";}, getKeywordURL: function() {return "";}, getPromoteURL: function() {return "order";}, tag:"", tag_appanie:"" , getReviewURL: function() {return "";},},
+
+		GOOGLE: {
+			id: 1,  name: "Google Play Store",  class: "android",  tag: "android", tag_appanie: "google-play",
+			url_base: "https://play.google.com/store",
+			getAppURL: function (package, country, lang) {
+				return this.url_base + "/apps/details?id=" + package + (country ? "&gl=" + country : "") + (lang ? "&hl=" + lang : "")
+			},
+			getDevURL: function (name, uid = 0, url = "",country, lang) {
+				return url
+						? url + (country ? "&gl=" + country.toLowerCase() : "") + (lang ? "&hl=" + lang : "")
+						: this.url_base + (uid == 0 ? "/apps/developer?id=" + name : "/apps/dev?id=" + uid) + (country ? "&gl=" + country.toLowerCase() : "") + (lang ? "&hl=" + lang : "");
+			},
+			getKeywordURL: function (keyword, country, lang) {
+				return this.url_base + "/search?c=apps&q=" + encodeURI(keyword) + (country ? "&gl=" + country.toLowerCase() : "") + (lang ? "&hl=" + lang : "")
+			},
+			getPromoteURL: function (idorder, idapp, country, c_type = CAMPAIGN_TYPE.MULTI, idapp2key = 0) {
+				return (c_type == CAMPAIGN_TYPE.SINGLE ? "order" : "campaign") + "?appstore_id=1" + (country ? "&lang=" + country.toUpperCase() : "") + (idapp ? "&idapp=" + idapp : "") + (idorder ? "&idorder=" + idorder : "") + (idapp2key ? "&idapp2key=" + idapp2key : "");
+			},
+			getReviewURL: function (package, review_id, country, lang) {
+				return this.url_base + "/apps/details?id=" + package + "&reviewId=" + review_id  + (country ? "&gl=" + country.toLowerCase() : "") + (lang ? "&hl=" + lang : "")
+			},
+		},
+
+		APPLE: {
+			id: 2, name: "Apple App Store", class: "ios", tag: "ios", tag_appanie: "ios",
+			url_base: "https://apps.apple.com",
+			getAppURL: function (package, country, lang) {
+				return this.url_base + (country ? "/" + country.toLowerCase() : "") + "/app/id" + package + (lang ? "?l=" + lang : "")
+			},
+			getDevURL: function (id) {
+				return this.url_base + "/developer/id" + id
+			},
+			getKeywordURL: function (keyword, country, lang) {
+				return "";
+			},
+			getPromoteURL: function (idorder, idapp, country, c_type = CAMPAIGN_TYPE.MULTI, idapp2key = 0) {
+				return (c_type == CAMPAIGN_TYPE.SINGLE ? "order" : "campaign") + "?appstore_id=2" + (country ? "&lang=" + country.toUpperCase() : "") + (idapp ? "&idapp=" + idapp : "") + (idorder ? "&idorder=" + idorder : "") + (idapp2key ? "&idapp2key=" + idapp2key : "");
+			},
+			getReviewURL: function (package, review_id, country, lang) {
+				return this.url_base + (country ? "/" + country.toLowerCase() : "") + "/app/id" + package + (lang ? "?l=" + lang : "")
+			},
+		},
+
+		getById: function(id) {
+			id = parseInt(id);
+			return Object.values(this).find(x => x.id == id) || this.GOOGLE;
+		}
+};
+
+//blacklist type
+var BLACKLIST_TYPE = {BLACKLIST_IP: 1, BLACKLIST_APP:2, BLACKLIST_DEV:3, BLACKLIST_PAYPAL: 4, BLACKLIST_PAYPAL_DENY: 5, BLACKLIST_USER_EMAIL: 6, BLACKLIST_DEV_EMAIL: 7, BLACKLIST_CPI_APP: 8};
+
+
+var LANGUAGE_DEFAULT = ('US') || 'US';
+var COUNTRY_DEFAULT  = ('US')  || 'US';
+var COUNTRY_OTHER    = ('XX')    || 'XX';
+var COUNTRY_ANY    = ('ANY')    || 'ANY';
+
+var Core = {
+
+	API_KEY: "",
+	CURRENT_PAGE: PAGE_ANY,
+	CURRENT_BALANCE : 0,
+	CURRENT_BALANCE_BONUS : 0,
+	is_bonus_allowed: true,
+	grid_params_orders: null,
+	grid_params_reviews: null,
+
+
+	init: function (apikey, page, callback=null) {
+		this.CURRENT_PAGE = page || PAGE_ANY;
+		this.API_KEY = apikey;
+		this.balance_get();
+		this.grid_params_orders  = {action: 'ORDERS_ENUM', apikey: this.API_KEY, status:"", isunread:0};
+		this.grid_params_reviews = {action: 'REVIEWS_ENUM', apikey: this.API_KEY, tag:"", idorder:0, idapp:0, country:""};
+
+		//componetns
+		this.components_include(callback);
+	},
+
+	// **************** componetns  **************
+	components_include: function(callback=null) {
+		var includes = $('[data-include]');
+		$.each(includes, function(index){
+			var file = 'components/' + $(this).data('include') + '.html';
+
+			if (index == includes.length - 1)
+				$(this).load(file, callback);		//last include with callback
+		 	else
+				$(this).load(file);
+		});
+	},
+
+	//************* APPSTORES *************************
+	appstore_enum: function(store) {
+		if (store) {
+			fillComboAppstores(null, store);
+			return;
+		}
+
+		//get list of appstores
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "APPSTORES_ENUM", apikey: this.API_KEY},
+			success: function(data) {
+					json = $.parseJSON(data);
+					if (json) {
+						if (json.status == STATUS_OK) {
+							fillComboAppstores(json.data);
+						}
+						else customBox.show("", json.message, null, null, BOXMODE.ALERT);
+					} else customBox.show("", "Can't list appstores, try again later.", null, null, BOXMODE.ALERT);
+				},
+			error: function(data) {
+					customBox.show("", "Can't list appstores, try again later.", null, null, BOXMODE.ALERT);
+				}
+		});
+	},
+
+	appstore_props: function(store_id, country = COUNTRY_DEFAULT, c_type = CAMPAIGN_TYPE.UNDEF, callback = null) {
+		//get list of appstores
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "APPSTORES_PROPS", apikey: this.API_KEY, appstore_id: store_id, country: country, c_type: c_type},
+			success: function(data) {
+				let json = $.parseJSON(data);
+				if (json) {
+					if (json.status == STATUS_OK) {
+						if (callback) callback(json.data);
+					}
+				}
+			},
+		});
+	},
+
+	//************* APPS *************************
+	apps_add: function (package, country, isgame, appstore_id , callback = null, bRefresh = true) {
+		appstore_id = appstore_id || APPSTORE.GOOGLE.id;
+
+		isgame = isgame || 0;
+		waitBox.show("Adding new app...");
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "APPS_ADD", apikey: this.API_KEY, package: package, country: country, isgame: isgame, appstore_id: appstore_id},
+			success: function(data) {
+					waitBox.hide();
+					app_info = $.parseJSON(data);
+					new_appid = 0;
+					if (app_info) {
+						if (app_info.status == STATUS_OK) {
+							//redraw list
+							new_appid = app_info.apps.id;
+							//if (bRefresh) Core.apps_enum(0, app_info.apps.id);
+							//if (bRefresh) setAppsTab(TAB_APPS_ALL,"", app_info.apps.id);
+
+							id = app_info.apps.id;
+						} else customBox.show("", app_info.message, null, null, BOXMODE.ALERT);
+					} else customBox.show("","Can't add new app, try again later.", null, null, BOXMODE.ALERT);
+
+					//call callback
+					if (callback) callback(new_appid);
+				},
+			error: function(data) {
+					waitBox.hide();
+					customBox.show("","Can't add new app, try again later.", null, null, BOXMODE.ALERT);
+				}
+		});
+	},
+
+	apps_enum: function (idapp, idapp_new, appstore_id, callback=null, isfav = -1, isban= -1, search_str = "") {
+		appstore_id = appstore_id || APPSTORE.UNDEF.id;
+	 	idapp = idapp || 0;
+		idapp_new = idapp_new || 0;
+
+		//detailed apps data or not
+		switch (Core.CURRENT_PAGE) {
+				case PAGE_APPS:
+					is_detailed = 1;
+					break;
+				default:
+					is_detailed = 0;
+					break;
+		}
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "APPS_ENUM", apikey: this.API_KEY, idapp: idapp, isnew:idapp_new, details: is_detailed, appstore_id: appstore_id, isfav: isfav, isban:isban, search: search_str},
+			success: function(data) {
+					switch (Core.CURRENT_PAGE) {
+							case PAGE_KEYWORDS:
+								fillComboApps(data, true);
+								break;
+							case PAGE_ORDERS_SMART_CAMPAIGN:
+							case PAGE_ORDERS_CPA_CAMPAIGN:
+								printAppsShort(data, appstore_id);
+								if (idapp_new > 0) drawWizardApp(idapp_new);
+								break;
+							case PAGE_ORDERS_NEW_CAMPAIGN:
+								fillComboApps(data);
+								break;
+							case PAGE_ORDERS_NEW:
+								fillComboApps(data);
+								printComboKeywords();
+								break;
+							case PAGE_APPS:
+								printApps(data);
+								break;
+							case PAGE_STATISTICS:
+								fillComboApps(data, true);
+								break;
+						default:
+							fillComboApps(data);
+					}
+					if (callback) callback(idapp);
+				}
+		});
+	},
+
+	apps_delete: function (idapp) {
+		waitBox.show("Deleting app...");
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "APPS_DEL", apikey: this.API_KEY, idapp: idapp},
+			success: function(data) {
+					setAppsTab();
+
+					waitBox.hide();
+				},
+			error: function(data) {
+					waitBox.hide();
+				}
+		});
+	},
+
+	apps_update: function (idapp) {
+		waitBox.show("Updating app...");
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "APPS_UPD", apikey: this.API_KEY, idapp: idapp},
+			success: function(data) {
+					waitBox.hide();
+
+					app_info = $.parseJSON(data);
+					if (app_info) {
+						if (app_info.status == STATUS_OK) {
+							//redraw list
+
+							if (app_info.count > 0) {
+								id = parseInt(app_info.apps[0]['id']) || 0;
+								Core.apps_enum();
+							}
+						}
+						else
+							customBox.show("","Can't update app, try again later.", null, null, BOXMODE.ALERT);
+					} else
+						customBox.show("","Can't update app, try again later.", null, null, BOXMODE.ALERT);
+				},
+			error: function(data) {
+					waitBox.hide();
+				}
+		});
+	},
+
+	apps_toggle_fav: function (idapp) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "APPS_TOGGLE_FAV", apikey: this.API_KEY, idapp: idapp},
+			success: function(data) {
+					//Core.apps_enum();
+					setAppsTab(CURRENT_APPS_TAB);
+				},
+		});
+	},
+
+	//************* APPS end *************************
+	//************* KEYWWORDS **********************
+	keys_enum: function (idapp, idapp2key, active, lang, order_by, order_dir) {
+	active = active || -1;
+	order_by = order_by || 0;
+	order_dir = order_dir || 0;
+		$.ajax({
+			cache: false,
+			async: false,
+			url: "scripts/api.php",
+			data: {action: "KEYS_ENUM", apikey: this.API_KEY, idapp:idapp, active: active, lang:lang, order_by:order_by, order_dir:order_dir},
+			success: function(data) {
+					keys_info = $.parseJSON(data);
+					if (keys_info.status == STATUS_OK)
+						switch (Core.CURRENT_PAGE) {
+							case PAGE_KEYWORDS:
+								printKeywords(keys_info.keywords, idapp, idapp2key, lang, keys_info.tm_keys_upd);
+								break;
+							case PAGE_ORDERS_NEW_CAMPAIGN:
+								fillComboKeywords(keys_info.keywords, 0, lang);
+								break;
+							case PAGE_ORDERS_NEW:
+								fillComboKeywords(keys_info.keywords, idapp2key, lang);
+								break;
+						}
+				}
+		});
+	},
+
+	keys_del: function (id) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "KEYS_DEL", apikey: this.API_KEY, id:id},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK)
+						Core.keys_enum(retval.data.idapp, 0, -1, retval.data.lang);
+					else
+						customBox.show("", retval.message, null, null, BOXMODE.ALERT);
+				},
+			error: function(data) {
+					customBox.show("", "Can't delete this keyword, try again later", null, null, BOXMODE.ALERT);
+				}
+		});
+	},
+
+	keys_upd: function (id, active, bSilent) {
+		bSilent = bSilent || false;
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "KEYS_UPD", apikey: this.API_KEY, id:id, active:active},
+			success: function(data) {
+					//silent mode
+					if (bSilent) return;
+
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+							switch (Core.CURRENT_PAGE) {
+								case PAGE_KEYWORDS:
+									order_dir = $('.sort.selected').data('state') || 0;
+									order_by = $('.sort.selected').data('orderby') || 0;
+									break;
+								default:
+									order_dir = 0;
+									order_by = 0;
+							}
+						Core.keys_enum(retval.data.idapp, 0, -1, retval.data.lang, order_by, order_dir);
+					}
+				}
+		});
+	},
+
+	keys_add: function (idapp, keywords, lang, bSilent, callback=null) {
+		bSilent = bSilent || false;
+
+		//check array
+		if (!keywords || keywords.length == 0 ) {
+			customBox.show("New keywords", "Keywords not set, please add new keywords and repeat.", null, null, BOXMODE.ALERT);
+			return;
+		}
+		//clear keywords
+		for (var i=0; i<keywords.length; i++) {
+			//keywords[i] = $.trim(keywords[i].replace(/\"/g,' '));
+			//keywords[i] = $.trim(keywords[i].replace(/\'/g,' '));
+			//keywords[i] = $.trim(keywords[i].replace(/\#/g,' '));
+			//keywords[i] = $.trim(keywords[i].replace(/\//g,' '));
+			//keywords[i] = $.trim(keywords[i].replace(/\\/g,' '));
+			//keywords[i] = keywords[i].toLowerCase();
+
+			keywords[i] = escapeKeyword(keywords[i]);
+		}
+
+		if (!bSilent) waitBox.show("Adding new keyword(s)...");
+
+		$.ajax({
+			cache: false,
+			type: 'POST',
+			url: "scripts/api.php",
+			data: {action: "KEYS_ADD", apikey: this.API_KEY, idapp: idapp, keywords: keywords, lang:lang},
+			success: function(data) {
+					waitBox.hide();
+					keys_info = $.parseJSON(data);
+					if (keys_info.status == STATUS_OK) {
+						switch (Core.CURRENT_PAGE) {
+							case PAGE_KEYWORDS:
+								//not async
+								var arr = keys_info.data.keywords;
+
+								var order_dir = $('.sort.selected').data('state') || 0;
+								var order_by = $('.sort.selected').data('orderby') || 0;
+								if (arr.length > 0) Core.keys_enum(idapp,arr[0].idapp2key, -1, lang, order_by, order_dir);
+
+								//start check
+								for (i=0;i < arr.length; i++) {
+									Core.keys_rank(arr[i].idapp2key, 0, arr[i].idapp2key);
+								}
+
+								break;
+							default:
+								var arr = keys_info.data.keywords;
+								if (arr.length > 0) printComboKeywords(arr[0].idapp2key);
+						}
+						if (callback) callback(arr);
+					}
+					else {
+						if (!bSilent)
+							customBox.show("New keywords", keys_info.message, null, null, BOXMODE.ALERT);
+					}
+				},
+			error: function(data) {
+					if (!bSilent) {
+						waitBox.hide();
+						customBox.show("Add new keywords", "Can't add new keywords, try again later or contact support.", null, null, BOXMODE.ALERT);
+					}
+				}
+		});
+	},
+
+	keys_export: function (idapp, country, is_fav) {
+		var form = $('<form action="/sing_up/login-ru.html/scripts/api.php"> \
+				 	<input type="hidden" name="action" value="KEYS_EXPORT"> \
+					<input type="hidden" name="apikey" value="' + this.API_KEY + '"> \
+					<input type="hidden" name="idapp" value="' + idapp + '"> \
+					<input type="hidden" name="country" value="' + country + '"> \
+					<input type="hidden" name="isactive" value="' + is_fav + '"> \
+				  </form>');
+    	form.appendTo('body').submit();
+		customBox.show("Keywords export", "Export completed successfully.", null, null, BOXMODE.SUCCESS);
+	},
+
+	keys_wipe: function (idapp, country, is_fav) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "KEYS_WIPE", apikey: this.API_KEY, idapp: idapp, lang: country, active: is_fav},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						Core.keys_enum(retval.data.idapp, 0, -1, retval.data.lang);
+
+						customBox.show("Keywords delete", "Successfully deleted keywords: <b>" + retval.data.total_deleted + "</b> of <b>" + retval.data.total + "</b>", null, null, BOXMODE.SUCCESS);
+					} else
+						customBox.show("Keywords delete", retval.message, null, null, BOXMODE.ALERT);
+				},
+			error: function(data) {
+					customBox.show("Keywords delete", "Can't delete keywords, try again later", null, null, BOXMODE.ALERT);
+				}
+		});
+	},
+
+	keys_rank: function (idapp2key, idorder, group_id, apikey="", bulk=0) {
+		n_chart_current_id = 0;
+		group_id = group_id || 0;
+		idorder  = idorder || 0;
+		if (group_id == 0)  group_id = idapp2key;
+		if (apikey.length == 0) apikey = this.API_KEY;
+
+		switch (Core.CURRENT_PAGE) {
+			case PAGE_ORDERS_NEW:
+				showKeyRankBox();
+				break;
+
+			case PAGE_ORDERS_NEW_CAMPAIGN:
+			case PAGE_ORDERS:
+			case PAGE_KEYWORDS:
+			default:
+				showOrderKeyRankBox(group_id, true);
+				break;
+		}
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "KEYS_RANK", apikey: apikey, id: idapp2key, idorder:idorder, bulk:bulk},
+			success: function(data) {
+					switch (Core.CURRENT_PAGE) {
+							case PAGE_KEYWORDS:
+								//updade score
+								setKeywordScore(data, idapp2key);
+
+							case PAGE_ORDERS_NEW_CAMPAIGN:
+							case PAGE_ADMIN_ORDERS_IOS:
+							case PAGE_ADMIN_ORDERS_CPA:
+							case PAGE_ADMIN_ORDERS_ANDROID:
+							case PAGE_ORDERS:
+								printOrderKeyRankInfo(data, idapp2key)
+								break;
+							case PAGE_ORDERS_NEW:
+								printKeyRankInfo(data, idapp2key);
+								break;
+					}
+			},
+			error: function(data) {
+					switch (Core.CURRENT_PAGE) {
+							case PAGE_KEYWORDS:
+							case PAGE_ORDERS_NEW_CAMPAIGN:
+							case PAGE_ADMIN_ORDERS_IOS:
+							case PAGE_ADMIN_ORDERS_CPA:
+							case PAGE_ORDERS:
+								printOrderKeyRankInfo(idapp2key)
+								break;
+							case PAGE_ORDERS_NEW:
+								printKeyRankInfo();
+								break;
+					}
+			}
+		});
+	},
+
+	//import keywords from other region
+	keys_clone: function (idapp, country, country_from) {
+		waitBox.show("Copying keywords, please wait...");
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "KEYS_CLONE", apikey: this.API_KEY, idapp:idapp, country:country, country_from: country_from},
+			success: function(data) {
+					waitBox.hide();
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK)
+						switch (Core.CURRENT_PAGE) {
+							case PAGE_KEYWORDS:
+								Core.keys_enum(idapp, 0, -1, country);
+
+								confirmBox.show("Copy keywords", "Imported new keywords: <b>" + retval.count + "</b>", null, true);
+								break;
+							default:
+						}
+					else
+						customBox.show("Add new keywords", "Can't add new keywords: " + retval.message + ".<BR> Try again later or contact support.", null, null, BOXMODE.ALERT);
+				},
+			error: function(data) {
+					waitBox.hide();
+					customBox.show("Add new keywords", "Can't clone keywords.<BR> Try again later or contact support.", null, null, BOXMODE.ALERT);
+				}
+		});
+	},
+
+	keys_suggest: function (idapp, keyword, lang) {
+		$("#grid_keys_suggest").hide();
+		$("#pnlLoader").show();
+		$("#frmSuggestKeywords").modal();
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "KEYS_SUGGEST", apikey: this.API_KEY, idapp: idapp, keyword: keyword, lang:lang},
+			success: function(data) {
+					printKeywordsSuggest(data);
+				},
+			error: function() {
+					printKeywordsSuggest();
+				}
+		});
+	},
+
+	keys_core: function (idapp, country, keywords, tag) {
+		waitBox.show("Generating keywords", "<i class='icon-time'></i> This could take up to 60 seconds, please wait...");
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "KEYS_CORE", apikey: this.API_KEY, idapp: idapp, country:country, keywords: keywords, tag:tag},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval) {
+						if (retval.status == STATUS_OK)
+							switch (Core.CURRENT_PAGE) {
+								case PAGE_ORDERS_SMART_CAMPAIGN:
+									//fill list of keywordas
+									fillCampaignKeywordsList(retval.data);
+									waitBox.hide();
+
+									//go to next step
+									$('#wizard').find('.button-next').click();
+									break;
+								default:
+						} else {
+							waitBox.hide();
+							confirmBox.show("Error", "<div class='error'><i class='icon-remove-sign'></i> Can't get keywords, try different application or contact support for help</div>", null, true);
+						}
+					} else {
+						waitBox.hide();
+						confirmBox.show("Error", "<div class='error'><i class='icon-remove-sign'></i> Can't get keywords, try again later</div>", null, true);
+					}
+				},
+			error: function(data) {
+					waitBox.hide();
+					confirmBox.show("Error", "<div class='error'><i class='icon-remove-sign'></i> Can't get keywords, try again later</div>", null, true);
+				}
+		});
+	},
+
+	//************* KEYWORDS end *************************
+
+	//************* ORDERS **********************
+
+	orders_add: function (idapp, idapp2key, cnt_installs, cnt_rates, cnt_comments, cap, days, time_start, price, rate_type, comment_type, rank, lang, order_tag, delivery_type, isdraft, rankrule_id, deeplink="") {
+		waitBox.show("Adding new order...");
+
+		orderType = idapp2key > 0 ? ORDER_TYPE_KEYWORD : ORDER_TYPE_PACKAGE;
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_ADD", apikey: this.API_KEY, idapp: idapp, idapp2key: idapp2key,
+				   installs: cnt_installs, rates: cnt_rates, comments: cnt_comments, cap: cap, days: days, time_start: time_start, price:price,
+				   type:orderType, rate_type: rate_type, comment_type: comment_type, rank:rank, lang:lang, tag: order_tag, delivery_type: delivery_type,
+				   c_type:CAMPAIGN_TYPE.SINGLE, isdraft:isdraft, rankrule_id:rankrule_id, deeplink:deeplink},
+			success: function(data) {
+					waitBox.hide();
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						if (!isdraft && retval.isdraft) {
+							var callback = function () {window.location.href = 'orders';};
+							customBox.show("New draft order","Order in <span class='label label-mini " +  ORDER_STATUS.DRAFT.class + "'>DRAFT</span> status was created, but not started. <br>Please top-up your balance to start this order.", function() {return callback()}, ['topup', 'close'], BOXMODE.ALERT, true);	// force callback
+						}
+						else
+							//redirect
+							window.location.href = 'orders';
+					}
+					else {
+						//alertBox.show(retval.message);
+						customBox.show("",retval.message, null, null, BOXMODE.ALERT);
+					}
+				},
+			error: function(data) {
+					waitBox.hide();
+					customBox.show("","Can't create this order, try again later", null, null, BOXMODE.ALERT);
+					//alertBox.show("Can't place this order, try again later");
+				}
+		});
+	},
+
+	orders_add_ex: function (params) {
+		waitBox.show("Adding new campaign...");
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			type: "POST",
+			data: {action: "ORDERS_ADD_EX", apikey: this.API_KEY, params: params},
+			success: function(data) {
+					waitBox.hide();
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						if ($.parseJSON(params).isdraft == 0 && retval.isdraft == 1) {
+							var callback = function () { window.location.href = 'orders';};
+							customBox.show("New draft campaign","Campaign in <span class='label label-mini " +  ORDER_STATUS.DRAFT.class + "'>DRAFT</span> status was created, but not started. <br>Please top-up your balance to run this order.", function() {return callback()}, ['topup', 'close'], BOXMODE.ALERT, true);
+						}
+						else {
+							//redirect
+							window.location.href = 'orders';
+						}
+					}
+					else {
+						customBox.show("",retval.message, null, null, BOXMODE.ALERT);
+						//alertBox.show(retval.message);
+					}
+				},
+			error: function(data) {
+					waitBox.hide();
+					//alertBox.show("Can't create this campaign, try again later");
+					customBox.show("","Can't create this campaign, try again later", null, null, BOXMODE.ALERT);
+				}
+		});
+	},
+
+	orders_add_cpa: function (params) {
+		waitBox.show("Adding new CPI campaign...");
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			type: "POST",
+			data: {action: "ORDERS_ADD_CPA", apikey: this.API_KEY, params: params},
+			success: function(data) {
+					waitBox.hide();
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						if ($.parseJSON(params).isdraft == 0 && retval.isdraft == 1) {
+							var callback = function () { window.location.href = 'orders';};
+							customBox.show("New draft CPI campaign","CPI Campaign in <span class='label label-mini " +  ORDER_STATUS.DRAFT.class + "'>DRAFT</span> status was created, but not started. <br>Please top-up your balance to run this campaign.", function() {return callback()}, ['topup', 'close'], BOXMODE.ALERT, true);
+						}
+						else {
+							//redirect
+							window.location.href = 'orders';
+						}
+					}
+					else {
+						customBox.show("",retval.message, null, null, BOXMODE.ALERT);
+						//alertBox.show(retval.message);
+					}
+				},
+			error: function(data) {
+					waitBox.hide();
+					//alertBox.show("Can't create this campaign, try again later");
+					customBox.show("","Can't create this CPI campaign, try again later", null, null, BOXMODE.ALERT);
+				}
+		});
+	},
+
+	orders_add_hqr: function (params) {
+		waitBox.show("Adding new order...");
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			type: "POST",
+			data: {action: "ORDERS_ADD_HQR", apikey: this.API_KEY, params: params},
+			success: function(data) {
+					waitBox.hide();
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						if ($.parseJSON(params).isdraft == 0 && retval.isdraft == 1) {
+							var callback = function () { window.location.href = 'orders';};
+							customBox.show("New draft order","ORder in <span class='label label-mini " +  ORDER_STATUS.DRAFT.class + "'>DRAFT</span> status was created, but not started. <br>Please top-up your balance to run this order.", function() {return callback()}, ['topup', 'close'], BOXMODE.ALERT, true);
+						}
+						else {
+							//redirect
+							window.location.href = 'orders';
+						}
+					}
+					else {
+						customBox.show("",retval.message, null, null, BOXMODE.ALERT);
+					}
+				},
+			error: function(data) {
+					waitBox.hide();
+					customBox.show("","Can't create order, try again later", null, null, BOXMODE.ALERT);
+				}
+		});
+	},
+
+	//add new job
+	orders_add_job: function (params, details = null) {
+		waitBox.show("Adding new order...");
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			type: "POST",
+			data: {action: "ORDERS_ADD_JOB", apikey: this.API_KEY, params: params, details:details},
+			success: function(data) {
+				waitBox.hide();
+				retval = $.parseJSON(data);
+				if (retval.status == STATUS_OK) {
+					if ($.parseJSON(params).isdraft == 0 && retval.isdraft == 1) {
+						var callback = function () { window.location.href = 'orders';};
+						customBox.show("New draft order","Order in <span class='label label-mini " +  ORDER_STATUS.DRAFT.class + "'>DRAFT</span> status was created, but not started. <br>Please top-up your balance to run this order.", function() {return callback()}, ['topup', 'close'], BOXMODE.ALERT, true);
+					}
+					else {
+						//redirect
+						window.location.href = 'orders';
+					}
+				}
+				else {
+					customBox.show("",retval.message, null, null, BOXMODE.ALERT);
+				}
+			},
+			error: function(data) {
+				waitBox.hide();
+				customBox.show("","Can't create order, try again later", null, null, BOXMODE.ALERT);
+			}
+		});
+	},
+
+	orders_init: function () {
+		CURRENT_TAB = TAB_ALL;
+
+		initGridOrders();
+	},
+
+
+	orders_enum: function (tab_index = 0, callback = null) {
+		if (tab_index == 0) tab_index = CURRENT_TAB;
+		$(".tabbable").find("li").find("a[href='#tab_" + tab_index+ "']").trigger("click");
+		if (callback) callback();
+
+		//setOrdersTab(tab_index);
+	},
+
+	orders_upd: function (idorder, status, c_type = CAMPAIGN_TYPE.UNDEF) {
+		var bWaitBox = false;
+		if (status == ORDER_STATUS.WAITING.value) {
+			waitBox.show("Starting order, please wait...");
+			bWaitBox = true;
+		}
+		if (status == ORDER_STATUS.CANCELED.value) {
+			waitBox.show("Canceling order, please wait...");
+			bWaitBox = true;
+		}
+
+		if (c_type == CAMPAIGN_TYPE.CPA) {
+			if (status == ORDER_STATUS.ACTIVE.value) waitBox.show("Starting CPI campaign, please wait...");
+			if (status == ORDER_STATUS.PAUSED.value) waitBox.show("Pausing CPI campaign, please wait...");
+			if (status == ORDER_STATUS.CPA_CANCELING.value || status == ORDER_STATUS.CANCELED.value) waitBox.show("Canceling CPI campaign, please wait...");
+			bWaitBox = true;
+		}
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_UPD", apikey: this.API_KEY, status: status, idorder:idorder},
+			success: function(data) {
+					Core.orders_enum();
+					Core.balance_get();
+
+					if (bWaitBox) waitBox.hide();
+
+					retval = $.parseJSON(data);
+					if (retval.status != STATUS_OK) customBox.show("", retval.message, null, null, BOXMODE.ALERT);
+				},
+			error: function(data) {
+					if (bWaitBox) waitBox.hide();
+
+					retval = $.parseJSON(data);
+					if (retval.status != STATUS_OK) customBox.show("", retval.message, null, null, BOXMODE.ALERT);
+				}
+		});
+	},
+
+	orders_archive: function (status) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_ARCHIVE", apikey: this.API_KEY, status: status},
+			success: function(data) {
+					Core.orders_enum();
+				},
+			error: function(data) {
+				}
+		});
+	},
+
+	orders_pay: function (idorder, price) {
+		// waitbox
+		var dlg_title = "Run order";
+		var dlg_body = "Are you sure you want to start this order?<br>Order price <b>" + price + "</b>$ will be deducted from your account balance.";
+
+		var callback = function (idorder) {
+			waitBox.show("Starting order, please wait...");
+
+			$.ajax({
+				cache: false,
+				url: "scripts/api.php",
+				data: {action: "ORDERS_PAY", apikey: Core.API_KEY, idorder: idorder},
+				success: function(data) {
+					waitBox.hide();
+
+					Core.balance_get();
+					Core.orders_enum();
+
+					retval = $.parseJSON(data);
+					if (retval.status != STATUS_OK) customBox.show("",retval.message, null, ['topup', 'close'], BOXMODE.ALERT);
+				},
+				error: function(data) {
+					waitBox.hide();
+					customBox.show("","Error starting this order. Please contact support.", null, null, BOXMODE.ALERT);
+				}
+			});
+		};
+
+		//run
+		confirmBox.show(dlg_title, dlg_body, function() {return callback(idorder)});
+	},
+
+	orders_country_enum: function (appstore_id = APPSTORE.GOOGLE.id, c_type = CAMPAIGN_TYPE.UNDEF, callback=null) {
+		appstore_id = parseInt(appstore_id);
+		c_type = parseInt(c_type);
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_COUNTRY_ENUM", apikey: this.API_KEY, appstore_id: appstore_id, c_type: c_type},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						switch (Core.CURRENT_PAGE) {
+							case PAGE_ORDERS_SMART_CAMPAIGN:
+								printCountriesShort(retval.countries);
+								break;
+							case PAGE_KEYWORDS:
+							case PAGE_ORDERS_NEW_CAMPAIGN:
+							case PAGE_ORDERS_NEW:
+							default:
+								fillOrderCountries(retval.countries, callback);
+					}
+				}
+			}
+		});
+	},
+
+	orders_country_cpa_enum: function (callback=null) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_COUNTRY_CPA_ENUM", apikey: this.API_KEY},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						switch (Core.CURRENT_PAGE) {
+							case PAGE_ORDERS_CPA_CAMPAIGN:
+								initCPAFilters(retval.data);
+								break;
+							case PAGE_ORDERS:
+								initCPACountries(retval.data);
+								break;
+							default:
+						}
+						if (callback) callback();
+					}
+			}
+		});
+	},
+
+	languages_enum: function (store_id=APPSTORE.GOOGLE.id, callback=null) {
+		store_id = parseInt(store_id);
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "LANGUAGES_ENUM", apikey: this.API_KEY, store_id: store_id},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						fillLanguages(retval.data);
+						if (callback) callback();
+					} else
+						fillLanguages();
+				},
+			error: function() {
+				fillLanguages();
+			}
+		});
+	},
+
+	orders_rank_rules_enum: function () {
+		$.ajax({ cache: false, url: "scripts/api.php",
+			data: {action: "ORDERS_RANK_RULES_ENUM", apikey: this.API_KEY},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK)
+						fillOrderRankRules(retval.data);
+					else
+						fillOrderRankRules();
+				},
+			error: function() {
+				fillOrderRankRules();
+			}
+		});
+	},
+
+	orders_create: function (lang, idapp, idapp2key, installs, rates, comments, rate_type, cap, appstore_id) {
+		//update keywords status
+		if (idapp2key > 0) Core.keys_upd(idapp2key, 1, true);
+
+		var url = "order";
+		//var url = "campaign_new.html";
+		url_params = "";
+		if (idapp) url_params += "idapp=" + idapp;
+		if (idapp2key) url_params += (url_params ? "&" : "") + "idapp2key=" + idapp2key;
+		if (installs) url_params += (url_params ? "&" : "") + "installs=" + installs;
+		if (rates) url_params += (url_params ? "&" : "") + "rates=" + rates;
+		if (comments) url_params += (url_params ? "&" : "") + "comments=" + comments;
+		if (rate_type) url_params += (url_params ? "&" : "") + "rate_type=" + rate_type;
+		if (cap) url_params += (url_params ? "&" : "") + "cap=" + cap;
+		if (lang) url_params += (url_params ? "&" : "") + "lang=" + lang;
+		url_params += (url_params ? "&" : "") + "appstore_id=" + appstore_id || APPSTORE.GOOGLE.id;
+		if (url_params) url_params = "?" + url_params;
+
+		//window.location.href = url + (url_params? url_params : "");
+		window.open(url + (url_params? url_params : ""));
+	},
+
+	current_order: null,
+
+	orders_get: function (idorder, callback = null) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_GET", apikey: this.API_KEY, idorder:idorder},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK)
+						if (retval.count > 0) {
+							Core.current_order = retval.orders[0];
+							if (callback) callback();
+						}
+				},
+			error: function(data) {
+				}
+		});
+	},
+
+	orders_details: function (idorder, apikey="", apikey_admin="") {
+		if (apikey.length == 0) apikey = this.API_KEY;
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_DETAILS", apikey: apikey, idorder:idorder, apikey_admin: apikey_admin},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK)
+						printOrderDetails(retval.data);
+					else alertBox.show("Error retrieving order details");
+				},
+			error: function(data) { alertBox.show("Error retrieving order details");}
+		});
+	},
+
+	orders_edit: function (idorder, c_type = CAMPAIGN_TYPE.UNDEF) {
+		if (idorder == 0) return;
+
+		switch (c_type) {
+				case CAMPAIGN_TYPE.CPA:
+					var callback = function() {
+						$.ajax({cache: false, url: "scripts/api.php", data: {action: "ORDERS_GET", apikey: Core.API_KEY, idorder:idorder},
+							success: function(data) {
+									// hide waitbox
+									if (bFirstTime) waitBox.hide();
+
+									//parse data
+									retval = $.parseJSON(data);
+									if (retval.status == STATUS_OK)
+										showCPACampaignSettings(retval.orders[0]);
+									else
+										alertBox.show("Error retrieving CPI campaign settings");
+								},
+							error: function(data) {
+								//waitBox.hide();
+								alertBox.show("Error retrieving CPI campaign settings");
+							}
+						});
+					}
+
+					//show form
+					bFirstTime = (parseInt($('#frmEditCPA').data('isLoaded')) || 0) == 0;
+
+					if (bFirstTime) {
+						waitBox.show("Opening campaign settings, please wait...");
+
+						this.orders_country_cpa_enum(callback);
+					} else callback()
+
+				break;
+			default:
+				return;	// NOT SUPPORTED YET
+		}
+	},
+
+
+	orders_calc: function (appstore_id, country, idorder, cnt_packages, cnt_keywords, cnt_rates, cnt_comments, cnt_hqr=0, cnt_job_applikes = 0 ,callback=null)  {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_CALC", apikey: this.API_KEY, appstore_id: appstore_id, country: country, idorder: idorder, packages: cnt_packages, keywords: cnt_keywords, rates: cnt_rates, comments: cnt_comments, hqr:cnt_hqr, job_applikes: cnt_job_applikes},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						printOrderPrice(retval.pricelist)
+						if (callback) callback();
+					}
+					else {
+						printOrderPrice();
+					}
+				}
+		});
+	},
+
+	orders_refund: function (idorder, status, bViewOnly = false, c_type = CAMPAIGN_TYPE.UNDEF) {
+		waitBox.show("Loading...");
+
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_REFUND", apikey: this.API_KEY, idorder:idorder},
+			success: function(data) {
+					waitBox.hide();
+
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK)
+						printOrderRefund(idorder, retval.refund_info, status, bViewOnly, c_type);
+					else
+						customBox.show("", "Can't create a refund. Please try again later or contact support", null, null, BOXMODE.ALERT);
+				},
+			error: function(data) {
+				customBox.show("", "Can't create a refund. Please try again later or contact support", null, null, BOXMODE.ALERT);
+			}
+		});
+	},
+
+	orders_cancel: function (idorder, status, c_type = CAMPAIGN_TYPE.UNDEF) {
+		Core.orders_refund(idorder, status, false, c_type);
+	},
+
+	orders_remarks: function (idorder)  {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "ORDERS_REMARKS_ENUM", apikey: this.API_KEY, idorder:idorder},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						//remove unread class from icon
+						var callback = function () {
+							$('.btn-remark[data-idorder=' + idorder + ']').removeClass("unread");
+						}
+
+						//show dialog
+						showOrderRemarks(idorder, retval.data, callback);
+
+					} else
+						customBox.show("Error", "Can't load new messages. Please try again later or contact support", null, null, BOXMODE.ALERT);
+				},
+			error: function(data) {
+				customBox.show("Error", "Can't load new messages. Please try again later or contact support", null, null, BOXMODE.ALERT);
+			}
+		});
+	},
+
+	//************* BLACKLIST ****************
+	cpa_blacklist_check: function (idapp, callback_postive, callback_negative = null) {
+		$.ajax({
+			cache: false, async: false,
+			url: "scripts/api.php",
+			data: {action: "CPA_BLACKLIST_CHECK", apikey: this.API_KEY, idapp:idapp},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) callback_postive();
+					else
+						if (callback_negative) callback_negative();
+				},
+			error: function(data) {
+					if (callback_negative) callback_negative();
+				}
+		});
+	},
+
+	//************* BALANCE **********************
+	balance_get: function () {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "BALANCE_GET", apikey: this.API_KEY},
+			success: function(data) {
+					if (!data) {
+						printBalance();
+						return;
+					}
+
+					try {
+						retval = $.parseJSON(data);
+						if (retval.status != STATUS_OK) {
+							printBalance();
+							return;
+						}
+					} catch(e) {
+						printBalance()
+						return;
+					};
+
+					//set balance
+					Core.CURRENT_BALANCE = parseFloat(retval.balance);
+					Core.CURRENT_BALANCE_BONUS = parseFloat(retval.balance_bonus);
+					Core.is_bonus_allowed = (retval.is_bonus_allowed ? true : false);
+					printBalance(retval.balance, retval.balance_bonus);
+				},
+			error: function(){
+				printBalance();
+			}
+		});
+	},
+
+	//************* PAYMENTS **********************
+	payments_enum: function () {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "PAYMENTS_ENUM", apikey: this.API_KEY},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						printPayments(retval.payments);
+					} else printPayments();
+				}
+		});
+	},
+
+	//************* TRANSACTIONS **********************
+	transactions_enum: function () {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "TRANSACTIONS_ENUM", apikey: this.API_KEY},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						printTransactions(retval.transactions);
+					} else printTransactions();
+				}
+		});
+	},
+
+	//************* STATISTICS **********************
+	statistics_get: function (idapp, idorder, lang) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "STATISTICS_GET", apikey: this.API_KEY, idapp:idapp, idorder:idorder, lang:lang},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						printStatistics(retval.statistics);
+					} else printStatistics();
+				}
+		});
+	},
+
+	//************* REFERRALS **********************
+	referrals_enum: function (bOnlyActive) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "REFERRALS_ENUM", apikey: this.API_KEY},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						printReferrals(retval.refinfo, bOnlyActive);
+						Core.balance_get();
+					} else printReferrals();
+					waitBox.hide();
+				},
+			error: function(data) {
+					waitBox.hide();
+					alertBox.show("Error loading referrals page.");
+				}
+		});
+	},
+
+	referrals_refund: function () {
+		waitBox.show("Creating referral payment...");
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "REFERRALS_REFUND", apikey: this.API_KEY},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						Core.referrals_enum();
+					}
+					else {
+						waitBox.hide();
+						alertBox.show(retval.message);
+					}
+				},
+			error: function(data) {
+					waitBox.hide();
+					alertBox.show("Error creating referral payment.");
+				}
+		});
+	},
+
+	//************** PROMOCODE ******************
+	promocode_verify:function (code) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "PROMOCODE_VERIFY", apikey: this.API_KEY, code: code},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					printPromocodeCheck(retval.status, retval.message);
+				}
+		});
+	},
+
+	// ************ ASSETS ****************
+	cpa_adassets_get: function (callback=null, asset_type = ADASSET_TYPE.HEADLINE,  country="", lang="", id = 0, exclude_id =0) {
+		$.ajax({ cache: false, url: "scripts/api.php",
+			data: {action: "CPA_ADASSETS_GET", apikey: this.API_KEY, type: asset_type, country: country, lang:lang, id:id, exclude_id:exclude_id },
+			success: function(data) {
+				retval = $.parseJSON(data);
+				if (retval.status != STATUS_OK) return;
+				if (callback) callback(retval.data);
+			},
+			error: function(data) {return;}
+		});
+	},
+
+	cpa_settings_set: function (params, callback = null) {
+		$.ajax({cache: false, url: "scripts/api.php",
+			data: {action: "CPA_SETTINGS_SET", apikey: this.API_KEY, params:params},
+			success: function(data) {
+				if (!data) return;
+				retval = $.parseJSON(data);
+				if (retval.status != STATUS_OK) {
+					customBox.show("Error saving CPI settings", retval.message, null, null, BOXMODE.ALERT);
+					return;
+				}
+
+				if (callback) callback(retval.data);
+			},
+			error: function(data) {
+				customBox.show("Error", "CPI setting not saved", null, null, BOXMODE.ALERT);
+				return;
+			}
+		});
+	},
+
+	//************* USER_INFO **********************
+	userinfo_get: function (full = true) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "USERINFO_GET", apikey: this.API_KEY, full : full ? 1 : 0},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						switch (Core.CURRENT_PAGE) {
+							case PAGE_BALANCE:
+								printUserInfoBalancePage(retval.userinfo);
+								break;
+							default:
+								printUserInfo(retval.userinfo);
+						}
+					} else printUserInfo();
+				}
+		});
+	},
+
+	userinfo_set: function (id, key, value, issilent=true, callback=null) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "USERINFO_SET", apikey: this.API_KEY, prop_name:key, prop_value:value},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) {
+						if (id) $("#" + id).show();
+						if (callback) callback();
+					} else {
+						if (id) $("#" + id).hide();
+						if (!issilent) customBox.show("Error", retval.message, null, null, BOXMODE.ALERT);
+					}
+				}
+		});
+	},
+
+
+
+
+	/******************** USERS *************/
+		//get paymetens to track in GA and FB metrics
+	users_payments_track: function () {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "USERS_PAYMENTS_TRACK", apikey: this.API_KEY, timestamp: $.now()},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK) addUsersPaymentsUntracked(retval.payments)
+				}
+		});
+	},
+
+	/*
+	reviews_category_enum: function () {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "REVIEWS_CATEGORY_ENUM", apikey: this.API_KEY},
+			success: function(data) {
+				fillComboReviewsCategory(data);
+			}
+		});
+	},
+
+	reviews_category_add: function (name) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "REVIEWS_CATEGORY_ADD", apikey: this.API_KEY, name:name},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK)
+						Core.reviews_category_enum(data);
+					else alertBox.show(retval.message);
+				}
+		});
+	},
+
+	reviews_get: function (idcategory) {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "REVIEWS_GET", apikey: this.API_KEY, idcategory:idcategory},
+			success: function(data) {
+					retval = $.parseJSON(data);
+					if (retval.status == STATUS_OK)
+						printReviews(data);
+					else printReviews();
+				}
+		});
+	},
+*/
+	// common *****************************
+	initCustomCombos: function() {
+		function formatCountries(option) {
+		  if (!option.id || option.id == 0) return option.text;
+		  var newOption = $(
+			'<span><i class="flag flag-' + option.id.toLowerCase() + '"></i> ' + option.text + '</span>'
+		  );
+		  return newOption;
+		};
+
+		function formatLanguages(option) {
+		  	//if (!option.id || option.id == 0) return option.text;
+		  	if (option.element && option.element.dataset && option.element.dataset.country)
+				newOption = $('<span><i class="flag flag-' + option.element.dataset.country.toLowerCase() + '"></i> ' + option.text + '</span>');
+			else
+				newOption = $('<span>' + option.text + '</span>');
+		  	return newOption;
+		};
+
+		function formatApps (option) {
+			if (!option.id || option.id == 0) return option.text;
+
+			var store = APPSTORE.getById(parseInt(option.element.attributes['data-appstore_id'].value) || APPSTORE.GOOGLE);
+
+			var newOption = $(
+				'<div class="app_option">' +
+					'<i class="margin-r5 store ' + store.class + '" style="margin-bottom:-2px"></i> ' +
+					'<img src="/sing_up/login-ru.html/'&#32;+&#32;$(option.element).attr('data-icon_link')&#32;+&#32;'">' +
+					'<div>' +
+						'<p class="title">' + option.text + ' </p>' +
+						'<p class="title developer">' + ($(option.element).attr('data-developer') || "") +'</p>' +
+					'</div>' +
+				'</div>'
+			);
+
+			return newOption;
+		};
+
+		function formatAppsSelection (option) {
+		  if (!option.id || option.id == 0) return option.text;
+
+		  var store = APPSTORE.getById(parseInt(option.element.attributes['data-appstore_id'].value) || APPSTORE.GOOGLE);
+		  var newOption = $(
+			'<span class="app_option_selected"><img  src="/sing_up/login-ru.html/'&#32;+&#32;$(option.element).attr('data-icon_link')&#32;+&#32;'"/>' + option.text + '</span>'
+		  );
+		  return newOption;
+		};
+
+
+		function formatAppstores(option) {
+		  if (!option.id || option.id == 0) return option.text;
+		  var store = APPSTORE.getById(option.id);
+		  var newOption = $(
+			  '<span><i class="store ' + store.class + '" style="margin-bottom:-2px"></i> ' + option.text + '</span>'
+		  );
+		  return newOption;
+		};
+
+		$(".combo-countrylist").select2({
+			placeholder: "Select country",
+			minimumResultsForSearch: 6,
+			templateResult: formatCountries,
+			templateSelection: formatCountries,
+		});
+
+
+		$(".combo-languages").select2({
+			placeholder: "Select language",
+			minimumResultsForSearch: 15,
+			templateResult: formatLanguages,
+			templateSelection: formatLanguages,
+		});
+
+		$(".combo-applist").select2({
+			placeholder: "Select application",
+			minimumResultsForSearch: 6,
+			templateResult: formatApps,
+			templateSelection: formatAppsSelection,
+		});
+
+		$(".combo-appstorelist").select2({
+			placeholder: "Select Appstore",
+			minimumResultsForSearch: 6,
+			templateResult: formatAppstores,
+			templateSelection: formatAppstores,
+		});
+	},
+
+	// BLOG posts
+	blog_posts_enum: function (count, category = "") {
+		$.ajax({
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "BLOG_POSTS_ENUM", apikey: this.API_KEY, count:count, category:category},
+			success: function(data) {
+				printBlogPosts(data);
+			}
+		});
+	},
+
+	//detects if page is loaded on mobile phone
+	is_mobile: function() {
+		 if (navigator.userAgent.match(/Android/i)
+		 || navigator.userAgent.match(/webOS/i)
+		 || navigator.userAgent.match(/iPhone/i)
+		 || navigator.userAgent.match(/iPad/i)
+		 || navigator.userAgent.match(/iPod/i)
+		 || navigator.userAgent.match(/BlackBerry/i)
+		 || navigator.userAgent.match(/Windows Phone/i)
+		 || (window.innerWidth <= 1280)
+		 || (typeof window.orientation !== 'undefined')
+		 ) return true;
+		 else return false;
+	}
+	//	*********
+};
+// END of CORE
+//***************************************************************************************************************************************
+var round2 = function(num){
+	return Number(parseFloat(num).toFixed(2));
+}
+
+// APPS: DRAW SECTION **********
+function deleteApp(idapp, app_name) {
+	// waitbox
+	var dlg_title = "Delete application";
+	var dlg_body = "<p>Are you sure you want delete " + ( app_name ? "<b>" + app_name + "</b> app?": "this application?</p>");
+
+	var callback = function (id) {
+		Core.apps_delete(id);
+	};
+
+	confirmBox.show(dlg_title, dlg_body, function() {return callback(idapp)});
+}
+
+//draw single app card for apps.page
+function drawApp(data) {
+	var store = APPSTORE.getById(data.appstore_id);
+
+	//draw a sigle app
+	var str = '<div class="span6 ">';
+
+	//add alive
+	if (data.alive == 0)
+		str += '<div class="portlet box card banned"><div class="ban" onclick="Core.apps_update('+data.id+');" title="Update application status"></div>';
+	else str += '<div class="portlet box card">';
+
+	str += '<div class="portlet-title"> \
+					<a href="javascript:Core.apps_toggle_fav('+data.id+');" title="Toggle favorite status of this app" > \
+					<img src="/sing_up/login-ru.html/img/'&#32;+&#32;(data.fav&#32;&gt;&#32;0&#32;?"key_fav_on.png" : "key_fav_off.png") + '" class="fav" ></a><h4>' + data.name + '</h4> \
+					<a class="margin-l5" title="Default region for app"><i class="flag flag-'+ data.country.toLowerCase() +'" ></i></a> \
+					<span class="controls-ext margin-l10"> \
+								<a href="/sing_up/login-ru.html/'&#32;+&#32;store.getAppURL(data.package,&#32;data.country.toLowerCase(),&#32;data.lang)&#32;+'" target="_blank" title="Open this app on ' + store.name + '"> \
+									<img src="/sing_up/login-ru.html/img/apps_blank.png" class="sign ' + store.class + '"> \
+								<a href="http://www.appannie.com/apps/'+ store.tag_appanie + '/app/' + data.package + '/app-ranking/" target="_blank" title="Open this app on AppAnnie.com"> \
+									<img src="/sing_up/login-ru.html/img/apps_anne.png" ></a> \
+								<a href="https://sensortower.com/'+ store.tag + '/us/facebook/app/facebook/' + data.package + '" target="_blank" title="Open this app on SensorTower.com"> \
+									<img src="/sing_up/login-ru.html/img/apps_sensor.png" ></a>\
+					</span> \
+					<div class="tools"> \
+						<a href="/sing_up/login-ru.html/'&#32;+&#32;store.getAppURL(data.package,&#32;data.country.toLowerCase(),&#32;data.lang)&#32;+'" target="_blank" title="Open this app on ' + store.name + '"> \
+							<i class="store ' + store.class + '" title="Application from ' + store.name + '"></i> \
+						</a> \
+						<a href="javascript:Core.apps_update('+data.id+');" class="reload" title="Update app info, like title, icon or developer"></a> \
+						<a href="javascript:deleteApp('+data.id+',\'' +data.name+'\')"  class="remove" title="Delete app from list"></a> \
+					</div> \
+				</div> \
+				<div class="portlet-body"> \
+					<div class="row-fluid"> \
+						<div class="col1"> \
+							<a href="/sing_up/login-ru.html/'&#32;+&#32;store.getAppURL(data.package,&#32;data.country.toLowerCase(),&#32;data.lang)&#32;+'" target="_blank" title="Open this app on ' + store.name + '">\
+								<img src="/sing_up/login-ru.html/'&#32;+&#32;data.icon_link&#32;+&#32;'" class="app-icon ' + store.class + '">\
+							</a> \
+						</div> \
+						<div class="col2">';
+
+	//add publisher + category
+	str += '<div class="cardrow"> \
+				<div class="cardcol"> \
+					<div class="muted">Publisher</div>'
+						+ (data.dev_url || data.dev_id > 0 ?
+							'<a href="/sing_up/login-ru.html/'&#32;+&#32;store.getDevURL(data.dev_name,&#32;data.dev_uid,&#32;data.dev_url,&#32;data.country.toLowerCase(),&#32;data.lang)&#32;+'" target="_blank" title="Open app developer in ' + store.name + '"><b>' + data.dev_name + '</b></a>' :
+							'<b>' + data.dev_name + '</b>'
+						) +
+				'</div>';
+		str += '<div class="cardcol">'
+			if (data.category) {
+					str += '<div class="muted">Category</div>';
+					var json = $.parseJSON(data.category);
+					if (json)
+						$.each(json, function(tag, title) {
+							if (tag.length >0 && title.length > 0)
+								str += (store.id == APPSTORE.GOOGLE.id ?
+										'<span class="margin-r10"><a href="https://play.google.com/store/apps/category/' + tag + '" target="_blank" title="Open category in ' + store.name + '"><b>' + title + '</b></a></span>':
+										'<span class="margin-r10"><b>' + title + '</b></span>');
+						});
+			} else str += "&nbsp";
+		str += '</div>';
+	str += '</div>';
+
+
+
+	// add keywords
+	if (data.hasOwnProperty('keywords') && !Core.is_mobile())
+		if (data.keywords.cnt > 0) {
+		str += '<span class="card_keywords"> \
+				<div class="muted margin-t5" style="padding-bottom:2px;">Keywords \
+					<span class="badge badge-zero card_keywords_cnt">' + data.keywords.cnt + '</span></div>';
+
+				$.each(data.keywords.items, function(id, keyword) {
+					str += keyword + ' <a href="/sing_up/login-ru.html/keywords?idapp='&#32;+&#32;data.id&#32;+&#32;'&amp;appstore_id='&#32;+&#32;data.appstore_id+&#32;'&amp;idapp2key='&#32;+&#32;id&#32;+&#32;'&amp;lang='+data.country.toUpperCase()+'"><img src="/sing_up/login-ru.html/img/chart_open.png" class="margin-r5"></a>';
+				});}
+
+	//continue
+	str += '</div></div></div> \
+			<div class="portlet-footer"><div class="row-fluid">';
+
+				// add orders
+			if (data.hasOwnProperty('orders'))
+				if (data.orders.active > 0 || data.orders.completed > 0) {
+					str += '<span class="card_orders"> \
+								<div class="col-left" style="margin-top:1px"> \
+									<span class="muted margin-r10">Orders: </span> \
+								</div> \
+								<div class="col-left"> \
+									<span class="badge badge-success"><b>' + data.orders.active + '</b> active</span> \
+									<span class="badge badge-info"><b>' + data.orders.completed + '</b> completed</span> \
+								</div> \
+							</span>';
+			}
+	str += '<div class="col-right"> \
+				<a class="btn mini green-stripe" href="/sing_up/login-ru.html/'&#32;+&#32;store.getPromoteURL(0,&#32;data.id,&#32;data.country)&#32;+&#32;'" title="Boost app organic installs by ordering app promotion"><i class="icon-signal" ></i> Promote</a> \
+				<a class="btn mini blue-stripe"  href="/sing_up/login-ru.html/keywords?idapp='&#32;+&#32;data.id&#32;+&#32;'&amp;appstore_id='&#32;+&#32;data.appstore_id&#32;+&#32;'&amp;lang='+data.country.toUpperCase()+'"  title="View and add keywords for this app"><i class="icon-key"></i> Keywords</a>'
+				+ (store.id == APPSTORE.GOOGLE.id ? '<a class="btn mini yellow-stripe" href="/sing_up/login-ru.html/stats?idapp='&#32;+&#32;data.id&#32;+&#32;'&amp;lang='+data.country.toUpperCase()+'" title="Open app installs statistics"><i class="icon-calendar" ></i> Statistics</a>' :"") +
+			'</div></div> \
+		</div></div></div>';
+	return str;
+}
+
+
+//draw app cards fro apps.page
+function printApps(data) {
+	var apps_info = $.parseJSON(data);
+	var str_list = "";
+	$.each(apps_info.apps, function(i, row) {
+		//adding new row
+
+		if (i % 2 == 0) {
+			if (str_list) str_list += '</div>';
+			str_list += '<div class="row-fluid">';
+		}
+
+		//add app
+		str_list += drawApp(row);
+	});
+
+	strEmpty = "<div class='row-fluid'><p class='text-center margin-t10'>No applications found</p></div>";
+	if (str_list)
+		$("#app_list").html(str_list);
+	else
+		$("#app_list").html(strEmpty);
+
+	//stats
+	if (apps_info.stats) {
+		$("#tab_cnt_" + TAB_APPS_ALL).html(apps_info.stats.cnt_total? " (" + apps_info.stats.cnt_total + ")": "");
+		$("#tab_cnt_" + TAB_APPS_FAV).html(apps_info.stats.cnt_fav? " (" + apps_info.stats.cnt_fav + ")": "");
+		$("#tab_cnt_" + TAB_APPS_ANDROID).html(apps_info.stats.cnt_android ? " (" + apps_info.stats.cnt_android + ")": "");
+		$("#tab_cnt_" + TAB_APPS_IOS).html(apps_info.stats.cnt_ios ? " (" + apps_info.stats.cnt_ios + ")": "");
+		$("#tab_cnt_" + TAB_APPS_BAN).html(apps_info.stats.cnt_ban ? " (" + apps_info.stats.cnt_ban + ")": "");
+	}
+
+	//mobile check
+	if (Core.is_mobile()) {
+		$(".card h4").addClass("text-short");
+		$(".card_keywords").hide()
+		$(".card_orders").hide();
+		$(".controls-ext").hide();
+		$('.search-box').hide();
+	}
+}
+
+function printAppsShort(data, store_id) {
+	var str_list = "";
+
+	var apps_info = $.parseJSON(data);
+	if (apps_info.status == STATUS_OK)
+		$.each(apps_info.apps, function(i, row) {
+			//add app
+			str_list += drawAppShort(row, store_id);
+		});
+
+	if (str_list)
+		$("#app_list").html(str_list);
+	else
+		$("#app_list").empty();
+
+	//mobile check
+	/*
+	if (Core.is_mobile()) {
+		$(".card h4").addClass("text-short");
+		$(".card_keywords").hide()
+		$(".card_orders").hide();
+		$(".controls-ext").hide();
+	}
+	*/
+}
+
+function drawAppShort(data, store_id) {
+
+	//if app is banned - exit
+	if (data.alive == 0) return "";
+
+	var store = APPSTORE.getById(store_id) || APPSTORE.UNDEF;
+
+	//draw a sigle app
+	var str = "<div class='card' data-id=" + data.id + " data-package='" + data.package + "' data-icon='" + data.icon_link + "' data-title='" + data.name + "'\
+				onclick='drawWizardApp(" + data.id + ")'>";
+
+	//icon
+	//<a href="https://play.google.com/store/apps/details?id=' + data.package + '&gl='+data.country.toLowerCase()+'&hl='+data.lang+'" target="_blank" title="Open this app on Google Play"><img src="/sing_up/login-ru.html/'&#32;+&#32;data.icon_link&#32;+&#32;'" class="app-icon"></a> \
+	str += '<div class="row-fluid center text-center"><img src="/sing_up/login-ru.html/'&#32;+&#32;data.icon_link&#32;+&#32;'" class="app-icon ' + store.class + '"></div>';
+	//title
+	str += '<div class="row-fluid center text-center title">' + data.name + '</div>';
+
+	str += '</div>';
+	return str;
+}
+
+
+var apps_combo_list = "";
+function printComboApps(idapp, store_id, callback=null, isfav = -1, isban= -1, search_str = "") {
+	store_id = store_id || APPSTORE.GOOGLE.UNDEF;
+
+	if (apps_combo_list)  {
+		$(".combo-applist").html(apps_combo_list);
+	}
+	else
+		Core.apps_enum(idapp, 0, store_id, callback, isfav, isban, search_str);
+
+	//set current
+	if (idapp) {
+		$(".combo-applist").data('chosen', idapp);
+		$(".combo-applist").val(idapp);
+	}
+}
+
+function fillComboApps(data, show_banned = false) {
+	var apps_info = $.parseJSON(data);
+
+	apps_combo_list = "<option></option>";
+	$.each(apps_info.apps, function(i, row) {
+			if (row.alive == 1 || show_banned) {
+				var store = APPSTORE.getById(row.appstore_id) || APPSTORE.UNDEF;
+				apps_combo_list +=
+					'<option value=' + row.id +
+						' data-icon_link="' + row.icon_link + '"' +
+						' data-isgame=' + row.isgame +
+						' data-developer="' + row.dev_name + '"' +
+						' data-package="' + row.package + '"' +
+						' data-appstore_id=' + row.appstore_id +
+					'>' + row.name + (row.alive==0 && show_banned ? " [BAN]" : "") + '</option>';
+			}
+	});
+
+	if (apps_combo_list) {
+		$(".combo-applist").html(apps_combo_list);
+		idapp = parseInt($(".combo-applist").data('chosen')) || 0;
+		if (idapp > 0)  {
+			$(".combo-applist option[value=" + idapp + "]").prop('selected', true);
+			$(".combo-applist").change();
+		}
+		else
+			$(".combo-applist").find("option:selected").removeAttr("selected");
+	} else
+		$(".combo-applist").empty();
+}
+// APPS: DRAW SECTION END *********
+
+
+function fillComboAppstores(data, store) {
+	if (!store) store = APPSTORE.GOOGLE;
+	var strEmptyList = "<option value=" + store.id + " selected>" + store.name + "</option>";
+
+	if (!data || data.length == 0) {
+		$(".combo-appstorelist").html(strEmptyList);
+		return;
+	}
+
+	str = "";
+	if (data) {
+		$.each(data, function(i, row) {
+			str += "<option value=" + row.id + (str.length==0? " selected" : "") + ">" + row.name + "</option>";
+		});
+	}
+
+	if (str.length==0) str = strEmptyList;
+	$(".combo-appstorelist").html(str);
+}
+
+
+// KEYWORDS SECTION START ******************
+strEmptyKeywordOption = "<option value='0'>PACKAGE</option>";
+strLoadingKeywordOption = "<option value='0' selected disabled>Loading...</option>";
+
+function printComboKeywords(idapp2key) {
+	$("#keyword_ranks").hide();
+
+	var lang = $("#order_countries").val();
+	if (lang.length == 0) lang = LANGUAGE_DEFAULT;
+	var appid = parseInt($(".combo-applist").val());
+
+	$(".order_keylist").each(function(i, obj) {
+		$(obj).data('chosen', $(obj).val()).empty().append(strEmptyKeywordOption);	//save selected id
+	});
+
+	if (appid > 0) {
+		$("#btn_addkeywords").removeClass('hide');
+		if (window.File && window.FileReader && window.FileList) $("#btn_importkeywords").removeClass('hide');
+		if (Core.CURRENT_PAGE == PAGE_ORDERS_NEW) $("#btn_editkeywords").show();
+		Core.keys_enum(appid, idapp2key, 1, lang);
+	} else {
+		$("#btn_addkeywords").addClass('hide');
+		if (window.File && window.FileReader && window.FileList) $("#btn_importkeywords").addClass('hide');
+		if (Core.CURRENT_PAGE == PAGE_ORDERS_NEW) $("#btn_editkeywords").hide();
+	}
+}
+
+function printCountriesShort(data) {
+	var str = "";
+	if (data == null || data.length == 0) {
+		data = [];
+		data['country'] = 'US';
+		data['name'] = 'United States';
+		str += drawCountryShort(row);
+	} else
+		//add list
+		$.each(data, function(i, row) {
+			str += drawCountryShort(row);
+		});
+
+	$("#country_list").html(str);
+}
+
+function drawCountryShort(data) {
+	//draw a single app
+
+	//if (data.issmartcampaign==0) return "";		//commented due to VENDORS patch
+
+	var icon = "img/flags/flag_" + data.country.toLocaleLowerCase() + ".png";
+	var str = "<div class='card' data-country='" + data.country.toUpperCase() + "' data-title='" + data.name + "' data-icon='" + icon + "' onclick=drawWizardCountry('" + data.country.toUpperCase() + "')>";
+
+	//image
+	str += '<div class="row-fluid center text-center"><img src='/sing_up/login-ru.html/+&#32;icon&#32;+' class="app-icon"></div>';
+	//title
+	str += '<div class="row-fluid center text-center title">' + data.name + '</div>';
+
+	str += '</div>';
+	return str;
+}
+
+function fillOrderCountries(data, callback = null) {
+	var strEmptyList = "";
+	if (!data  || data.length == 0) {
+		$(".combo-countrylist").html(strEmptyList);
+		return;
+	}
+
+	let str = "";
+	let bSeparator = false;
+	$.each(data, function(i, row) {
+		if (row.isvip == 0 && str.length > 0 && !bSeparator ) {
+			str += '<option value="0" disabled="disabled">More countries:</option>';
+			bSeparator = true;
+		}
+		str += '<option value="' + row.country.toUpperCase() + '" ' + (row.country.toUpperCase()==COUNTRY_DEFAULT ? " selected" : "") + (row.description ? ' data-comments="' + row.description + '"': "") + '>' + row.name + '</option>';
+	});
+	if (str.length==0) str = strEmptyList;
+	$(".combo-countrylist").html(str);
+	$(".combo-countrylist").val(COUNTRY_DEFAULT);
+
+	//run callback
+	if (callback) callback();
+}
+
+//fill languages
+function fillLanguages(data) {
+	var strEmptyList = "<option value=' ' data-country='' selected>Default language</option>";
+
+	if (!data || data.length == 0) {
+		$(".combo-languages").html(strEmptyList);
+		return;
+	}
+
+	str = strEmptyList;
+	if (data) {
+		$.each(data, function(i, row) {
+			str += '<option value="' + row.lang + '" ' + (row.country.toUpperCase()==COUNTRY_DEFAULT ? " selected" : "") + ' data-country="' + row.country.toUpperCase() + '">' + row.name + '</option>';
+		});
+	}
+
+	if (str.length==0) str = strEmptyList;
+	$(".combo-languages").html(str);
+}
+
+function fillComboKeywords(data, idapp2key, lang) {
+	if (!idapp2key) idapp2key = 0;
+	if (!lang || lang.length == 0) lang = 'US';
+	if (!data || data.length == 0) {
+		$(".order_keylist").html(strEmptyKeywordOption);
+		return;
+	}
+	var str = strEmptyKeywordOption;
+	$.each(data, function(i, row) {
+		str += '<option value="' + row.id + '">' + row.keyword + '</option>';
+	});
+
+	$("#keyword_ranks").hide();
+	$(".order_keylist").html(str);
+
+	//for multipage restore selected
+	$(".order_keylist").each(function(i, obj) {
+		if (idapp2key > 0) 	//for single order page
+			$(obj).data('chosen', idapp2key).val(idapp2key);
+		else {
+			id = parseInt($(obj).data('chosen')) || 0;
+			if (id > 0)
+				$(obj).data('chosen', id).val(id);
+		}
+	});
+}
+
+function setKeywordsTab(index) {
+	KEYWORDS_CURRENT_TAB = index;
+	printKeywords(keywords_data['data'], keywords_data['idapp'], 0, keywords_data['lang'], 0);
+
+	$("#grid").appendTo("#tab_" + index);
+}
+
+// KEYWORDS
+//chart doc
+//https://github.com/flot/flot/blob/master/API.md#customizing-the-axes
+//http://www.jqueryflottutorial.com/how-to-make-jquery-flot-bar-chart.html
+var n_chart_current_id = 0;
+var n_chart_current_period = 0;
+function chartKeywordRank(idapp2key, bExpand) {
+	bExpand = bExpand || false;		// onep chart portlet
+	if (idapp2key < 0) idapp2key = n_chart_current_id;
+
+	var placeholder = $("#chart_keyword_rank");
+
+	//read period
+	let period = parseInt(placeholder.data('period')) || 30;
+
+	//prevent double click
+	if (n_chart_current_id > 0 && n_chart_current_id == idapp2key && n_chart_current_period == period) return;
+	n_chart_current_id = idapp2key;
+	n_chart_current_period = period;
+
+	//trigger click on tools expand
+	if ($("#chart_expand").hasClass("expand"))
+		if (bExpand) {
+			$("#chart_expand").trigger("click");
+			$("#chart_expand").delay(100);
+		}
+	else  return;
+
+	//set row active
+	$("#grid>tbody").find('tr').removeClass('active');
+	$("#grid>tbody").find("tr[data-id=" + idapp2key+"]").addClass('active');
+
+	var el = placeholder.parents(".portlet");
+	App.blockUI(placeholder);
+
+	$.ajax({
+			type: "GET",
+			timeout: 60000,
+			dataType: "json",
+			cache: false,
+			url: "scripts/api.php",
+			data: {action: "KEYS_RANK_CHART", apikey: Core.API_KEY, idapp2key:idapp2key, period: period},
+			error:   function(xhr, ajaxOptions, thrownError) {
+				App.unblockUI(el);
+			},
+			success: function(data) {
+					App.unblockUI(el);
+					var i=0;
+					var str_nodata = "";
+					var plot_array = [];
+					var volume_array = [];
+
+					if (data != null && data.status == STATUS_OK)  {
+						$.each(data.data.chart.linear, function(i, row)
+						{
+							//add data for chart
+							plot_array[i] = [(new Date(row.time_plot)), parseInt(row.rank)];
+						});
+
+						var max_volume = 0;
+						if (data.data.chart.volume != null){
+							$.each(data.data.chart.volume, function(i, row)
+							{
+								//add data for chart
+								volume_array[i] = [(new Date(row.time_plot)), parseInt(row.volume)];
+								if (parseInt(row.volume) > max_volume) max_volume = parseInt(row.volume);
+							});
+						}
+
+					} else
+						str_nodata = "<div style='margin: auto;position:absolute;top:50%; left:0; bottom:0; right:0;' class='text-center muted'><h4>No history data available</h4></div>"
+
+					//plot chart
+					var plot = $.plot(placeholder, [
+					{
+						data: plot_array,
+						yaxis: 1,
+						label: data.keyword,
+						color: "#d12610",
+						lines: {
+								show: true,
+								lineWidth: 2,
+							},
+						points: {
+							show: true
+						},
+						shadowSize: 2,
+					},
+					{
+						yaxis: 2,
+						data: volume_array,
+						color: "#37b7f3",
+						bars: {show: true, align: "center", barWidth: 6 * 60 * 60 * 1000, lineWidth:1}
+					}
+					], {
+						series: {
+						},
+						grid: {
+							hoverable: true,
+							clickable: true,
+							tickColor: "#eee",
+							borderWidth: 1,
+							borderColor: "#eee",
+						},
+
+						xaxis: {
+							autoscaleMargin:0,
+							ticks: 15,
+							mode: "time",
+							minTickSize: [1, "day"],
+							timeformat: "%d.%m",
+						},
+						yaxes: [
+							{ //axis left
+								show:true,
+								min: 1,
+								position: "left",
+								//ticks: [1, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250],
+								//ticks: [250, 200, 255, 200, 175, 150, 125, 100, 75, 50, 25, 1],
+								tickDecimals: 0,
+								minTickSize: 1,
+								transform: function (v) { return -v; },
+								inverseTransform: function (v) { return -v; },
+							},
+							{  //axis vloume
+								max: max_volume * 2,
+								show:false,
+							}
+						],
+						legend: {
+							position: "nw"
+						}
+
+					});
+
+					var previousPoint = null;
+					placeholder.bind("plothover", function (event, pos, item) {
+						if (item) {
+							if (previousPoint != item.dataIndex) {
+								previousPoint = item.dataIndex;
+
+								$("#tooltip").remove();
+								var x = item.datapoint[0];
+								var y = item.datapoint[1];
+
+								var date = new Date(parseInt(x));
+								//var dt_str = date.getDate() + "." + (date.getMonth() + 1);
+								var dt_str = gTools.formatDate(date);
+								if (item.seriesIndex == 0) msg = "Rank: "; else  msg = "Installs: ";
+								x = item.pageX;
+								if (item.pageX > item.series.xaxis.box.width - 50) x = x - 50;
+
+								showTooltip(x, item.pageY, dt_str + "<br>" + msg + "<b>" + parseInt(y ) + "</b>");
+							}
+						} else {
+							$("#tooltip").remove();
+							previousPoint = null;
+						}
+					});
+
+					//add no data text
+					if (str_nodata) placeholder.append(str_nodata);
+
+		// end plot
+		}
+	});
+}
+
+
+function escapeKeyword(keyword) {
+	//replace quot and double quoutes
+	//keyword = keyword.replace(/"/g, '\\x22').replace(/'/g, '\\x27');
+	keyword = keyword.toString();
+	keyword = keyword.replace(/"/g, ' ')
+	keyword = keyword.replace(/'/g, '&apos;');
+
+
+	keyword = keyword.replace(/\#/g, ' ').replace(/#/g, ' ');
+	keyword = keyword.replace(/\//g, ' ').replace(/\\/g, ' ');
+	keyword = keyword.toLowerCase().trim();
+	return keyword;
+}
+
+function printKeywordsSuggest(data) {
+	var str = "";
+
+	var keys_info = $.parseJSON(data);
+	if (keys_info.status != STATUS_OK) {
+		str = keys_info.message;
+		$("#grid_keys_suggest").html(str)
+		$("#pnlLoader").hide();
+		$("#grid_keys_suggest").show();
+		return;
+	}
+
+
+	$.each(keys_info.data, function(i, row) {
+		str += "<tr><td nowrap style='text-align:left' text-overflow: ellipsis;>" + row.keyword + "</td>";
+		if (row.active)
+			str += "<td nowrap style='text-align:right' width='100px'> \
+					<a class='btn mini green' title='Add this keyword' \
+					   href='javascript:Core.keys_add(" + keys_info.idapp + ", \"" + escapeKeyword(row.keyword) + "\", \"" + keys_info.lang + "\", true)' \
+					   		onclick='javacsript:setAdded(this)'> \
+					<i class='icon-plus'></i> Add</a></td>";
+		else
+			str += "<td style='text-align:right'><span class='text-success'>added</td>";
+		str += "</tr>";
+	});
+
+	$("#grid_keys_suggest").html(str)
+
+	$("#pnlLoader").hide();
+	$("#grid_keys_suggest").show();
+}
+
+var keywords_data = [];
+function printKeywords(data, idapp, idapp2key, country, tm_keys_upd) {
+	if (!country || country.length == 0 || country == "0") country = LANGUAGE_DEFAULT;
+	keywords_data['idapp']  = idapp;
+	keywords_data['data']   = data;
+	keywords_data['lang']   = country;
+
+	var str = "<tr><td colspan='100%'>No keywords added yet.</td></tr>";
+
+	var cnt_tabs = [0, 0];
+	//loop
+	if (data && data.length > 0) {
+		str = "";
+		$.each(data, function(i, row) {
+			//get store
+			var store = APPSTORE.getById(row.appstore_id);
+
+			if (idapp2key ==0) idapp2key = row.id;
+
+			sControlsAdd = "<a class='btn mini blue' title='Suggest similar keywords'\
+								href='javascript:Core.keys_suggest(" + idapp + ", \"" + escapeKeyword(row.keyword) + "\", \"" + country.toUpperCase() + "\");'><i class='icon-plus'></i> Suggest</a> ";
+
+			sControls =  "<a class='btn mini green-stripe' title='Promote this keyword'\
+							href='javascript:Core.orders_create(\"" + country.toUpperCase() + "\", " + idapp + ", " + row.id + ", 100, 0, 0, 0, 0, " + row.appstore_id + ");'><i class='icon-signal'></i> Promote</a> ";
+
+			/*
+			sControls += "<a class='btn mini yellow-stripe' title='Keyword statistics'\
+							href='javascript:Core.keywords_stats(" + row.id+ ");'><i class='icon-signal'></i> Stats</a> ";
+			*/
+
+			sControls += "<a class='btn mini red-stripe' title='Delete keyword'\
+							href='javascript:Core.keys_del(" + row.id + ");'><i class='icon-trash'></i> Delete</a> ";
+
+			var sChart = "<span class='ranks'><a title='Show history rank chart'  href='javascript:chartKeywordRank(" + row.id+ ", true);'>\
+						<img src='/sing_up/login-ru.html/img/chart_open.png' style='height:16px;margin-bottom:2px' class='margin-r10'></a></span>";
+
+
+			//<img src='/sing_up/login-ru.html/img/gp_open.png' style='height:16px;margin-bottom:2px' class='" + store.class + "' margin-r10'>
+			var url = store.getKeywordURL(row.keyword, country, row.lang);
+			var sAppStoreOpen = (url.length > 0 ?
+								"<span class='ranks'><a title='Open keyword in " + store.name + "' href='/sing_up/login-ru.html/&quot;&#32;+&#32;url&#32;+&#32;&quot;' target='_blank'>\
+								<img src='/sing_up/login-ru.html/img/apps_blank.png' class='sign " + store.class + "' style='margin-bottom:2px'></a></span>" :
+								"");
+			//rand
+			var sRank = '<span class="ranks margin-l5" data-id="' + row.id + '" data-rank="' + (row.rank > 0 ? row.rank: 0) + '">';
+			sRank += '<img src="img/loader.gif" style="height:20px" class="hide keyword_ranks_spinner" data-id="' + row.id + '"> \
+					<a class="keyword_ranks_button" title="Get actual keyword rank" data-id="' + row.id + '" \
+						onclick="Core.keys_rank(' + row.id + ', 0, ' + row.id + ');" style="cursor:pointer"> \
+					<img src="assets/img/portlet-reload-icon.png" style="height:16px;margin-bottom:3px" class="margin-r5"> </a>';
+			sRank += "<span class='price_neutral keyword_ranks_value' data-id=" + row.id + ">" + (row.rank > 0 ? row.rank: "") + "</span>";
+
+			sFav = (row.active == 1? "<a href='javascript:Core.keys_upd(" + row.id + ", 0)' title='Remove from favorite keywords'> \
+											<img src='/sing_up/login-ru.html/img/key_fav_on.png' class='fav' style='margin-bottom:2px'></a>" :
+							   	     "<a href='javascript:Core.keys_upd(" + row.id + ", 1)' title='Add to favorite keywords'> \
+											<img src='/sing_up/login-ru.html/img/key_fav_off.png' class='fav' style='margin-bottom:2px'></a>")
+			sScore = row.score > 0 ? parseInt(row.score) : "";
+			sTraffic = row.traffic > 0 ? parseInt(row.traffic).toLocaleString() : "";
+
+			sStoreSign = '<i class="store ' + store.class + ' margin-r5" title="Keyword from ' + store.name + '" style="margin-bottom:-4px"></i>';
+
+			//draw row
+			strRow = "<tr data-id = " + row.id + "> \
+						<td nowrap style='text-align:center'>" + sFav + "</td> \
+						<td nowrap width='100%' onclick='javascript:chartKeywordRank(" + row.id+ "); '>" + sStoreSign + row.keyword + "</td> \
+						<td nowrap >" + sControlsAdd + "</td> \
+						<td nowrap style='text-align:center; min-width: 80px;'><i class='flag flag-" + country.toLowerCase() + "'></i> " + country + "</td> \
+						<td nowrap style='text-left; min-width: 80px; padding-left: 20px;'>" + sRank + "</td> \
+						<td nowrap style='text-align:center;min-width: 80px;' class='score-id' >" + sScore + "</td> \
+						<td nowrap style='text-align:center;min-width: 100px;'>" + sTraffic + "</td> \
+						<td nowrap style='text-align:center'>" + sChart + "</td> \
+						<td nowrap style='text-align:center'>" + sAppStoreOpen + "</td> \
+						<td nowrap style='text-align:right'>" + sControls + "</td> \
+				 </tr>";
+
+			//TABS
+			if (row.active == 1) {
+				cnt_tabs[KEYWORDS_TAB_FAV] ++;
+				if (KEYWORDS_CURRENT_TAB == KEYWORDS_TAB_FAV) str += strRow;
+			}
+
+			cnt_tabs[KEYWORDS_TAB_ALL] ++;
+			if (KEYWORDS_CURRENT_TAB == KEYWORDS_TAB_ALL) str += strRow;
+		});
+	}
+	if (str.length==0) str = "<tr><td colspan='100%'>No favorite keywords</td></tr>";
+	//output
+	$("#grid > tbody").html(str);
+
+	$("#tab_cnt_" + KEYWORDS_TAB_FAV).html("(" + cnt_tabs[KEYWORDS_TAB_FAV] + ")");
+	$("#tab_cnt_" + KEYWORDS_TAB_ALL).html("(" + cnt_tabs[KEYWORDS_TAB_ALL] + ")");
+
+	//set last time upd
+	$('#btn_upd_ranks').data('tm_keys_upd', tm_keys_upd);
+	if (data.length > 0) {
+		$('#keys_actions').show();	//show hide btn
+	}
+	else {
+		$('#keys_actions').hide();	//show hide btn
+	}
+
+	//show chart by default
+	//if (idapp2key > 0) chartKeywordRank(idapp2key);
+	chartKeywordRank(idapp2key);
+}
+
+function showKeyRankBox() {
+	$("#keyword_ranks_value").hide();
+	$("#keyword_ranks").show();
+	$("#keyword_ranks_chart_btn").hide();
+	$("#keyword_ranks_spinner").show();
+}
+
+function showOrderKeyRankBox(idorder, bVisible) {
+	if (bVisible) {
+		$('.keyword_ranks_spinner[data-id="' + idorder + '"]').show();
+		$('.keyword_ranks_button[data-id="' + idorder + '"]').hide();
+	} else {
+		$('.keyword_ranks_spinner[data-id="' + idorder + '"]').hide();
+		$('.keyword_ranks_button[data-id="' + idorder + '"]').show();
+	}
+}
+
+function printOrderKeyRankInfo(data, idorder) {
+	// hide spinner - show button
+	showOrderKeyRankBox(idorder, false);
+
+	if (!data) {
+		//$('.ranks[data-id="' + idorder + '"]').addClass("price_neg").html("error");
+		return;
+	}
+
+	var retval = $.parseJSON(data);
+	if (retval && retval.status == STATUS_OK) {
+
+		if (retval.rank >  0) {
+			$('.keyword_ranks_spinner[data-id="' + idorder + '"]').show();
+			rank_prev = parseInt($('.ranks[data-id="' + idorder + '"]').data('rank')) || 0;
+
+			//set rank
+			$('.ranks[data-id="' + idorder + '"]').addClass("price_neutral");
+
+			sRank = retval.rank;
+			var nRankDif = (retval.rank > 0 && rank_prev > 0) ? retval.rank - rank_prev : 0;
+			if (nRankDif != 0)
+				sRank += " <span class='" + (nRankDif < 0 ? "price_pos": "price_neg") + "'>(" + (nRankDif < 0 ? "+": "-") +  Math.abs(nRankDif) + ")</span>";
+
+			//draw rank
+			$('.ranks[data-id="' + idorder + '"]').html(sRank);
+
+			//change rank in global array
+			try {
+				//keywords_data['data'].find(x => x.id == idorder).rank = parseInt(retval.rank);
+				for (var i = 0; i < keywords_data['data'].length; i++) {
+					var x = keywords_data['data'][i];
+					if (x.id == idorder)  {
+						keywords_data['data'][i].rank = parseInt(retval.rank)
+						break;
+					}
+				}
+			} catch(err) {};
+		} else
+			$('.ranks[data-id="' + idorder + '"]').addClass("price_neg").html("out");
+
+	} else {
+		//$('.ranks[data-id="' + idorder + '"]').addClass("price_neg").html("error");
+	}
+}
+
+function printKeyRankInfo(data, idapp2key) {
+	//check if his rank is for current keyword
+	var idkey_data = $("#keyword_ranks_value").data("id");
+	if (idapp2key && idkey_data)
+		if (idapp2key != idkey_data) return;
+
+	//hide spinner
+	$("#keyword_ranks_spinner").hide();
+
+	//remove all classes
+	$("#keyword_ranks_value").removeAttr('class');
+	$("#keyword_ranks_value").attr('class', '');
+	//$('#keyword_ranks_value')[0].className = '';
+	$('#keyword_ranks_value').className = '';
+	$("#keyword_ranks_value").show();
+
+	if (!data) {
+		$("#keyword_ranks_value").addClass("error");
+		$("#keyword_ranks_value").text("error");
+		return;
+	}
+
+	var retval = $.parseJSON(data);
+	if (retval.status != STATUS_OK) {
+		$("#keyword_ranks_value").addClass("error");
+		$("#keyword_ranks_value").text(retval.message);
+		return;
+	}
+
+	if (retval.rank > 0) {
+		$("#keyword_ranks_value").addClass("price_pos2");
+		$("#keyword_ranks_value").text(retval.rank);
+		$("#keyword_ranks_chart_btn").show();
+	} else {
+		$("#keyword_ranks_value").addClass("error");
+		$("#keyword_ranks_value").text("out");
+		$("#keyword_ranks_chart_btn").show();
+	}
+}
+
+// ORDERS START ********************************
+function initGridOrders() {
+	//maximum grid rows
+	var GRID_MAX_ROWS = 9;
+
+	var dtable = $("#grid").DataTable({
+		//data: data,
+
+		ajax: {
+			url: "scripts/api.php",
+			timeout: 60000,
+			contentType: 'application/json; charset=utf-8',
+			//data: {action: "ORDERS_ENUM", apikey: Core.API_KEY},
+			data : function (d) {
+					Object.assign(d, Core.grid_params_orders);
+					return d;
+			},
+			dataSrc: 'orders'
+		},
+
+		lengthChange: true,
+		lengthMenu: [ [20, 50, 100, 500, -1], [20, 50, 100, 500, "All"] ],
+		pageLength: 20,
+		info: false,
+		order: [],
+		processing: true,
+		serverSide: true,
+		dom: 'rt<"bottom"<fl>p><"clear">',
+
+		language: {
+		  emptyTable: "No orders found",
+		  infoEmpty:  "No orders to display",
+		  zeroRecords: "No orders to display",
+		  processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+		  lengthMenu: "Show: _MENU_ rows",
+		},
+
+		initComplete: function(settings, json) {
+  			hideGridColumns();
+		},
+
+		columns: [
+			{ title: "ID", data: 'id', orderable: true, class:'nowrap',
+			 	render: function (data, type, row) {
+					if (type=='sort') return row.id;
+
+					var store = APPSTORE.getById(row.appstore_id) || APPSTORE.GOOGLE;
+					var str = "<i class='store " + store.class + " margin-r5' title='Application from " + store.name + "'></i>";
+					if (row.c_type == CAMPAIGN_TYPE.JOB)
+						str += row.id;
+					else
+						str += '<a href="core.js@v=214.html#" onclick="javascript:Core.orders_details(' + row.id +')" title="Show order details">' + row.id + '</a>';
+					return str;
+				}
+			},
+			{   // ICON
+				className: 'dataTables_ico', data: null,
+				orderable: false,
+				render: function (data, type, row) {
+					var country = row.lang;
+					if (!country || country == COUNTRY_ANY || country == COUNTRY_OTHER) country = COUNTRY_DEFAULT;
+					var store = APPSTORE.getById(row.appstore_id) || APPSTORE.GOOGLE;
+
+					return "<a href='/sing_up/login-ru.html/&quot;&#32;+&#32;store.getAppURL(row.package,&#32;country,&#32;&quot;&quot;)&#32;+&#32;&quot;' target='_blank' title='Open application on " + store.name + "'> \
+							<img src='/sing_up/login-ru.html/&quot;&#32;+&#32;row.app_icon&#32;+&#32;&quot;' class='ico'></a>"
+				}
+			},
+			{ title: "Application", data: 'app_name', className: 'nowrap', orderable: true,
+			 	render: function (data, type, row) {
+					if (type=='sort') return row.app_name;
+
+					var country = row.lang;
+					if (!country) country = LANGUAGE_DEFAULT;
+					var store = APPSTORE.getById(row.appstore_id) || APPSTORE.GOOGLE;
+
+					//get job appname
+					switch (row.c_type) {
+						case CAMPAIGN_TYPE.JOB:
+							if (row.hasOwnProperty('job_type')) {
+								switch (row.job_type) {
+									case JOB_TYPE.APP_REVIEW_LIKE:
+										if (row.hasOwnProperty('details') && row.details.hasOwnProperty('package') && row.details.hasOwnProperty('review_id'))
+											return "<a href='/sing_up/login-ru.html/&quot;&#32;+&#32;store.getReviewURL(row.details.package,&#32;row.details.review_id,&#32;row.details.hasOwnProperty('country') ? row.details.country : country, row.details.hasOwnProperty('lang') ? row.details.lang : "") + "' target='_blank' title='Open review on " + store.name + "'>" + row.app_name + "</a>";
+										else return "Like to review";
+										break;
+									default:
+								}
+							}
+							break;
+						default:
+							return "<a href='/sing_up/login-ru.html/&quot;&#32;+&#32;store.getAppURL(row.package,&#32;country,&#32;&quot;&quot;)&#32;+&#32;&quot;' target='_blank' title='Open application on " + store.name + "'>" + row.app_name + "</a>";
+					}
+				}
+			},
+			{   // COUNTRY
+				title: "Region", orderable: true, data: 'lang',  className: 'text',
+				render: function (data, type, row) {
+							if (!row.lang || !row.country_name ) return "";
+							var str = "<span title='" + row.country_name.toUpperCase() + "'><i class='flag flag-" + row.lang.toLowerCase() + "'></i> " + row.lang.toUpperCase() + "</span>";
+							return str;
+						}
+			},
+			{ 	title: "Type", data: 'c_type', orderable: true,			//c_type
+				className: 'nowrap ',
+				render: function ( data, type, row ) {
+					if (type == 'sort') return row.c_type;
+					var str = "";
+					switch (row.c_type)	 {
+						case CAMPAIGN_TYPE.CPA:
+							if (row.hasOwnProperty('details') && row.details.length > 1) {
+								str = `<div class="accordion">
+										<div class="accordion-group">
+											<div class="accordion-heading">
+												<a class="accordion-toggle collapsed" data-toggle="collapse" href="/sing_up/login-ru.html/.collapse_`&#32;+&#32;row.id+&#32;`" >
+												<span class='label label-mini label-warning2'>CPI CAMPAIGN </span> <i class=" icon-caret-down"></i>					
+												</a>
+											</div>
+										<div class="accordion-body collapse out collapse_` + row.id + `">
+											<div class="accordion-inner">
+												<ul>`;
+								$(row.details).each(function(i, r) {
+									if (r.country.length == 1) return true;	//same as continue, don't break loop
+									str += "<li class='margin-l10 " + (r.active == 0 ? "excluded": "") + "'><span alt=" + r.country.toUpperCase() + "><i class='flag flag-" + r.country.toLowerCase() + "'></i> " + r.country_name.toUpperCase() + (r.active == 0 ? " <small>[excluded]</small>": "") + "</span></li>";
+									if (i == GRID_MAX_ROWS)  {
+										str += "<li class='margin-l20'><span> and <b>" + (row.details.length - i - 1) + "</b> more</span></li>";
+										return false; // break the loop
+									}
+								});
+
+								str += "</ul></div></div></div>";
+							} else str = "<span class='label label-mini label-warning2'>CPI CAMPAIGN</span>";
+							break;
+
+						case CAMPAIGN_TYPE.JOB:
+							if (row.hasOwnProperty('job_type'))
+								switch (row.job_type) {
+									case JOB_TYPE.APP_REVIEW_LIKE:
+										str = "<span class='label label-mini label-job-applike'>LIKES</span>";
+										break;
+									default:
+								}
+							break;
+
+						case CAMPAIGN_TYPE.HQR:
+							str = "<span class='label label-mini label-review'>REVIEWS</span>";
+							break;
+
+						default:	// any other campaign type
+							if (row.hasOwnProperty('details') && row.details.length > 0) {
+								var isGroup = row.details.length > 1;
+								if (isGroup) {
+									str = `<div class="accordion">
+										<div class="accordion-group">
+											<div class="accordion-heading">
+												<a class="accordion-toggle collapsed" data-toggle="collapse" href="/sing_up/login-ru.html/.collapse_`&#32;+&#32;row.id+&#32;`" >
+												<span class="label label-mini ` + (row.details.length > 1 ? `label-warning">CAMPAIGN` :`label-info">KEYWORD`) + `</span> <i class=" icon-caret-down"></i>
+												</a>
+											</div>
+											<div class="accordion-body collapse out collapse_` + row.id+ `">
+												<div class="accordion-inner">
+													<ul>`;
+								}
+
+								$(row.details).each(function(i, r) {
+									if (r.installs == 0) return;	//same as continue, don't break loop
+
+									if (isGroup) str +="<li>";
+									if (r.idapp2key > 0 && r.keyword != null)
+										str += "<span><a title='Open history rank chart'  target='_blank' href='/sing_up/login-ru.html/keywords?idapp=&quot;&#32;+&#32;row.idapp&#32;+&#32;&quot;&amp;appstore_id=&quot;&#32;+&#32;row.appstore_id&#32;+&#32;&quot;&amp;idapp2key=&quot;&#32;+&#32;r.idapp2key&#32;+&#32;&quot;&amp;lang=&quot;&#32;+&#32;row.lang+&quot;'>\
+											<img src='/sing_up/login-ru.html/img/chart_open.png' style='height:16px;' class='margin-r5'></a></span>";
+
+									str += r.keyword != null ? "<span class='label label-mini label-info'><b> " + r.keyword + "</b></span>" :
+											 (r.idapp2key > 0 ? "<span class='label label-mini label-info'>DELETED KEYWORD</span>": "<span class='label label-mini label-success'>PACKAGE</span>");
+									if (isGroup) str +="</li>";
+								});
+
+								if (isGroup) str += "</ul></div></div></div>";
+							} else
+							{ // OLD SYSTEM
+								//add char btn
+								if (row.idapp2key > 0)
+									str += "<span><a title='Open history rank chart'  href='/sing_up/login-ru.html/keywords?idapp=&quot;&#32;+&#32;row.idapp&#32;+&#32;&quot;&amp;appstore_id=&quot;&#32;+&#32;row.appstore_id&#32;+&#32;&quot;&amp;idapp2key=&quot;&#32;+&#32;row.idapp2key&#32;+&#32;&quot;&amp;lang=&quot;&#32;+&#32;row.lang+&quot;'>\
+											<img src='/sing_up/login-ru.html/img/chart_open.png' style='height:16px;' class='margin-r5'></a></span>";
+
+								str += row.idkey > 0 ? "<span class='label label-mini label-info'><b> " + row.keyword + "</b></span>" :
+											 "<span class='label label-mini label-success'>package</span>";
+							}
+							break;
+					}
+					return str;
+				}
+			},
+
+			{
+				title: "Rank", data: 'rank', className: 'text-left margin-l5 canhide-filter', orderable: false,
+				render: function ( data, type, row ) {
+
+					var  str = "";
+					switch (row.c_type)	 {
+						case CAMPAIGN_TYPE.CPA:
+							return "";
+							break;
+						default:
+							if (row.hasOwnProperty('details') && row.details.length > 0) {
+								if (row.details.length > 1) {
+									str = `<div class="accordion">
+										<div class="accordion-group">
+											<div class="accordion-heading">
+											</div>
+											<div class="accordion-body collapse out collapse_` + row.id+ `"" >
+												<div class="accordion-inner">
+													<ul>`;
+									$(row.details).each(function(i, r) {
+										if (r.installs == 0) return;	//same as continue, don't break loop
+
+										str +="<li class='margin-r10' style='text-align: left'>";
+										if (r.idapp2key > 0) {
+											var sRank = '<span class="ranks" data-id="' + r.idapp2key + '" data-rank="' + (r.rank > 0 ? r.rank: 0)+'">';
+												sRank += '<img src="img/loader.gif" style="height:20px" class="hide keyword_ranks_spinner"  data-id="' + r.idapp2key + '"> \
+														<a class="keyword_ranks_button" title="Get actual keyword rank" data-id="' + r.idapp2key + '" \
+															href="javascript:Core.keys_rank(' + r.idapp2key + ', ' + row.id + ', ' + r.idapp2key + ');"> \
+														<img src="assets/img/portlet-reload-icon.png" style="height:16px;margin-bottom:3px" class="margin-r5"> </a>';
+											var nRankDif = ((r.rank > 0 && r.rank_current > 0) ? r.rank_current - r.rank : 0);
+											sRank += "<span class='price_neutral keyword_ranks_value' data-id=" + r.idapp2key + ">" + (r.rank_current > 0 ? r.rank_current: (r.rank > 0 ? r.rank : "")) + "</span>";
+											if (nRankDif !=0) sRank += " <span class='keyword_ranks_old_value data-id=" + r.idapp2key + " "
+														+ (nRankDif < 0 ? "price_pos": "price_neg") + "'>(" + (nRankDif < 0 ? "+": "-") +  Math.abs(nRankDif) + ")";
+											sRank +="</span>";
+											str += sRank;
+										}
+										str +="</li>";
+									});
+
+									str += "</ul></div></div></div>";
+
+								} else {
+									var r = row.details[0];
+									if (r.idapp2key == 0 || r.keyword == null) return ""; //package
+									var sRank = '<span class="ranks" data-id="' + r.idapp2key + '" data-rank="' + (r.rank > 0 ? r.rank: 0)+'">';
+										sRank += '<img src="img/loader.gif" style="height:20px" class="hide keyword_ranks_spinner"  data-id="' + r.idapp2key + '"> \
+												<a class="keyword_ranks_button" title="Get actual keyword rank" data-id="' + r.idapp2key + '" \
+													href="javascript:Core.keys_rank(' + r.idapp2key + ', ' + row.id + ', ' + r.idapp2key + ');"> \
+												<img src="assets/img/portlet-reload-icon.png" style="height:16px;margin-bottom:3px" class="margin-r5"> </a>';
+									var nRankDif = ((r.rank > 0 && r.rank_current > 0) ? r.rank_current - r.rank : 0);
+									sRank += "<span class='price_neutral keyword_ranks_value' data-id=" + r.idapp2key + ">" + (r.rank_current > 0 ? r.rank_current: "") + "</span>";
+									if (nRankDif !=0) sRank += " <span class='keyword_ranks_old_value data-id=" + r.idapp2key + " "
+												+ (nRankDif < 0 ? "price_pos": "price_neg") + "'>(" + (nRankDif < 0 ? "+": "-") +  Math.abs(nRankDif) + ")";
+									sRank +="</span>";
+									str = sRank;
+								}
+								return str;
+							} else { // OLD v1.
+								if (row.idkey == 0) return "";
+
+								if (type == 'sort')
+									return parseInt(row.rank_current) > 0 ? parseInt(row.rank_current) : 250;
+								else {
+									var sRank = '<span class="ranks" data-id="' + row.idapp2key + '" data-rank="' + (row.rank_start > 0 ? row.rank_start: 0)+'">';
+										sRank += '<img src="img/loader.gif" style="height:20px" class="hide keyword_ranks_spinner"  data-id="' + row.idapp2key + '"> \
+												<a class="keyword_ranks_button" title="Get actual keyword rank" data-id="' + row.idapp2key + '" \
+													href="javascript:Core.keys_rank(' + row.idapp2key + ', ' + row.id + ', ' + row.idapp2key + ');"> \
+												<img src="assets/img/portlet-reload-icon.png" style="height:16px;margin-bottom:3px" class="margin-r5"> </a>';
+									var nRankDif = ((row.rank_start > 0 && row.rank_current > 0) ? row.rank_current - row.rank_start : 0);
+									sRank += "<span class='price_neutral keyword_ranks_value' data-id=" + row.idapp2key + ">" + (row.rank_current > 0 ? row.rank_current: "") + "</span>";
+									if (nRankDif !=0) sRank += " <span class='keyword_ranks_old_value data-id=" + row.idapp2key + " "
+												+ (nRankDif < 0 ? "price_pos": "price_neg") + "'>(" + (nRankDif < 0 ? "+": "-") +  Math.abs(nRankDif) + ")";
+									sRank +="</span>";
+									return sRank;
+								}
+							}
+					}
+				}
+			},
+
+			{  title: "Installs", data: 'installs', className: 'num', type: 'num', orderable:false,
+				render: function ( data, type, row ) {
+					if (type == 'sort') return Math.max(row.installs, row.installs_actual);
+
+					sInstalls_total = (row.installs > 0 ? " / " + row.installs: "");
+					if (row.hasOwnProperty('details') && row.details.length > 0) {
+						if (row.details.length > 1) {
+							str = `<div class="accordion">
+								<div class="accordion-group">
+									<div class="accordion-heading">`;
+									str += row.installs_actual > 0 ? "<span class='cnt_actual'>" + row.installs_actual + "</span>" + sInstalls_total: row.installs;
+							str +=`</div>
+									<div class="accordion-body collapse out collapse_` + row.id+ `"" >
+										<div class="accordion-inner">
+											<ul>`;
+							var sumInstalls = row.installs_actual;
+							$(row.details).each(function(i, r) {
+								let line = "<li></li>";
+								if (r.installs > 0)  {
+									sInstalls_total = (r.installs > 0 ? " / " + r.installs: "");
+									sumInstalls = sumInstalls - r.installs;
+									line = "<li>" + (r.installs_actual > 0 ? "<span class='cnt_actual'>" + r.installs_actual + "</span>" + sInstalls_total: r.installs) + "</li>";
+								}
+								if (row.c_type == CAMPAIGN_TYPE.CPA && i == GRID_MAX_ROWS) {
+									//last row
+									line += "<li>" + (sumInstalls > 0 ? sumInstalls : "") + "</li>";
+									str += line;
+									return false;
+								}
+								str += line;
+							});
+
+							str += "</ul></div></div></div>";
+							return str;
+						} else {
+							return row.installs_actual > 0? "<span class='cnt_actual'>" + row.installs_actual + "</span>" +sInstalls_total: row.installs;
+						}
+					} else { // OLD v1.
+						if (row.c_type == CAMPAIGN_TYPE.HQR)
+							str = (row.comments_actual > 0 ? "<span class='cnt_actual'>" + row.comments_actual + "</span> / " + row.comments: (row.comments > 0 ? row.comments: ""));
+						else
+							str = row.installs_actual > 0? "<span class='cnt_actual'>" + row.installs_actual + "</span>" + sInstalls_total: row.installs;
+						return str;
+					}
+				}
+			},
+
+			{  title: "Rates", data: 'rates', className: 'num rates-group canhide-filter', orderable: false, visible:  true,
+			   render: function ( data, type, row ) {
+					if (row.c_type == CAMPAIGN_TYPE.CPA) return "";	//CPA CAMPAIGN
+				   	if (row.c_type == CAMPAIGN_TYPE.HQR) {
+						str  = (row.comments_actual > 0 ? "<span class='cnt_actual'>" + row.comments_actual + "</span> / " + row.comments: (row.comments > 0 ? row.comments: ""));
+					} else
+						str  = (row.rates_actual > 0? "<span class='cnt_actual'>" + row.rates_actual + "</span> / " + row.rates: (row.rates > 0 ? row.rates: ""));
+					return str;
+				},
+			},
+
+			{ title: "Reviews", data: 'comments', className: 'num rates-group canhide-filter', orderable: false, visible: true,
+				render: function ( data, type, row ) {
+					if (row.c_type == CAMPAIGN_TYPE.CPA) return "";	//CPA CAMPAIGN
+					var str  = (row.comments_actual > 0? "<span class='cnt_actual'>" + row.comments_actual + "</span> / " + row.comments :(row.comments > 0 ? row.comments: ""));
+					return str;
+				},
+			},
+
+			{ title: "Days", data:'day', className: 'num', orderable: true, searchable: false,
+			   render: function ( data, type, row) {
+					if (type=='sort') return row.days;
+				   	str = "<span class='cnt_actual'>" + row.day + "</span> / " + (row.days > 0 ? row.days : "∞");
+					return str;
+				},
+			},
+
+			{ title: "Price",  data: 'price', className: 'num', orderable:true,
+				render: function ( data, type, row ) {
+					if (type=='sort') return row.price;
+					var str_body = "";
+					var str_head = round2(row.price).toFixed(2) + " $";
+
+					switch (row.c_type) {
+						case CAMPAIGN_TYPE.CPA:
+							if (row.cost > 0) str_head = "<span class='cnt_actual'>" + round2(row.cost).toFixed(2) + " $</span> / " + str_head;
+
+							if (row.status == ORDER_STATUS.COMPLETED.value) {
+								str_head = "<a href='core.js@v=214.html#' onclick='Core.orders_refund(" + row.id + ", " + row.status + ", true, " + row.c_type + ")'>\
+									<i class='icon-exclamation-sign'></i> " + str_head + "</a>";
+							}
+
+							if (row.hasOwnProperty('details') && row.details.length > 1) {
+								str_body = `<div class="accordion"><div class="accordion-group"><div class="accordion-heading">`;
+								str_body += str_head;
+								str_body +=`</div><div class="accordion-body collapse out collapse_` + row.id+ `"" ><div class="accordion-inner"><ul>`;
+								sumCost = row.cost;
+								$(row.details).each(function(i, r) {
+									let line = "<li></li>";
+									if (r.cost > 0) {
+										line ="<li>" + r.cost.toFixed(2) + " $</li>";
+										sumCost -= r.cost;
+									}
+									str_body += line;
+
+									//last row
+									if (i == GRID_MAX_ROWS) {
+										//last row
+										if (sumCost > 0) str_body +="<li>" + sumCost.toFixed(2) + " $</li>";
+										return false;
+									}
+								});
+								str_body += "</ul></div></div></div>";
+							} else str_body = str_head;
+
+							break;
+						default:
+							str_body = str_head;
+					}
+
+					//check if order was partialy completed and refunded
+					let pct_progress = Math.round((row.installs_actual + row.comments_actual + row.rates_actual) / (row.installs + row.comments + row.rates) *100);
+					if (pct_progress < 100 && row.status == ORDER_STATUS.COMPLETED.value) {
+						str_body = "<a href='core.js@v=214.html#' onclick='Core.orders_refund(" + row.id + ", " + row.status + ", true)'>\
+							<i class='icon-exclamation-sign'></i> " + str_head + "</a>";
+					}
+
+					return str_body;
+				},
+			},
+
+			{ title: "CPI", data:'cpa', className: 'num canhide-filter', orderable: false, searchable: false,
+			   render: function ( data, type, row) {
+					if (row.c_type  != CAMPAIGN_TYPE.CPA) return "";
+				   	str = row.cpa ? row.cpa.toFixed(2): "";
+					return "<span >" + str + " $</span>";
+				},
+			},
+			{ title: "Budget",  data:'budget', className: 'num canhide-filter', orderable: false, searchable: false,
+			   render: function ( data, type, row) {
+					if (row.c_type  != CAMPAIGN_TYPE.CPA) return "";
+				   	str = row.budget ? row.budget.toFixed(2): "";
+					return "<span class='margin-r10'>" + str + " $</span>";
+				},
+			},
+
+			{ title: "Start time",  className: 'num', type: 'date', orderable:true,
+				render: function ( data, type, row ) {
+					let field = row.time_start ? row.time_start : row.time_create;
+					//let field = row.time_create;		changed to time_start08.11.2022
+					var d = new Date(Date.parse(field));
+					if (isNaN(d)) return field;
+					if (type=='sort')
+						return d;
+					else {
+						 var tm = ('0' + d.getDate()).slice(-2).toString()
+								+ "." + ('0' + (d.getMonth() + 1).toString()).slice(-2).toString()
+								+ "." + d.getFullYear().toString()
+								+ " " + ('0' + d.getHours()).slice(-2).toString() + ":" + ('0' + d.getMinutes()).slice(-2).toString();
+						var str =  "<span title='Order started at " + tm + " UTC" + "'>" + tm + "</span>";
+						//add remarks
+						strShowRemarks  ="<span onclick='Core.orders_remarks(" + row.id + ")' class='btn-remark " + (row.cnt_remarks_unread > 0 ? "unread" : "") + "' data-idorder=" + row.id + "><i class='icon-envelope margin-r5'></i></span>";
+						return (row.cnt_remarks > 0 ? strShowRemarks : "") + str;
+					}
+				},
+			},
+
+			{ title: "Progress", data:null, orderable: false,
+				render: function ( data, type, row ) {
+					var pct_progress = Math.min((row.installs > 0 ? Math.round(row.installs_actual / row.installs * 100) : 0), 100);
+
+					if (row.installs == 0 && row.days > 0) { //calc progress by days
+						pct_progress = Math.min(Math.round((row.day - 1) / row.days * 100), 100);
+						if (row.day == row.days && [ORDER_STATUS.CPA_CANCELING.value, ORDER_STATUS.CPA_COMPLETING.value, ORDER_STATUS.CANCELED.value, ORDER_STATUS.COMPLETED.value, ORDER_STATUS.ARCHIVED.value].indexOf(row.status) != -1) pct_progress = 100;
+					}
+
+					if (row.days > 0) {
+						var sProgress =  "<div class='progress " + ORDER_STATUS.getByValue(row.status).progress + "'><div style='width:" + pct_progress + "%;' class='bar'>";
+						if (pct_progress<60) sProgress += "</div>" + pct_progress + "%</div>"; else sProgress += "" + pct_progress + "%</div></div>";
+					}
+					else
+						var sProgress =  "<div class='progress " + ORDER_STATUS.getByValue(row.status).progress + "'><div style='width:100%;' class='bar'>PERMANENT</div></div>";
+
+					return sProgress;
+				},
+			},
+			{ data: 'status', visible: false},
+
+			{  title: "Status",  data: 'status', className: 'num',
+				render: function ( data, type, row ) {
+					if (row.hasOwnProperty('details') && row.details.length > 1)
+					{
+						str = `<div class="accordion">
+							<div class="accordion-group">
+								<div class="accordion-heading">`;
+						str += ORDER_STATUS.draw(ORDER_STATUS.getByValue(row.status));
+						str +=`</div>
+								<div class="accordion-body  collapse out collapse_` + row.id+ `"" >
+									<div class="accordion-inner">
+										<ul>`;
+						$(row.details).each(function(i, r) {
+							if (row.c_type == CAMPAIGN_TYPE.CPA && i >= GRID_MAX_ROWS) return;
+							if (r.installs == 0) return;	//same as continue, don't break loop
+							if (row.status == ORDER_STATUS.DRAFT.value || row.status == ORDER_STATUS.ARCHIVED.value) return;
+
+							str +="<li>";
+							str += r.status !=ORDER_STATUS.WAITING.value ? ORDER_STATUS.draw(ORDER_STATUS.getByValue(r.status)) : "";
+							str +="</li>";
+						});
+
+						str += "</ul></div></div></div>";
+						return str;
+					} else { // OLD v1.
+						return ORDER_STATUS.draw(ORDER_STATUS.getByValue(row.status));
+					}
+				}
+			},
+
+			{   title: '<a class="btn red mini hide" href="javascript:archiveOrders()" id="btnOrdersArchive"><i class="icon-trash"></i> Archive all</a>',
+				className: 'num', data:null,
+				orderable: false,
+				render: function ( data, type, row ) {
+					var buttons = {};
+						buttons['pause'] = false;
+						buttons['start'] = false;
+						buttons['cancel'] = false;
+						buttons['abort'] = false;	//same as cancel but no money back
+						buttons['archive'] = false;
+						buttons['repeat'] = false;
+						buttons['refund'] = false;
+						buttons['pay'] = false;
+						buttons['support']= false;
+						buttons['edit']= false;
+
+						// statuses
+						var status = ORDER_STATUS.getByValue(row.status)
+						switch (parseInt(row.status)) {
+							case ORDER_STATUS.ACTIVE.value:
+									buttons['pause'] = true;
+									buttons['cancel'] = true;
+									if (row.c_type == CAMPAIGN_TYPE.CPA) buttons['edit'] = true;
+									if (row.c_type == CAMPAIGN_TYPE.HQR) buttons['cancel'] = false;
+									break;
+							case ORDER_STATUS.IOS_ACTIVE.value:
+									buttons['cancel'] = true;
+									buttons['support']= false;
+									break;
+							case ORDER_STATUS.IOS_NEW.value:
+									//buttons['cancel'] = true;
+									buttons['support']= true;
+									break;
+							case ORDER_STATUS.IOS_UNVERIFIED.value:
+									buttons['cancel'] = true;
+									//buttons['support']= true;
+									//no buttons
+									break;
+							case ORDER_STATUS.CAPPED.value:
+									buttons['pause'] = true;
+									buttons['cancel'] = true;
+									break;
+
+							case ORDER_STATUS.ARCHIVED.value:
+									buttons['repeat'] = true;
+									break;
+							case ORDER_STATUS.CANCELED.value:
+									buttons['archive'] = true;
+									buttons['repeat'] = true;
+									break;
+							case ORDER_STATUS.COMPLETED.value:
+									buttons['archive'] = true;
+									buttons['repeat'] = true;
+									break;
+							case ORDER_STATUS.COMPLETED_PART.value:
+									buttons['refund'] = true;
+									break;
+							case ORDER_STATUS.DRAFT.value:
+									buttons['pay'] = true;
+									buttons['abort'] = true;
+									//buttons['archive'] = true;
+									break;
+							case ORDER_STATUS.PENDING.value:
+									buttons['cancel'] = true;
+									break;
+							case ORDER_STATUS.PAUSED.value:
+									buttons['start'] = true;
+									buttons['cancel'] = true;
+									if (row.c_type == CAMPAIGN_TYPE.CPA) buttons['edit'] = true;
+									break;
+							case ORDER_STATUS.WAITING.value:
+									buttons['pause'] = true;
+									buttons['cancel'] = true;
+									break;
+							case ORDER_STATUS.BANNED.value:
+									buttons['cancel'] = true;
+									break;
+							case ORDER_STATUS.REJECTED.value:
+									buttons['cancel'] = true;
+									buttons['repeat'] = true;
+									if (row.c_type == CAMPAIGN_TYPE.JOB) buttons['repeat'] = false;
+									if (row.c_type == CAMPAIGN_TYPE.HQR) buttons['repeat'] = false;
+									break;
+							case ORDER_STATUS.NOT_FOUND.value:
+									buttons['cancel'] = true;
+									buttons['start'] = true;
+									buttons['repeat'] = false;
+									if (row.c_type == CAMPAIGN_TYPE.JOB) buttons['start'] = false;
+									if (row.c_type == CAMPAIGN_TYPE.HQR) buttons['start'] = false;
+									break;
+							case ORDER_STATUS.INCOMPATIBLE.value:
+									buttons['cancel'] = true;
+									buttons['repeat'] = false;
+									break;
+							case ORDER_STATUS.CPA_CANCELING.value:
+									break;
+							case ORDER_STATUS.CPA_COMPLETING.value:
+									break;
+							case ORDER_STATUS.TEST.value:
+									buttons['cancel'] = true;
+									buttons['repeat'] = false;
+									break;
+							case ORDER_STATUS.MODERATION.value:
+									buttons['cancel'] = true;
+									break;
+							case ORDER_STATUS.UNVERIFIED.value:
+									buttons['cancel'] = false;
+									break;
+						}
+
+						var store = APPSTORE.getById(row.appstore_id) || APPSTORE.GOOGLE;
+						var c_type = parseInt(row.c_type) || CAMPAIGN_TYPE.UNDEF;
+
+						//controls
+						var sControls = "";
+						if (buttons['pay'])
+							sControls += "<a class='btn mini green-stripe' title='Run order' href='javascript:Core.orders_pay(" + row.id + ", " + row.price +");'><i class=' icon-play'>\
+										  </i> Start</a> ";
+
+						if (buttons['start'])
+							if ([CAMPAIGN_TYPE.SINGLE, CAMPAIGN_TYPE.MULTI, CAMPAIGN_TYPE.SMART, CAMPAIGN_TYPE.JOB].includes(c_type)) {
+								if (row.hasOwnProperty('details')) // only v2 orders
+								sControls += "<a class='btn mini green-stripe' title='Restart order' href='javascript:Core.orders_upd(" + row.id + ", " + ORDER_STATUS.WAITING.value + ", " + row.c_type + ");'><i class='icon-play'>\
+												</i> Start</a> ";
+							} else {
+								sControls += "<a class='btn mini green-stripe' title='Restart campaign' href='javascript:Core.orders_upd(" + row.id + ", " + ORDER_STATUS.ACTIVE.value + ", " + row.c_type + ");'><i class='icon-play'>\
+												</i> Start</a> ";
+							}
+
+						if (buttons['pause'])
+							if ([CAMPAIGN_TYPE.SINGLE, CAMPAIGN_TYPE.MULTI, CAMPAIGN_TYPE.SMART, CAMPAIGN_TYPE.CPA, CAMPAIGN_TYPE.JOB].includes(c_type)) {
+								if (row.hasOwnProperty('details'))	// only v2 orders
+									sControls += "<a class='btn mini yellow-stripe' title='Pause order' href='javascript:Core.orders_upd(" + row.id + ", " + ORDER_STATUS.PAUSED.value + ", " + row.c_type + ");'>\
+												  <i class='icon-pause'></i> Pause</a> ";
+							}
+
+						if (buttons['repeat'])
+							if ([CAMPAIGN_TYPE.SINGLE, CAMPAIGN_TYPE.MULTI, CAMPAIGN_TYPE.SMART].includes(c_type)) {
+								if (row.hasOwnProperty('details') && row.details.length > 0)
+									// v.2 NEW
+									sControls += "<a class='btn mini purple-stripe' href='/sing_up/login-ru.html/&quot;&#32;+&#32;store.getPromoteURL(row.id,&#32;row.idapp,&#32;row.lang,&#32;row.c_type)&#32;+&#32;&quot;' title='Repeat this promotion'>\
+												  <i class='icon-copy'></i> Repeat</a> ";
+								else //v.1 OLD
+									sControls += "<a class='btn mini purple-stripe' href='" + store.getPromoteURL(row.id, row.idapp, row.lang, CAMPAIGN_TYPE.SINGLE, row.idapp2key) + "' title='Repeat this order>\
+												  <i class='icon-copy'></i> Repeat</a> ";
+							}
+
+						if (buttons['cancel'])
+							if (c_type == CAMPAIGN_TYPE.CPA) {
+								sControls += "<a class='btn mini red-stripe' title='Cancel and refund order' href='javascript:Core.orders_cancel(" + row.id + ", " + ORDER_STATUS.CPA_CANCELING.value + ", " + row.c_type +");'><i class='icon-remove'>\
+											  </i> Cancel</a> ";
+							} else {
+								sControls += "<a class='btn mini red-stripe' title='Cancel and refund order' href='javascript:Core.orders_cancel(" + row.id + ", " + ORDER_STATUS.CANCELED.value + ", " + row.c_type +");'><i class='icon-remove'>\
+											  </i> Cancel</a> ";
+							}
+
+						if (buttons['edit'])
+							if (c_type == CAMPAIGN_TYPE.CPA) {
+								sControls += "<a class='btn mini blue-stripe' title='Edit CPI campaign' href='javascript:Core.orders_edit(" + row.id + ", " + row.c_type +");'><i class='icon-edit'>\
+											  </i> Edit</a> ";
+							}
+
+						if (buttons['abort'])
+							sControls += "<a class='btn mini red-stripe' title='Cancel order' href='javascript:Core.orders_upd(" + row.id + ", " + ORDER_STATUS.CANCELED.value + ", " + row.c_type +");'><i class='icon-remove'>\
+										  </i> Cancel</a> ";
+
+						if (buttons['refund'])
+							sControls += "<a class='btn mini green-stripe' title='Partially refund order' href='javascript:Core.orders_cancel(" + row.id + ", " + ORDER_STATUS.COMPLETED.value + ", " + row.c_type +");'><i class=' icon-plus-sign'>\
+										  </i> Refund</a> ";
+
+						if (buttons['support'])
+							sControls += "<a class='btn mini red-stripe' title='Contact support'  href='/sing_up/login-ru.html/contact' target='_blank'><i class='icon-user'>\
+										  </i> Contact support</a> ";
+
+						if (buttons['archive'])
+							sControls += "<a class='btn mini grey-stripe' title='Delete and hide order' \
+											 href='javascript:Core.orders_upd(" + row.id + ", " + ORDER_STATUS.ARCHIVED.value + ");'><i class='icon-trash'></i> Archive</a> ";
+						//return
+						return sControls;
+				}
+			}
+
+		]
+	});
+
+	//set tab counter
+	dtable.on('draw', function(e, settings, data){
+		//recalc tabs after search
+		var cnt = dtable.page.info().recordsDisplay;
+		//if (cnt == 0) cnt = $("#grid").DataTable().page.info().recordsTotal;
+
+		$("#tab_cnt_" + CURRENT_TAB).html(cnt > 0 ? "(" + cnt + ")": "");
+		if (cnt == 0) $("#btnOrdersArchive").hide();
+
+		hideGridColumns();
+	});
+
+	//set tab counter
+	/*
+	dtable.on('page.dt', function(){
+		console.log('page event');
+
+	});
+	*/
+
+
+	//dtable.columns.adjust().draw();
+}
+
+function setOrdersTab(index) {
+	CURRENT_TAB = index;
+
+	var status = "";
+	var status_exclude = ORDER_STATUS.ARCHIVED.value;
+	var isunread = 0;
+	switch (index) {
+		case TAB_ALL:
+			status = ORDER_STATUS.UNDEF.value;
+			$("#btnOrdersArchive").show();
+			break;
+		case TAB_COMPLETED:
+			status = ORDER_STATUS.COMPLETED.value + "|" + ORDER_STATUS.COMPLETED_PART.value + "|" + ORDER_STATUS.CPA_COMPLETING.value;
+			$("#btnOrdersArchive").show();
+			break;
+		case TAB_CANCELED:
+			status = ORDER_STATUS.CANCELED.value + "|" + ORDER_STATUS.CPA_CANCELING.value
+   			$("#btnOrdersArchive").show();
+			break;
+		case TAB_PAUSED:
+			status = ORDER_STATUS.PAUSED.value;
+   			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_DRAFT:
+			status = ORDER_STATUS.DRAFT.value;
+   			$("#btnOrdersArchive").show();
+			break;
+		case TAB_ACTIVE:
+			status = ORDER_STATUS.ACTIVE.value
+						+ "|" + ORDER_STATUS.CAPPED.value
+						+ "|" + ORDER_STATUS.WAITING.value
+						+ "|" + ORDER_STATUS.PENDING.value
+						+ "|" + ORDER_STATUS.IOS_ACTIVE.value,
+						+ "|" + ORDER_STATUS.IOS_UNVERIFIED.value,
+						+ "|" + ORDER_STATUS.IOS_NEW.value,
+						+ "|" + ORDER_STATUS.PAUSED.value;
+			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_ARHIVED:
+			status_exclude = ORDER_STATUS.UNDEF.value;
+			status = ORDER_STATUS.ARCHIVED.value;
+ 			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_FAILED:
+			status = ORDER_STATUS.NOT_FOUND.value
+						+ "|" + ORDER_STATUS.INCOMPATIBLE.value
+						+ "|" + ORDER_STATUS.REJECTED.value
+						+ "|" + ORDER_STATUS.BANNED.value;
+ 			 $("#btnOrdersArchive").hide();
+			 break;
+		case TAB_IOS_NEW:
+			status = ORDER_STATUS.IOS_NEW.value + "|" + ORDER_STATUS.MODERATION.value;
+ 			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_IOS_UNVERIFIED:
+			status = ORDER_STATUS.IOS_UNVERIFIED.value;
+ 			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_IOS_ACTIVE:
+			status = ORDER_STATUS.IOS_ACTIVE.value;
+ 			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_UNREAD:		//unread messagems
+ 			isunread = 1;
+			status_exclude = ORDER_STATUS.UNDEF.value;
+			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_HQR_ACTIVE:		//unread messagems
+			status = ORDER_STATUS.ACTIVE.value + "|" + ORDER_STATUS.IOS_ACTIVE.value+ "|" + ORDER_STATUS.UNVERIFIED.value
+			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_HQR_NEW:		//unread messagems
+			status = ORDER_STATUS.MODERATION.value + "|" + ORDER_STATUS.IOS_NEW.value
+			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_HQR_UNVERIFIED:		//unread messagems
+			status = ORDER_STATUS.UNVERIFIED.value;
+			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_MODERATION:
+			status = ORDER_STATUS.MODERATION.value;
+			$("#btnOrdersArchive").hide();
+			break;
+		case TAB_HQR_REFILLING:
+			status = ORDER_STATUS.REFILLING.value;
+			$("#btnOrdersArchive").hide();
+			break;
+		default:
+			status = "";
+			isunread = 0;
+			$("#btnOrdersArchive").show();
+	};
+
+	//reloas grid
+	if (status.toString().length > 0 || isunread > 0) {
+		if (typeof AdminCore != "undefined") {
+			if (AdminCore.CURRENT_PAGE == PAGE_ADMIN_ORDERS_IOS || AdminCore.CURRENT_PAGE == PAGE_ADMIN_ORDERS_CPA || AdminCore.CURRENT_PAGE == PAGE_ADMIN_ORDERS_ANDROID|| AdminCore.CURRENT_PAGE == PAGE_ADMIN_ORDERS_HQR || AdminCore.CURRENT_PAGE == PAGE_ADMIN_ORDERS_JOB) {
+				AdminCore.grid_params_orders_admin["status"] = status;
+				AdminCore.grid_params_orders_admin["status_exclude"] = status_exclude;
+			}
+		} else {
+			Core.grid_params_orders["status"] = status;
+			Core.grid_params_orders["status_exclude"] = status_exclude;
+		}
+
+		Core.grid_params_orders["isunread"] = isunread;
+		$('#grid').DataTable().ajax.reload(null, true);
+	}
+
+	//append grid to tab
+	$("#grid_wrapper").appendTo("#tab_" + index);
+
+	//reinit popovers
+	$("#grid .popovers").popover();
+
+}
+
+function gridReloadCallBack() {
+	hideGridColumns();
+}
+
+function hideGridColumns() {
+	var dtable =$('#grid').DataTable();
+
+	dtable.columns('.canhide-filter').every(function () {
+		//if (this.rows().count()> 1) {
+
+			/*
+			var data = this.data().to$();
+			if (data.length > 0) {
+				arr = data.filter(function(a) {return parseFloat(a) || 0  > 0});
+				this.visible(arr.length > 0);
+			} else this.visible(true);
+			*/
+			this.visible( this.data().filter(function (a,b) {return parseFloat(a) || 0 > 0;}).count() >0);
+		//}
+
+	});
+
+}
+
+// arhive_all ionclick handler - index is a TAB index
+function archiveOrders() {
+
+	switch (CURRENT_TAB) {
+		case TAB_COMPLETED:
+			 status = ORDER_STATUS.COMPLETED.value;
+			 msg_text = "COMPLETED ";
+			 break;
+		case TAB_CANCELED:
+			 status = ORDER_STATUS.CANCELED.value;
+			 msg_text = "CANCELED ";
+			 break;
+		case TAB_DRAFT:
+			 status = ORDER_STATUS.DRAFT.value;
+			 msg_text = "DRAFT ";
+			 break;
+		default:
+			status = 0;
+			msg_text = "COMPLETED and CANCELED ";
+	};
+
+	// waitbox
+	var dlg_title = "Orders archivation";
+	var dlg_body = "<p>Are you sure you want <b>archive</b> all <span class='text-success'>" + msg_text+ "</span>orders and move them to «Archived» tab?</p>"
+
+	var callback = function () {
+		Core.orders_archive(status);
+	};
+
+	confirmBox.show(dlg_title, dlg_body, callback);
+}
+
+function printOrderPrice(data) {
+	if (data) {
+		$("#order_price").data("price", data.total);
+		$("#order_price").text(data.total  > 0 ? data.total + "$" : "");
+
+		$("#order_price").data("price_keyword", data.keyword_price);
+		$("#order_price").data("price_package", data.package_price);
+		$("#order_price").data("price_rate", 	data.rate_price);
+		$("#order_price").data("price_review",  data.review_price);
+		$("#order_price").data("price_hqr",  	data.hqr_price);
+		$("#order_price").data("price_job_applike",  	data.job_applike_price);
+
+		//first time order
+		$("#order_price").data("isfirstorder",  data.isfirstorder);
+
+		//action bonus
+		$("#order_price").data("bonus_action",  data.bonus_action);
+		if (parseInt(data.bonus_action)>0) {
+			$(".order_bonus_action").html(parseInt(data.bonus_action));
+			$(".bonus-action").show();
+		}else $(".bonus-action").hide();
+
+		calcOrder();
+	}
+	else  {
+		$("#order_price").data("price", 0);
+		$("#order_price").text("");
+	}
+}
+
+function printOrderRefund(idorder, data, status, bViewOnly, c_type) {
+	var str = "";
+	var dlg_title  = "";
+	var dlg_body = "";
+	var dlg_q = "";
+
+	switch (status) {
+		case ORDER_STATUS.CANCELED.value:
+			dlg_title = "Order cancelation";
+			dlg_body = "<p>Funds for <b>undelivered installs</b> will be returned to your balance.</p>";
+			dlg_q = "<p>Are you sure you want proceed and <b>cancel</b> this order?</p>"
+			str = "<p>Your order is partially completed, if you cancel it, its refunded price will be returned to your balance.</p>";
+			break;
+
+		case ORDER_STATUS.COMPLETED.value:
+			if (!bViewOnly) {
+				dlg_title = "Order refund";
+				dlg_body = "<p>Funds for <b>undelivered installs</b> will be returned to your account balance.</p>";
+				dlg_q = "<p>Are you sure you want proceed and <b>refund</b> this order?</p>"
+
+				//partially string
+				str = "<p>Your order is partially completed, funds for <b>undelivered</b> installs will be returned to your balance.</p>";
+			} else {
+				if (c_type == CAMPAIGN_TYPE.CPA) {
+					dlg_title = "Campaign was refunded";
+					dlg_body = "";
+					//partially string
+					str = "<p>Your CPI campaign is completed, reserved funds were returned to your account balance.</p>";
+				} else
+				{
+					dlg_title = "Order was partially refunded";
+					dlg_body = "";
+					//partially string
+					str = "<p>Your order was partially completed, funds for <b>undelivered installs</b> were returned to your account balance.</p>";
+				}
+			}
+			break;
+
+		case ORDER_STATUS.CPA_CANCELING.value:
+			dlg_title = "Campaign cancelation";
+			dlg_body = "<p>After cancelation, funds reserved for this CPI campaign will be returned to your balance in less than <b>24 hours</b>. We need this time to stop all traffic to your app and calculate exact spent budget of your campaign.</p>";
+			dlg_q = "<p>Are you sure you want proceed and <b>cancel</b> this CPI campaign?</p>"
+			str = "";
+			break;
+
+		case ORDER_STATUS.CPA_COMPLETING.value:
+			dlg_title = "Campaign is completing";
+			dlg_body = "<p>Campaign is in completing stage. After final stop, funds reserved for this CPI campaign will be returned to your balance in less than <b>24 hours</b>. We need this time to stop all traffic to your app and calculate exact spent budget of your campaign.</p>";
+			dlg_q = ""
+			str = "";
+			break;
+
+		default:
+	}
+
+	if (c_type != CAMPAIGN_TYPE.CPA)  {
+		if (data)
+			if (data.refund.total > 0 && data.hasOwnProperty('installs') && data.hasOwnProperty('price') ) {
+				var total_installs  = data.installs.total.keyword > 0 ? data.installs.total.keyword : data.installs.total.package;
+				var actual_installs = data.installs.total.keyword > 0 ? data.installs.actual.keyword : data.installs.actual.package;
+				var price_installs  = data.installs.total.keyword > 0 ? data.price.keyword : data.price.package;
+				var refund_installs = data.installs.total.keyword > 0 ? data.refund.keyword : data.refund.package;
+
+				str = '<div class="row-fluid">' + str + '</div>';
+
+				str += '<div class="row-fluid"><div class="span12"> \
+							<table class="table table-condensed table_pricelist"> \
+								<tr> \
+									<th></th> \
+									<th style="text-align:right">Total</th> \
+									<th style="text-align:right">Actual</th> \
+									<th style="text-align:right">Price</th> \
+									<th style="text-align:right">Refund</th> \
+								</tr>';
+
+				if (data.installs.total.keyword > 0)
+					str +=		'<tr> \
+									<td>Keywords</td> \
+									<td style="text-align:right">' + data.installs.total.keyword + '</td> \
+									<td style="text-align:right" ' + (data.installs.actual.keyword <  data.installs.total.keyword  ? "class='cnt_actual_neg'": "") + '>' + data.installs.actual.keyword + '</td> \
+									<td style="text-align:right">' + data.price.keyword.toFixed(2)   + ' $</td> \
+									<td style="text-align:right">' + data.refund.keyword.toFixed(2) + ' $</td> \
+								</tr>';
+
+				if (data.installs.total.package > 0)
+					str +=		'<tr> \
+									<td>Package</td> \
+									<td style="text-align:right">' + data.installs.total.package + '</td> \
+									<td style="text-align:right" ' + (data.installs.actual.package <  data.installs.total.package  ? "class='cnt_actual_neg'": "") + '>' + data.installs.actual.package + '</td> \
+									<td style="text-align:right">' + data.price.package.toFixed(2)   + ' $</td> \
+									<td style="text-align:right">' + data.refund.package.toFixed(2) + ' $</td> \
+								</tr>';
+
+
+				if (data.installs.total.rate > 0)
+					str +=	'<tr> \
+									<td>Rates</td> \
+									<td style="text-align:right">' + data.installs.total.rate + '</td> \
+									<td style="text-align:right" ' + (data.installs.actual.rate <  data.installs.total.rate  ? "class='cnt_actual_neg'": "") + '>' + data.installs.actual.rate + '</td> \
+									<td style="text-align:right">' + data.price.rate.toFixed(2) + ' $</td> \
+									<td style="text-align:right">' + data.refund.rate.toFixed(2)+ ' $</td> \
+								</tr>';
+				if (data.installs.total.review > 0)
+					str +=	'<tr> \
+									<td>Reviews</td> \
+									<td style="text-align:right">' + data.installs.total.review + '</td> \
+									<td style="text-align:right" ' + (data.installs.actual.review <  data.installs.total.review  ? "class='cnt_actual_neg'": "") + '>' + data.installs.actual.review + '</td> \
+									<td style="text-align:right">' + (c_type == CAMPAIGN_TYPE.HQR ? data.price.hqr.toFixed(2) : data.price.review.toFixed(2)) + ' $</td> \
+									<td style="text-align:right">' + data.refund.review.toFixed(2) + ' $</td> \
+								</tr>';
+				if (data.installs.total.items > 0)
+					str +=	'<tr> \
+									<td>Items</td> \
+									<td style="text-align:right">' + data.installs.total.items + '</td> \
+									<td style="text-align:right">' + data.installs.actual.items + '</td> \
+									<td style="text-align:right">' + data.price.job.toFixed(2) + ' $</td> \
+									<td style="text-align:right">' + data.refund.job.toFixed(2)+ ' $</td> \
+								</tr>';
+
+					str +=	'<tr> \
+									<td colspan="4"><b>Total</b></td> \
+									<td style="text-align:right"><b>' + data.refund.total.toFixed(2) + ' $</b></td> \
+							</tr>';
+				str += 	'</table></div></div>';
+
+				//print
+				dlg_body = str;
+		}
+		else {
+			if (bViewOnly)
+				dlg_body = str;
+			else
+				if (data.refund.total > 0) dlg_body += "<p>This order could be refunded in total: <b>" + data.refund.total + "</b> $.</p>";
+		}
+	} else dlg_body = str;
+
+
+	//add question
+	if (!bViewOnly) dlg_body += dlg_q;
+
+	//set callback
+	var callback = function () {
+		Core.orders_upd(idorder, status, c_type);
+	};
+
+	if (!bViewOnly)
+		confirmBox.show(dlg_title, dlg_body, callback);
+	else
+		customBox.show(dlg_title, dlg_body,  null, null, BOXMODE.NORMAL);
+}
+
+// BALANCE *************************
+function printBalance(balance, balance_bonus) {
+	/*
+	$("#user_balance").text(balance ? balance : "0");
+	$("#user_balance_bonus").text(balance_bonus ? balance_bonus : "0");
+	*/
+
+	$('.user_balance').each(function() {
+		$(this).text(balance ? balance : "0");
+	});
+
+	$('.user_balance_bonus').each(function() {
+		$(this).text(balance_bonus ? balance_bonus : "0");
+	});
+
+}
+
+
+// PAYMENTS *************************
+function printPayments(data) {
+	var str = "";
+	if (data)
+		$.each(data, function(i, row) {
+			str += "<tr> \
+				<td nowrap>"+ row.eps_name +"</td> \
+				<td nowrap class='num'><b>" + round2(row.amount).toFixed(2) + "</b>$</td> \
+				<td nowrap class='text-middle'>" + row.dt + "</td> \
+				<td nowrap >" + (row.eps_description ? row.eps_description : (row.eps_orderid ? row.eps_orderid: "")) + "</td> \
+			</tr>";
+		});
+
+	//notfound string
+	if (!str) str  = "<tr><td colspan='4'>No payments yet</td></tr>";
+
+	$("#payments_list").html(str);
+}
+
+// TRANSACTIONS *************************
+
+function printTransactions(data) {
+	if (!data) {
+		str  = "<tr><td colspan='5'>No transactions yet</td></tr>";
+		$("#grid > tbody").html(str);
+	}
+
+	var dtable = $("#grid").DataTable({
+		data: data,
+
+		lengthChange: false,
+		pageLength: 20,
+		order: [],
+
+		columns: [
+			{
+				title: "ID",
+				className: "",
+				render: function ( data, type, row ) {
+					return (row.idorder > 0? row.idorder : row.idpayment > 0 ? row.idpayment: "");
+				}
+			},
+			{ title: "Type",
+				className: "nowrap",
+				render: function ( data, type, row ) {
+						if (row.idpayment > 0) return "Payment";
+
+						if (row.idorder > 0) {
+							switch (row.c_type) {
+								case CAMPAIGN_TYPE.CPA:
+									return "CPI Campaign";
+								case CAMPAIGN_TYPE.SMART:
+									return "Smart Campaign";
+								case CAMPAIGN_TYPE.MULTI:
+									return "Campaign";
+								case CAMPAIGN_TYPE.HQR:
+									return "High Quality Reviews order";
+								case CAMPAIGN_TYPE.JOB:
+									switch (row.job_type) {
+										case JOB_TYPE.APP_REVIEW_LIKE:
+											return "Review Likes order";
+										default:
+											return "Order";
+									}
+								default:
+									return "Order";
+							}
+						} else return "";
+					}
+			},
+
+			{
+				title: "Amount",
+				className: 'num',
+				render: function ( data, type, row ) {
+							styleAmount = parseFloat(row.amount) > 0 ? 'price_pos' : 'price_neg';
+							return "<span class='margin-r10'><span class='" + styleAmount + "'>" + row.amount + "</span>$</span>";
+						}
+			},
+			{ title: "Date", data: 'dt', className: 'nowrap'},
+
+			{
+				title: "Action",
+				orderable: false,
+				className: 'nowrap grid-text',
+				render: function ( data, type, row ) {
+						var store = APPSTORE.getById(row.appstore_id) || APPSTORE.UNDEF;
+						sSource = "";
+						if (row.app_name) {
+							sSource += row.appstore_id ? "<i class='store " + store.class + "' title='" + store.name + "'  style='margin-bottom:-4px'></i>" : "";
+							sSource += "<img src="/sing_up/login-ru.html/+&#32;row.icon_link&#32;+" class='ico' style='margin-left:7px'> ";
+							sSource += "<span style='margin-left:5px'>" + row.app_name + " </span>";
+							if (row.c_type == CAMPAIGN_TYPE.CPA) {
+								sSource += "<i>" + (row.amount < 0 ? "[campaign funding]" : "[campaign refund]") + "</i>";
+							} else {
+								sSource += "<span class='label label-mini label-error' style='margin-left:10px'><i class='icon-signal'></i> " + row.installs  + "</span> ";
+								if (row.rates > 0) sSource += "<span class='label label-mini label-error'><i class='icon-star'></i> " + row.rates  + "</span> ";
+								if (row.comments > 0) sSource += "<span class='label label-mini label-error'><i class='icon-comments'></i> " + row.comments  + "</span> ";
+							}
+						} else sSource = "<span style='margin-left:10px'>" + (row.payment_description ?  row.payment_description : row.eps_name) + "</span>";
+						return sSource;
+				},
+			},
+
+			{
+				title: "Status",
+				className: 'num',
+				render: function ( data, type, row ) {
+					return ORDER_STATUS.draw(ORDER_STATUS.getByValue(row.status));
+				}
+			}
+		]
+	});
+	dtable.columns.adjust().draw();
+}
+
+// STATISTICS *************************
+function printStatistics(data) {
+	// by date
+	let str = "";
+	if (data && data.grp_date) {
+		let sum_keywords = 0;
+		let sum_packages = 0;
+		let sum_rates = 0;
+		let sum_comments = 0;
+
+		$.each(data.grp_date, function(i, row) {
+			str +=  "<tr> \
+						<td nowrap>" + row.time_stat + "</td> \
+						<td>" + (row.cnt_keywords > 0 ? row.cnt_keywords : "")+ "</td> \
+						<td>" + (row.cnt_packages > 0 ? row.cnt_packages : "") + "</td> \
+						<td class='rates-group'>" + (row.cnt_rates > 0 ? row.cnt_rates : "") + "</td> \
+						<td class='rates-group'>" + (row.cnt_comments > 0 ? row.cnt_comments : "")+ "</td> \
+					</tr>";
+					sum_keywords += parseInt(row.cnt_keywords);
+					sum_packages += parseInt(row.cnt_packages);
+					sum_rates += parseInt(row.cnt_rates);
+					sum_comments += parseInt(row.cnt_comments);
+		});
+		//total
+		if (str) str+= "<tr> \
+						<td nowrap><b>Total</b></td> \
+						<td><b>" + (sum_keywords > 0 ? sum_keywords: "") + "</b></td> \
+						<td><b>" + (sum_packages > 0 ? sum_packages: "") + "</b></td> \
+						<td class='rates-group'><b>" + (sum_rates > 0 ? sum_rates : "") + "</b></td> \
+						<td class='rates-group'><b>" + (sum_comments > 0 ?  sum_comments : "") + "</b></td> \
+					</tr>";
+	}
+	//notfound string
+	if (!str) str = "<tr><td colspan='100%'>Statistics data is not available</td></tr>";
+	$("#stat_list_by_date").html(str);
+
+	// by keywords
+	let sum_installs = 0;
+	str = "";
+	if (data && data.grp_date) {
+		$.each(data.grp_keyword, function (i, row) {
+			let nRankDif = (row.rank_start > 0 && row.rank_current > 0) ? row.rank_current - row.rank_start : 0;
+			let sRank = "<span class='price_neutral'>" + (row.rank_current > 0 ? row.rank_current : "-") + "</span>";
+			if (nRankDif != 0) sRank += " <span class='" + (nRankDif < 0 ? "price_pos" : "price_neg") + "'>(" + (nRankDif < 0 ? "+" : "-") + Math.abs(nRankDif) + ")";
+
+			let sChart = row.idapp2key > 0 ? "<span class='ranks'><a title='Open history rank chart'  href='/sing_up/login-ru.html/keywords?appstore_id=&quot;&#32;+&#32;row.store_id&#32;+&#32;&quot;&amp;idapp=&quot;&#32;+&#32;row.idapp&#32;+&#32;&quot;&amp;idapp2key=&quot;&#32;+&#32;row.idapp2key&#32;+&#32;&quot;&amp;lang=&quot;&#32;+&#32;row.lang&#32;+&#32;&quot;' target='_blank'>\
+											  <img src='/sing_up/login-ru.html/img/chart_open.png' style='height:16px;margin-bottom:2px' class='margin-r10'></a></span>" : "";
+
+			str += "<tr> \
+						<td nowrap title=" + row.lang.toUpperCase() + "><i class='flag flag-" + row.lang.toLowerCase() + "'></i> <b>" + row.keyword + "</b></td> \
+						<td>" + (row.cnt > 0 ? row.cnt : "") + "</td> \
+						<td>" + sRank + "</td> \
+						<td>" + sChart + "</td> \
+					</tr>";
+			sum_installs += parseInt(row.cnt);
+		});
+		//total
+		if (str && sum_installs > 0)
+			  str+= "<tr> \
+						<td nowrap><b>Total</b></td> \
+						<td><b>" + sum_installs + "</b></td> \
+						<td></td> \
+						<td></td> \
+					</tr>";
+	}
+	//notfound string
+	if (!str) str = "<tr><td colspan='100%'>Statistics data is not available</td></tr>";
+	$("#stat_list_by_keyword").html(str);
+
+	//hide rates block
+	//if (BLOCK_ENABLED_RATES == 1) $(".rates-group").show(); else $(".rates-group").hide();
+}
+
+// STATISTICS *************************
+function printUserInfo(data) {
+	// user details
+	$("#user_nickname").val(data['user_name']);
+	$("#user_email").val(data['user_email']);
+
+	$("#user_lastlogin").html("Last login <em>" + data['user_lastlogin_time'] + "</em> from IP <b>" + data['user_lastlogin_ip'] + "</b>");
+	$("#user_apikey").html(data['user_apikey']);
+
+	if (data.priceplan) {
+		let str = "";
+		$.each(data.priceplan, function(i, row) {
+				str +=`<div class="accordion-group">
+						<div class="accordion-heading `  + (row.isselected ? "selected_row" : "") + `">
+							<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#price_list" href="core.js@v=214.html#collapse_` + i + `">
+								<img src="/sing_up/login-ru.html/img/pricebadge/plan_`+&#32;i.toString()&#32;+`.png" width="16px" class="margin-r10"><span>` + row.name + `</span>
+							</a>
+						</div>`;
+
+				//open pane
+				str += `<div id="collapse_` + i + `" class="accordion-body collapse ` + (row.isselected ? "in" : "") + `">
+							<div class="accordion-inner">`;
+				//add countries
+				if (row.countries != null) {
+					//add table
+					 var strTableStart = `<table class="table table-condensed table_pricelist">
+										<thead><tr>																					
+												<th nowrap  style="text-align: left !important;">Country</th>
+												<th nowrap width="80px">Keyword</th>
+												<th nowrap width="80px">Package</th>
+												<th nowrap width="80px" class="rates-group">Rate</th>
+												<th nowrap width="80px" class="rates-group">Review</th>
+												<th nowrap width="100px">HQ Review <i class="icon-question-sign alert-info popovers" 
+													data-trigger="hover" data-placement="left" 
+													data-content="High Quality Review with money back guarantee. Includes install, rate and review."></i>
+												</th>
+										</tr></thead>`;
+					var arr = Array();
+					arr[APPSTORE.GOOGLE.id] ="";
+					arr[APPSTORE.APPLE.id] ="";
+
+					$.each(row.countries, function(j, row2) {
+						var store = APPSTORE.getById(row2.appstore_id) || APPSTORE.GOOGLE;
+						arr[row2.appstore_id] +=
+							"<tr>" +
+								(row2.country.toUpperCase() != COUNTRY_OTHER
+									? "<td nowrap ' style='text-align: left !important;'><i style='margin-left:5px;' class='flag flag-" + row2.country.toLowerCase() + "'></i> " + row2.country_name + " (" + row2.country.toUpperCase() + ")" + (row2.isnew == 1 ? " <span class='mini badge-micro badge-success margin-l5 pull-right'>new</span>" : "") + " </td>"
+									: "<td nowrap  style='text-align: left !important;'><i style='margin-left:5px;'></i><b> " + row2.country_name + "<b></td>") + "\
+								<td nowrap width='80px' style='text-align: center'>" + drawUserInfoPriceFormatedString(row2.keyword_price, row2.bonus_action) + "</td> \
+								<td nowrap width='80px' style='text-align: center'>" + drawUserInfoPriceFormatedString(row2.package_price, row2.bonus_action) + "</td> \
+								<td nowrap width='80px' style='text-align: center' class='rates-group' >" + drawUserInfoPriceFormatedString(row2.rate_price, row2.bonus_action) + "</td> \
+								<td nowrap width='80px' style='text-align: center' class='rates-group' >" + drawUserInfoPriceFormatedString(row2.review_price, row2.bonus_action) + "</td> \
+								<td nowrap width='100px' style='text-align: center'>" + drawUserInfoPriceFormatedString(row2.hqr_price, 0) + "</td> \
+							</tr>";
+					});
+					var strTableFinish = '</table>';
+
+					str += `<div class="tabbable tabbable-custom tabbable-custom-profile" style="Overflow-x: auto;">
+								<ul class="nav nav-tabs">
+                                    <li class="active"><a href="core.js@v=214.html#tab_`+i+`_store_`+APPSTORE.GOOGLE.id+`" data-toggle="tab"><i class='store ` + APPSTORE.GOOGLE.class + `' title='` + APPSTORE.GOOGLE.name + `'></i><b> Android</b></a></li>
+									<li><a href="core.js@v=214.html#tab_`+i+`_store_`+APPSTORE.APPLE.id+`" data-toggle="tab"><i class='store ` + APPSTORE.APPLE.class + `' title='` + APPSTORE.APPLE.name + `'></i><b> IOS</b></a></li>
+								</ul>`;
+
+					 str += '<div class="tab-content" style = "padding-top:1px; Overflow-x: auto;">';
+					 str += '	<div class="tab-pane active" id="tab_'+i+'_store_'+APPSTORE.GOOGLE.id+'">';
+					 str += strTableStart + (arr[APPSTORE.GOOGLE.id] ? arr[APPSTORE.GOOGLE.id] : "") + strTableFinish + '</div>';
+					 str += '	<div class="tab-pane" id="tab_'+i+'_store_'+APPSTORE.APPLE.id+'">';
+					 str += strTableStart + (arr[APPSTORE.APPLE.id] ? arr[APPSTORE.APPLE.id] : "") + strTableFinish + '</div>';
+					 str += '</div></div>';
+
+					// min limit
+					str += '<div class="text-right" style="margin:5px 0px 5px;">Required payments limit: <b>' + row.min_amount + '</b> $';
+					str += (!row.isbonus ? ' + <a href="/sing_up/login-ru.html/resellers" class="btn mini blue badge">Account approval</a>':'');
+					str += '</div>';
+				}
+				//close pane
+				str += '</div></div></div>';
+		});
+
+		// apply table
+		$("#price_list").html(str);
+
+		$("#price_plan").html(data['payments']['priceplan']);
+	} else $("#price_list").empty();
+
+	$("#payments_amount").html(parseFloat(data['payments']['total']).toFixed(2) + " $");
+
+	//email_props
+	var email_props = parseInt(data['user_email_props']);
+	$("#check_email_payments").prop('checked', email_props & parseInt($("#check_email_payments").data('bitvalue')));
+	$("#check_email_news").prop('checked', email_props & parseInt($("#check_email_news").data('bitvalue')));
+	$("#check_email_orders").prop('checked', email_props & parseInt($("#check_email_orders").data('bitvalue')));
+	$("#check_email_reports").prop('checked', email_props & parseInt($("#check_email_reports").data('bitvalue')));
+
+	//advanced profile
+	$("#user_skype").val(data['user_login_skype']);
+	$("#user_tg").val(data['user_login_tg']);
+	$("#user_fullname").val(data['user_fullname']);
+	$("#user_phone").val(data['user_phone']);
+	$("#user_gender").prop('checked', data['user_gender']);
+	$('input:radio[name=gender]').filter("[value="+data['user_gender']+"]").prop('checked', true);
+	$("#user_ctype").val(data['user_ctype']);
+
+	var lang = data['user_country'];
+	if (lang) {
+		$("#user_country").val(lang);
+		$("#user_country").trigger('change.select2');
+	}
+
+
+	markChecks();
+
+	if (data['user_reflink']) {
+		$("#user_ref_link").html(data['user_reflink']);
+		$("#user_ref_link").attr('href', data['user_reflink']);
+	}
+
+	//hide rates block
+	//if (BLOCK_ENABLED_RATES == 1) $(".rates-group").show(); else $(".rates-group").hide();
+
+		//reinit popovers
+	$("#priceplan .popovers").popover();
+}
+
+//drawpriceplaninfo string
+function drawUserInfoPriceFormatedString(price, bonus_action) {
+	price = parseFloat(price);
+	bonus_action = parseInt(bonus_action);
+	var str = (bonus_action > 0 && price > 0? "<span class='price-depricated'>": '<span>');
+	str += (price > 0 ? price.toFixed(2) : "n/a") + "</span>";
+	if (price > 0)
+		str += (bonus_action > 0 ? "<span class='price-bonus'>" + parseFloat(price * (100 - bonus_action) / 100).toFixed(2) + "</span>":"");
+	return str;
+}
+
+
+// *************** CUSTO< REVIEWS ******************
+function fillComboReviewsCategory(data) {
+	var str = '<option selected value="-1">---- no pack selected ----</option>';
+
+	retval = $.parseJSON(data);
+	if (retval.status == STATUS_OK)
+		$.each(retval.data, function(i, row) {
+			str += '<option value="' + row.id + '">' + row.name + ' (' + row.cnt +')</option>';
+		});
+
+	$("#review_pack").html(str);
+}
+
+// print
+var reviewsTable = null;
+/*
+function printReviews(data) {
+	retval = $.parseJSON(data);
+
+	if (retval.status != STATUS_OK) {
+		str  = "<tr><td colspan='4'>" + retval.message + "</td></tr>";
+		$("#review_list").html(str);
+		return;
+	}
+
+	var str = "";
+	$.each(retval.users, function(i, row) {
+		str += drawReview(row);
+	});
+
+	if (!str) { //not found
+		str = "<tr><td colspan='4'>No reviews found in this pack</td></tr>";
+		$("#review_list").html(str);
+	}
+	else  {
+		if (reviewsTable) reviewsTable.destroy();
+
+		$("#review_list").html(str);
+		reviewsTable = $('#tbl_userlist').DataTable( {
+						"order": [[ 0, "asc" ]],
+						"iDisplayLength": 20,
+						"bSortClasses": false,
+					});
+	}
+}
+function drawReview(row) {
+	var buttons = {};
+	buttons['edit'] = true;
+	buttons['delete'] = true;
+
+	//controls
+	var sControls = "";
+	if (buttons['edit'])
+		sControls += "<a class='btn mini yellow-stripe' title='Edit user' \
+					href='javascript:edit_user(" + row.user_id + ", " + row.user_priceplan_id + ", " + row.balance + ", \"" + row.user_email + "\", " + row.user_ref_id + ");'><i class='icon-pencil'></i> Edit</a> ";
+	if (buttons['delete'])
+		sControls += "<a class='btn mini red-stripe' title='Delete user' href='javascript:Core.users_delete(" + row.user_id + ");'><i class='icon-remove'></i> Delete</a> ";
+
+	var sAdmin = (row.isadmin == 1 ? " <span title='Admin' class='label label-mini label-error'><i class='icon-user-md'></i></span>" :"");
+	// main
+	var sBalance= "<b>" + round2(row.balance).toFixed(2) + "</b> $";
+	var sPayments_sum = row.payments_sum> 0 ? "<b>" + round2(row.payments_sum).toFixed(2)  + "</b> $": "";
+	var sPayments_last = row.payments_last> 0 ? "<b>" + round2(row.payments_last).toFixed(2) + "</b> $": "";
+	var str = "<tr> \
+				<td>" + row.user_id + "</td> \
+				<td nowrap>" + row.user_name + sAdmin + "</td> \
+				<td nowrap>" + row.user_email + "</td> \
+				<td nowrap class='num'>" + sBalance + "</td> \
+				<td nowrap class='num'>" + sPayments_sum + "</td> \
+				<td nowrap class='num' title='" + (row.payments_last > 0 ?  'Last payment: ' + row.payments_last_date: "") + "'>" + sPayments_last + "</td> \
+				<td nowrap style='text-align:right'>" + (row.user_priceplan_name ? row.user_priceplan_name: "") + "</td> \
+				<td nowrap style='text-align:center'>" + (row.cnt_apps > 0? row.cnt_apps: "") +" </td> \
+				<td nowrap style='text-align:center'>" + (row.cnt_orders > 0? row.cnt_orders: "") +" </td> \
+				<td nowrap style='text-align:center'>" + row.user_tm_create +" </td> \
+				<td nowrap style='text-align:center'>" + row.user_tm_lastlogin +" </td> \
+				<td nowrap style='text-align:center'>" + (row.user_ref_id > 0? row.user_ref_id: "") +" </td> \
+				<td class='num' nowrap><div class='btn-toolbar text-right'>"  + sControls + "</div></td> \
+			</tr>";
+	return str;
+}
+*/
+//********************* COOKIES *********************
+function createCookie(name,value,days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days*24*60*60*1000));
+		var expires = "; expires=" + date.toUTCString();
+	}
+	else var expires = "";
+ 	var domain = "; domain=" + "." + document.domain;
+	document.cookie = name + "=" + value + expires + "; path=/" + domain;
+}
+
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+
+function eraseCookie(name) {
+	createCookie(name,"",-1);
+}
+
+function markChecks() {
+	if (!jQuery().uniform) return;
+
+	$('input[type=checkbox]').each(function () {
+		var set = jQuery(this).attr("data-set");
+		var checked = jQuery(this).is(":checked");
+		jQuery(set).each(function () {
+			if (checked) {
+				$(this).attr("checked", true);
+			} else {
+				$(this).attr("checked", false);
+			}
+		});
+		jQuery.uniform.update(set);
+	});
+}
+
+function createChecks() {
+	if (!jQuery().uniform) return;
+
+	$("input[type=checkbox]:not(.toggle), input[type=radio]:not(.toggle, .star)").uniform();
+}
+
+
+
+//*************** REFERRALS ********************
+function printReferrals(data, bOnlyActive) {
+	if (!data) return;
+	bOnlyActive = bOnlyActive === undefined ? true: bOnlyActive;
+
+	var str ="";
+	//USER LIST *******************
+	if (data.users.length > 0) {
+		$.each(data.users, function(i, row) {
+			//draw row
+
+			switch (parseFloat(row.level)) {
+				case 15: clsLvl = "text-success";break;
+				case 10: clsLvl = "text-info";break;
+				case 5:  clsLvl = "text-error";break;
+				default: clsLvl = "";
+			}
+
+			strRow = "<tr> \
+						<td nowrap width=70px style='text-align:center' class='" + clsLvl + "'>" + row.level + " %</td> \
+						<td nowrap >" + row.name + "</td> \
+						<td nowrap >" + row.email + "</td> \
+						<td nowrap style='text-align:right' width=110px>" + Math.floor(row.payments_paid) + " $</td> \
+						<td nowrap style='text-align:right' width=110px>" + Math.floor(row.payments_new) + " $</td> \
+						<td nowrap style='text-align:right' width=80px>" + Math.floor(row.payments_ref) + " $</td> \
+						<td nowrap style='text-align:center' width=80px>" + row.tm_create + "</td> \
+				 </tr>";
+			if (!bOnlyActive)
+				str += strRow;
+			else if (row.payments_paid > 0) str += strRow;
+		});
+
+		// next payment ***********
+		str_footer = "<tr class='text-muted'> \
+						<td nowrap colspan=4>Total users: <b>" + data.info.cnt_users_total  + "</b></td> \
+						<td nowrap colspan=100% style='text-align:right'>Total <b>active</b> users: <b>" + data.info.cnt_users_active + "</b></td> \
+					</tr> \
+					<tr class='text-warning'> \
+						<td nowrap colspan=6><b>Total referral payments</b></td> \
+						<td nowrap width=80px style='text-align:right'><b>" + data.info.payment_total + " </b>$</td> \
+					 </tr> \
+					<tr class='text-info'> \
+						<td nowrap colspan=6><b>Previous referral payment</b></td> \
+						<td nowrap width=80px style='text-align:right'><b>" + data.info.payment_prev + " </b>$</td> \
+					 </tr> \
+					 <tr class='text-success'> \
+						<td nowrap colspan=6><b>Next referral payment</b></td> \
+						<td nowrap width=80px style='text-align:right'><b>" + data.info.payment_next + " </b>$</td> \
+					 <tr>";
+		$("#grid > tfoot").html(str_footer);
+	}
+	else str = "<tr><td colspan='100%'>No referrals found yet, try to invite new clients.</td></tr>";
+	$("#grid > tbody").html(str);
+
+	//msgbox ************************
+	$("#payment_next").html(data.info.payment_next);
+	$("#payment_next").data('amount', data.info.payment_next);
+	$("#payment_next").data('min-amount', data.info.min_ref_payment_amount);
+
+	//min_ref_amount
+	$(".min_ref_amount").html(data.info.min_ref_amount);
+	$(".min_ref_payment_amount").html(data.info.min_ref_payment_amount);
+
+	//ref_link
+	if (data.info.ref_link) {
+		$("#ref_link_info").hide();
+		$("#ref_link").html(data.info.ref_link);
+		$("#ref_link").attr('href', data.info.ref_link);
+	} else {
+		$("#ref_link_info").show();
+		$("#ref_link").hide();
+	}
+}
+
+// *********** BLOG ***************
+function printBlogPosts(data) {
+	var str_alerts = "";
+	var str_system = "";
+	var str_news = "";
+
+	var retval = $.parseJSON(data);
+	if (retval != null && retval.hasOwnProperty('status') && retval.status == STATUS_OK)
+		// print posts
+		$.each(retval.data, function(i, row) {
+
+			if (row.type == BLOG_TYPE_SYSTEM) {
+				blog_tag = BLOG_TAGS.ALERT;
+				for (j = 0; j < row.tags.length; j++)
+				{
+					switch (row.tags[j]) {
+						case BLOG_TAGS.ALERT.name:
+							blog_tag = BLOG_TAGS.ALERT;
+							break;
+						case BLOG_TAGS.DANGER.name:
+							blog_tag = BLOG_TAGS.DANGER;
+							break;
+						case BLOG_TAGS.INFO.name:
+							blog_tag = BLOG_TAGS.INFO;
+							break;
+						case BLOG_TAGS.SUCCESS.name:
+							blog_tag = BLOG_TAGS.SUCCESS;
+							break;
+
+						default:
+							blog_tag = BLOG_TAGS.ALERT;
+					}
+				}
+
+				if (str_alerts.length == 0)
+					str_alerts = '<div class="alert ' + blog_tag.class + '">' + row.content  + '</div>';
+				else {
+					str_system += '<li class="in">';
+					str_system += '<span style="float: left;"><span class="label label-mini ' + blog_tag.label + ' margin-r5">' + row.date + '</span></span>';
+					str_system += '<div class="message"><span class="arrow"></span><span class="body">' + row.content  + '</span></div></li>';
+				}
+			}
+
+			switch (Core.CURRENT_PAGE) {
+				case PAGE_FAQ: {
+					if (row.type == BLOG_TYPE_NEWS) {
+						str_news += '<li class="in">';
+						str_news += '<a href="/sing_up/login-ru.html/'&#32;+&#32;row.link&#32;+&#32;'" target="_blank"><img class="avatar" src="/sing_up/login-ru.html/'&#32;+&#32;row.img_link&#32;+&#32;'" /></a>';
+						str_news += '<div class="message">';
+						str_news += '<span class="date">'  + row.date + '</span>';
+						if (row.categories) {
+							for (let j = 0; j < row.categories.length; j++) {
+								let s = row.categories[j].replace('FAQ:','').replace('FAQ','').trim();
+								if (s.length>0) str_news += '<span class="mini badge badge-warning margin-l5">' +s+ '</span>';
+							}
+						}
+						str_news += '<span class="title"><a href="/sing_up/login-ru.html/'&#32;+&#32;row.link&#32;&#32;+&#32;'" class="name" target="_blank"><b>'  + row.title + '</b></a></span>';
+
+						str_news += '</div></li>';
+					}
+					break;
+				}
+				default:
+					if (row.type == BLOG_TYPE_NEWS) {
+						str_news += '<li class="in">';
+						str_news += '<a href="/sing_up/login-ru.html/'&#32;+&#32;row.link&#32;+&#32;'" target="_blank"><img class="avatar" src="/sing_up/login-ru.html/'&#32;+&#32;row.img_link&#32;+&#32;'" /></a>';
+						str_news += '<div class="message">';
+						str_news += '<a href="/sing_up/login-ru.html/'&#32;+&#32;row.link&#32;&#32;+&#32;'" class="name" target="_blank"><b>'  + row.title + '</b></a>';
+						//str_news += '<span class="datetime mini badge badge-info margin-l5">' + row.date + '</span>';
+						str_news += '<span class="body">' + row.content + '</span>';
+						str_news += '</div></li>';
+					}
+			}
+		});
+
+	if (str_alerts.length > 0) {
+		$("#blog_posts_alerts_feed").show();
+		$("#blog_posts_alerts_feed").find('ul').html(str_alerts);
+	} else $("#blog_posts_alerts_feed").hide();
+
+	if (str_system.length > 0) {
+		$("#blog_posts_system").show();
+		$("#blog_posts_system_feed").html(str_system);
+	} else $("#blog_posts_system").hide();
+
+	if (str_news.length > 0) {
+		$("#blog_posts_news").show();
+		$("#blog_posts_news_feed").html(str_news);
+	} else $("#blog_posts_news").hide();
+}
+
+function showTooltip(x, y, contents) {
+	$('<div id="tooltip">' + contents + '</div>').css({
+		position: 'absolute',
+		display: 'none',
+		top: y + 5,
+		left: x + 5,
+		border: '1px solid #333',
+		padding: '4px',
+		color: '#fff',
+		'border-radius': '3px',
+		'background-color': '#333',
+		opacity: 0.80
+	}).appendTo("body").fadeIn(200);
+}
+
+function printPromocodeCheck(status, msg) {
+	switch (status) {
+		case STATUS_OK:
+			$("#textPromo").removeClass().addClass('text-success').text(msg);
+			break;
+		case STATUS_FAIL:
+			$("#textPromo").removeClass().addClass('text-error').text(msg);
+			break;
+		default:
+			$("#textPromo").removeClass().addClass('text-warning').text("add promocode if you have any");
+			break;
+	}
+}
+
+function printOrderDetails(data) {
+	if (data==null) return;
+	if (!data.hasOwnProperty('info') || !data.hasOwnProperty('totals')) return;
+
+	var frm = $('#frmOrderDetails');
+	var title = "Order details" + (data.info.idorder ? " #" + data.info.idorder : "");
+	frm.find('.title').html(title);
+
+	frm.modal();
+	var grid = frm.find("#grid");
+	grid.empty();
+	grid.data('idorder', data.info.idorder ? data.info.idorder : 0);
+	grid.data('appstore_id', data.info.appstore_id ? data.info.appstore_id : 0);
+
+	//buttons
+	frm.find('.table-reviews').toggle(false);
+
+	switch (data.info.c_type) {
+		case CAMPAIGN_TYPE.UNDEF:
+			return;
+
+		case CAMPAIGN_TYPE.CPA: {
+				if (!data.hasOwnProperty('details')) return;
+				if (data.details.length == 0) return;
+
+				//set table header
+				var str = '<thead><tr><td>Country</td><td class="num">Impressions</td><td class="num">Clicks</td><td class="num">Installs</td><td class="num">Cost</td><td class="num">CPI</td></tr></thead>';
+
+				$.each(data.details, function(i, row) {
+					//country
+					str += '<tr><td class="' + (row.active == 0 ? "excluded" : "") + '" ' + (row.active == 0 ? " alt='Country is excluded'" : "") + '><i class="flag flag-' + row.country.toLowerCase() + '"></i> ' + row.country_name.toUpperCase() + '</td>';
+					//data
+					str += '<td class="num">' + (row.impressions > 0 ? row.impressions : "") + '</td>';
+					str += '<td class="num">' + (row.clicks > 0 ? row.clicks : "") + '</td>';
+					str += '<td class="num">' + (row.installs > 0 ? row.installs : "") + '</td>';
+					str += '<td class="num">' + (row.cost.toFixed(2) > 0 ? row.cost.toFixed(2) + ' $': "") + '</td>';
+					str += '<td class="num">' + (row.cpa_actual.toFixed(2) > 0 ? row.cpa_actual.toFixed(2) + ' $': "") + '</td>';
+					str += '</tr>';
+				});
+
+				//totals
+				str += '<tr><td><strong>Summary' + (data.details.length > 1 ? " of " + data.details.length: "") +'</strong></td>';
+				str += '<td class="num"><strong>'+ data.totals.impressions + '</strong></td>';
+				str += '<td class="num"><strong>'+ data.totals.clicks + '</strong></td>';
+				str += '<td class="num"><strong>'+ data.totals.installs + '</strong></td>';
+				str += '<td class="num"><strong>'+ data.totals.cost + ' $</strong></td>';
+				str += '<td class="num"><strong><span class="cnt_actual">' + (data.totals.cpa_actual.toFixed(2)  + '</span> / ' + data.info.cpa.toFixed(2) + ' $') + '</strong></td>';
+				str += '</tr>';
+
+				//add Days
+				str += "<tr><td colspan='100%' height='30px' style='vertical-align:bottom; border:0;'>";
+				str += '<span class="label label-mini label-warning">Days in campaign </span> ' + (data.info.day + ' / ' + (data.totals.days > 0 ? data.totals.days : "UNLIMITED"));
+				str += "</td></tr>";
+
+				//out
+				grid.html(str);
+			}
+			break;
+
+		case CAMPAIGN_TYPE.HQR: {
+				//add reviews anmd rates
+				var str = "";
+
+				// draw review line
+				if (data.totals.reviews > 0)
+					str += `<tr><td><span class="label label-mini label-success">REVIEWS</span>`
+							+ (data.info.language !== undefined && data.info.language.length > 0 ? " <small class='margin-l10'>Language: <b>" + data.info.language_name + "</b></small>" : "")
+							+ (data.info.gender !== undefined && data.info.gender != 0 ? " <small class='margin-l5'>Gender: <b>" + data.info.gender_name + "</b></small>" : "") +
+							`</td>`+
+							`<td colspan="100%"></td>` +
+							`<td class="num"><strong><span class=\'cnt_actual\'>` + data.totals.reviews_actual  + "</span> / " + data.totals.reviews  + '</strong></td></tr>';
+
+				// draw rate line
+				if (data.totals.rates > 0)
+					str += `<tr><td><span class="label label-mini label-success">RATES</span></td><td colspan="100%"></td>\
+								<td class="num"><strong><span class=\'cnt_actual\'>` + data.totals.rates_actual  + "</span> / " + data.totals.rates  + '</strong></td></tr>';
+
+				//add gender_name
+				if (data.info.gender_name) {
+					str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Author gender: ";
+					str += '<span class="label label-mini label-warning">'+data.info.gender_name+'</span>';
+					str +="</td></tr>";
+				}
+
+				//add language_name
+				if (data.info.language_name) {
+					str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Review language: ";
+					str += '<span class="label label-mini label-warning">'+data.info.language_name+'</span>';
+					str +="</td></tr>";
+				}
+
+				//add description
+				if (data.info.description) {
+					str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Description: ";
+					str += '<span class="text-info">'+data.info.description+'</span>';
+					str +="</td></tr>";
+				}
+
+				//set table header
+				var str_head = '<thead><tr><td>Task</td><td colspan="100%"></td><td class="num">Total</td></tr></thead>';
+				str = str_head + str;
+
+				//out
+				grid.html(str);
+
+				//show reviews pane
+				frm.find('.table-reviews').toggle(true);
+
+				//admin
+				frm.find('.table-reviews-import').toggle(data.info.appstore_id == APPSTORE.GOOGLE.id);
+			}
+			break;
+		default: {
+				//add common params
+				var str = "";
+				var totals = [];
+				var totals_actual = [];
+				var clsTDActive = (data.totals.days == data.info.day && data.info.status != ORDER_STATUS.ACTIVE.value ? 'passive' : 'active');
+
+				for (day=1; day <= data.totals.days; day++) {
+					totals[day] = 0;
+					totals_actual[day] = 0;
+				}
+
+				if (data.keywords && data.keywords.length > 0)
+					$.each(data.keywords, function(i, row) {
+					str += '<tr>';
+
+					// kw
+					if (row.id > 0)
+						str += '<td>\
+								<a title="Open history rank chart" target="_blank" href="/sing_up/login-ru.html/keywords?idapp='&#32;+&#32;data.info.idapp&#32;+&#32;'&amp;appstore_id='&#32;+&#32;data.info.appstore_id&#32;+&#32;'&amp;idapp2key='&#32;+&#32;row.id&#32;+&#32;'&amp;lang='&#32;+&#32;data.info.country&#32;+'">\
+								<img src="/sing_up/login-ru.html/img/chart_open.png" style="height:16px;margin-bottom:2px" class="margin-r2"></a>\
+								<span class="label label-mini label-info"><b>' + row.kw + '</b></span></td>';
+					else //package
+						str +='<td><span class="label label-mini label-success">PACKAGE</span></td>';
+
+					//totals
+					str += '<td class="num">'+ "<span class='cnt_actual'>" + row.total_actual  + "</span> / " + row.total + '</td>';
+
+					//days
+					for (day=1; day <= data.totals.days; day++) {
+						//check rankrule
+						if (data.info.rankrule_id > 0 && row.status[day] == ORDER_STATUS.COMPLETED_PART.value && (row.installs[day]>0 && row.installs_actual[day]==0))
+							str += '<td class="num ' + (data.info.day > day ? "passive":(data.info.day==day ? clsTDActive:"")) +'"><span class="cnt_neutral margin-l10" style="margin-right:2px"></span>*</td>';
+						else
+							str += '<td class="num ' + (data.info.day > day ? "passive":(data.info.day==day ? clsTDActive:"")) +'">'+
+								(row.installs[day] ?  (data.info.day >= day ? "<span class='" + (row.installs_actual[day] >= row.installs[day] ? "cnt_actual" : "cnt_actual_neg") + "'>" + row.installs_actual[day] + "</span> / " : "")
+								 + row.installs[day] : "") + '</td>';
+
+						totals[day] += (row.installs[day] ? row.installs[day] : 0);
+						totals_actual[day] += (row.installs_actual[day] ? row.installs_actual[day] : 0);
+					}
+					str += '</tr>';
+				});
+
+								//totals
+				if (data.keywords && data.keywords.length > 1) {
+					str += '<tr><td><strong>Summary</strong></td><td class="num"><strong>' +
+							"<span class='cnt_actual'>" + data.totals.installs_actual  + "</span> / " + data.totals.installs
+						+ '</strong></td>';
+
+					for (day=1; day <= data.totals.days; day++) {
+						str += '<td class="num ' + (data.info.day > day ? "passive":(data.info.day==day ? clsTDActive:"")) +'">';
+						str += (data.info.day >= day ? "<span class='" + (totals_actual[day] >= totals[day]? "cnt_actual": "cnt_actual_neg") + "'>" + totals_actual[day] + "</span> / " + totals[day] : totals[day]);
+						str +='</td>';
+					}
+					str += '</tr>';
+				}
+
+				//add reviews anmd rates
+				if (data.totals.rates > 0)
+					str += '<tr><td><span class="label label-mini label-warning">RATES</span></td>' +
+						'<td class="num"><strong><span class="cnt_actual">' + data.totals.rates_actual  + '</span> / ' +  data.totals.rates + '</strong></td><td colspan="100%"></td></tr>';
+				if (data.totals.reviews > 0)
+					str += '<tr><td><span class="label label-mini label-review">REVIEWS</span>' +
+					'<td class="num"><strong><span class="cnt_actual">' + data.totals.reviews_actual  + '</span> / ' +  data.totals.reviews + '</strong></td><td colspan="100%"></td></tr>';
+
+				//add delivery type
+				if (data.keywords) {
+					str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Delivery type: ";
+					switch (data.info.delivery_type) {
+						default:
+						case DELIVERY_TYPE.INSTANT:
+							str += '<span class="label label-mini label-success">INSTANT</span>';
+							break;
+						case DELIVERY_TYPE.DAYSPREAD:
+							str += '<span class="label label-mini label-info">SPREAD TO 24h</span>';
+							break;
+					}
+					str+="</td></tr>";
+				}
+
+				//add rates type
+				if (data.totals.rates > 0) {
+					str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Rates type: ";
+					switch (data.info.rate_type) {
+						case RATE_TYPE.POSTIVE:
+							str += '<span class="label label-mini label-success">5* postitive rates</span>';
+							break;
+						case RATE_TYPE.POSTIVE_AVG:
+							str += '<span class="label label-mini label-success">5* + 4* positive rates</span>';
+							break;
+						case RATE_TYPE.NEGATIVE:
+							str += '<span class="label label-mini label-danger">1* negative rates</span>';
+							break;
+						case RATE_TYPE.NEGATIVE_AVG:
+							str += '<span class="label label-mini label-danger">1* + 2* negative rates</span>';
+							break;
+						default:
+					}
+					str+="</td></tr>";
+				}
+
+				//add raterule type
+				if (data.keywords) {
+					str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Promotion rule: ";
+					str += '<span class="label label-mini label-warning">'+data.info.rankrule_name+'</span>';
+					str +="</td></tr>";
+				}
+
+				//add deeplink
+				if (data.info.common_details !== undefined && data.info.common_details.hasOwnProperty('deeplink')) {
+					str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Deeplink: ";
+					str += '<span><b>'+data.info.common_details.deeplink+'</b></span>';
+					str +="</td></tr>";
+				}
+
+				//add deeplink
+				if (data.info.common_details !== undefined && data.info.common_details.hasOwnProperty('task_suggest_mode') && data.info.common_details.task_suggest_mode == 1) {
+					str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Keyword search mode: ";
+					str += '<span class="label label-mini label-pink">KEYWORD SUGGEST MODE</span>';
+					str +="</td></tr>";
+				}
+
+				//add description
+				if (data.info.description) {
+					str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Description: ";
+					str += '<span class="text-info">'+data.info.description+'</span>';
+					str +="</td></tr>";
+				}
+
+				// add vendors
+				if (typeof AdminCore !== undefined && data.hasOwnProperty('vendor') && data.vendor.hasOwnProperty('vendors'))
+					if ([PAGE_ADMIN_ORDERS_IOS, PAGE_ADMIN_ORDERS_ANDROID, PAGE_ADMIN_ORDERS_HQR, PAGE_ADMIN_ORDERS_JOB].includes(AdminCore.CURRENT_PAGE)) {
+						if (data.info.idorder == 0) break;
+						let cnt = 0;
+						let options = "";
+						let bOldVendor = true;
+						$.each(data.vendor.vendors, function(i, vendor) {
+							options += "<option id='" + vendor.id + "' " + (data.vendor.id==vendor.id ? "selected" : "") + ">" + vendor.name + "</option>";
+							cnt++;
+							if (data.vendor.id == vendor.id) bOldVendor = false;
+						});
+
+						//add no vendor field
+						if ((data.vendor.id == 0 && cnt > 0) || bOldVendor) options = "<option id='0' selected>NO VENDOR</option>" + options;
+
+						if (data.vendor.hasOwnProperty("id")) {
+							str += "<tr><td colspan='100%' style='vertical-align:bottom; border:0;'>Current vendor: ";
+							str += "<select class='m-wrap small combo-vendors'>";
+							str += options;
+							str +="</select>";
+							str += "<a role='button' class='btn-vendor-change margin-l10 btn blue mini' onclick='AdminCore.admin_vendor_set(" + data.info.idorder + ")'> Change vendor</a>";
+							str +="</td></tr>";
+						}
+					}
+
+				//set table header
+				let str_head = '<thead><tr><td>Task</td><td class="num">Total</td>';
+				for (day=1; day <= data.totals.days; day++) {
+					str_head += '<td class="num ' + (data.info.day > day ? "passive":(data.info.day==day ? clsTDActive:"")) +'">Day ' + day + '</td>';
+				}
+				str_head += '</tr></thead>';
+				str = str_head + str;
+
+
+				//out
+				grid.html(str);
+				//remove active class for not active orders on last day
+
+				//show reviews pane
+				frm.find('.table-reviews').toggle(data.totals.reviews > 0);
+				frm.find('.table-reviews').find('.btn-reviews-actual').toggle(data.totals.reviews_actual < data.totals.reviews && data.totals.reviews_actual > 0);
+			}
+	}
+}
+
+
+function showReviews() {
+	var idorder = parseInt($('#frmOrderDetails').find("#grid").data('idorder')) || 0;
+	if (idorder==0) {
+		customBox.show("", "Can't export reviews.", null, null, BOXMODE.ALERT);
+		return;
+	}
+	var store_id = parseInt($('#frmOrderDetails').find("#grid").data('appstore_id')) || 0;
+	if (store_id==0) {
+		customBox.show("", "Can't export reviews.", null, null, BOXMODE.ALERT);
+		return;
+	}
+
+	//show
+	order_review_enum (idorder, store_id);
+}
+
+//export reviews to textfile. mode=0 - all, 1-undelivered
+function exportReviews(mode, idorder=0) {
+	if (idorder==0) idorder = parseInt($('#frmOrderDetails').find("#grid").data('idorder')) || 0;
+	if (idorder==0) {
+		customBox.show("", "Can't export reviews.", null, null, BOXMODE.ALERT);
+		return;
+	}
+	$.ajax({
+		cache: false, url: "scripts/api.php",
+		data: {action: "REVIEWS_ENUM", apikey: Core.API_KEY, idorder: idorder, mode: mode},
+		success: function(data) {
+			retval = $.parseJSON(data);
+			if (retval.status == STATUS_OK)
+				downloadReviews(retval.data, mode, idorder);
+			else
+				customBox.show("", retval.message, null, null, BOXMODE.ALERT);
+		},
+		error: function() {
+			customBox.show("", "Can't export reviews.", null, null, BOXMODE.ALERT);
+		}
+	});
+}
+
+function downloadReviews(data, mode, idorder) {
+	if (data==null) return;
+	var str = "";
+	$.each(data, function(i, row) {
+		str += row.review + (row.title ? ";" + row.title : "") +  "\r\n";
+	});
+	str = str.replace('#', '');
+
+	var el = document.createElement('a');
+  	el.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURI(str));
+  	el.setAttribute('download', "reviews_" +( mode == 1 ? "all" : "undelivered") + "_" + idorder.toString() +".txt");
+  	el.style.display = 'none';
+  	document.body.appendChild(el);
+  	el.click();
+  	document.body.removeChild(el);
+}
+
+function downloadOrderReport(data) {
+	if (data==null) return;
+
+	var str ="data:text/csv;charset=utf-8,"
+	str += data.header + "\r\n";
+	$.each(data.report, function(i, row) {
+		str += row + "\r\n";
+	});
+
+	var el = document.createElement('a');
+  	el.setAttribute('href', encodeURI(str));
+  	el.setAttribute('download', "order_report_" + data.idorder.toString() +".csv");
+  	el.style.display = 'none';
+  	document.body.appendChild(el);
+  	el.click();
+  	document.body.removeChild(el);
+}
+
+//updated score from check_rank score property
+function setKeywordScore(data, idapp2key) {
+	json = $.parseJSON(data);
+	if (json.hasOwnProperty("score")) {
+		score = parseInt(json['score']);
+		if (score > 0) $('#grid').find('tr[data-id=' + idapp2key+']').find('td.score-id').html(score);
+	}
+}
+
+
+//fill order rank rules for order and campaign
+function fillOrderRankRules(data) {
+	var strEmptyList = "<option value='0' selected>DON'T STOP</option>";
+
+	if (!data || data.length == 0) {
+		$(".combo_rankrules").html(strEmptyList);
+		return;
+	}
+
+	str = "";
+	if (data) {
+		$.each(data, function(i, row) {
+			str += "<option value=" + row.id + (str.length==0? " selected" : "") + ">" + row.name + "</option>";
+		});
+	}
+
+	if (str.length==0) str = strEmptyList;
+	$(".combo_rankrules").html(str);
+}
+
+//replaces href to link in plain text
+function linkify(inputText) {
+    var replacedText, replacePattern1, replacePattern2, replacePattern3;
+
+    //URLs starting with http://, https://, or ftp://
+    replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+    replacedText = inputText.replace(replacePattern1, '<a href="/sing_up/login-ru.html/$1" target="_blank">$1</a>');
+
+    //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
+    replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
+
+    //Change email addresses to mailto:: links.
+    replacePattern3 = /(([a-zA-Z0-9\-\_\.])+@[a-zA-Z\_]+?(\.[a-zA-Z]{2,6})+)/gim;
+    replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
+
+    return replacedText;
+}
+
+//request form for personal manager
+function showPersonalManagerRequest() {
+	$.ajax({
+		cache: false, url: "scripts/api.php",
+		data: {action: "USERS_MANAGER_ADD", apikey: Core.API_KEY},
+		success: function(data) {
+			retval = $.parseJSON(data);
+
+			if (retval.status == STATUS_OK) {
+				var callback = function () {
+					window.location.href = "profile?advanced=1";
+				}
+
+				customBox.show("Personal manager",
+					"Request for personal manager assignment is sent. Your new personal manager will contact you soon. \
+					<br><br>Please fill your <b>Advance profile</b> and leave any contact details for better communication.",
+					callback, null, BOXMODE.SUCCESS, true);
+			}
+			else
+				customBox.show("Personal manager", "Error sending request. Try again later or contact support.", null, null, BOXMODE.ALERT);
+		},
+		error: function() {
+			customBox.show("Personal manager", "Error sending request. Try again later or contact support.", null, null, BOXMODE.ALERT);
+		}
+	});
+
+
+}
+
+function showOrderRemarks(idorder, data, callback = null) {
+	var strHeader =
+		`<div class="portlet" style="margin-bottom: 0px;">		
+			<div class="portlet-body" id="chats">
+				<div class="scroller" data-height="343px" data-always-visible="1" data-rail-visible1="1">`;
+
+	str = `<ul class="chats">`;
+	$.each(data, function(i, row) {
+		let text = linkify(row.text);
+
+		let msg = "Message" + (row.manager_id > 0 ? " from " + row.manager_name : " to me ") + " for campaign #" + idorder + "";
+		let line = '<li class="' + (row.manager_id > 0 ? "in" : "out") + '">';
+		line += '<img class="avatar" alt="" title="Manager" src="/sing_up/login-ru.html/img/avatars/avatar_'&#32;+&#32;row.manager_id&#32;+&#32;'.jpg" onerror="this.src=\'img/avatars/avatar_default.jpg\'"/>';
+		line += '<div class="message"><span class="arrow"></span>';
+		line += '<span class="name">' + (row.manager_name ? "<a href='mailto:" + row.manager_email + "' target='_blank'>" + row.manager_name + "</a>" : "Me") + '</span>';
+		//skype
+		line += (row.manager_skype ? "<span class='margin-l5'><a href='skype:" + row.manager_skype + "?chat' title='Chat with your manager in Skype' target='_blank'><i class='messenger skype'></i></a></span>": "");
+		//wa
+		line += (row.manager_phone ? "<span><a href='https://wa.me/" + row.manager_phone + "?text=" + msg + "' title='Chat with your manager in Whatsapp' target='_blank'><i class='messenger wa'></i></a></span>": "");
+		//tg
+		line += (row.manager_tg ? "<span><a href='https://t.me/" + row.manager_tg + "?text=" + msg + "' title='Chat with your manager in Telegram' target='_blank'><i class='messenger tg'></i></a></span>": "");
+
+		line += '<span class="datetime pull-right">' + row.time_create + '</span>';
+		line += '<span class="body' + (row.isunread == 1 ? " bold" : "") + '">' + text + '</span>';
+		line += '</div></li>';
+
+		str += line;
+	});
+	str += `</ul>`;
+
+
+	var strFooter = `
+				</div>				
+				<div class="chat-form hide">
+					<div class="input-cont">   
+						<input class="m-wrap" type="text" placeholder="Type a message here..." />
+					</div>
+					<div class="btn-cont"> 
+						<span class="arrow"></span>
+						<a href="javascript:;" class="btn blue icn-only"><i class="icon-ok icon-white"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>`;
+
+	str = strHeader + str + strFooter;
+	customBox.show("Manager's messages for campaign #" + idorder, str, callback, null, BOXMODE.NORMAL, true);
+}
+
+
+//****************** gToools *****************
+var gTools = {
+	formatDate: function (date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		if (month.length < 2) month = '0' + month;
+		if (day.length < 2) day = '0' + day;
+
+		return [day, month, year].join('.');
+	}
+};
+
+function addUsersPaymentsUntracked(data) {
+	$.each(data, function(i, row) {
+		//add tracking to FB
+		try {
+			scriptContent = "fbq('track', 'Purchase', {content_category: '" + row.eps_name + "', content_ids: ['" + row.eps_orderid + "'], value: " + row.amount + ", currency: 'USD'});";
+			$.globalEval(scriptContent);
+		} catch(err) {};
+
+		/* COMMENTED 16.04.2018 - added tracking from server script
+		//add tracking to GA
+		try {
+			scriptContent  = "ga('require', 'ecommerce'); \
+				ga('ecommerce:addTransaction', \
+					{'id': '" + row.eps_orderid + "', \
+					'affiliation': 'eps-" + row.eps_id + "',\
+					'revenue': '" + row.amount + "', \
+					'shipping': '0', \
+					'tax': '0'}); \
+				ga('ecommerce:send');";
+			$.globalEval(scriptContent);
+
+			//set confirmation
+			$.ajax({
+					cache: false,
+					url: "scripts/api.php",
+					data: {action: "USERS_PAYMENTS_TRACK_CONFIRM", apikey: row.apikey, id: row.id, timestamp: $.now()},
+			});
+
+		} catch(err) {};
+		*/
+
+		//add tracking to Quora
+		try {
+			scriptContent = "qp('track', 'Purchase')";
+			$.globalEval(scriptContent);
+		} catch(err) {};
+
+	});
+}
+
+function getParameterByName(variable) {
+	var query = window.location.search.substring(1);
+	var vars = query.split('&');
+	for (var i = 0; i < vars.length; i++) {
+		var pair = vars[i].split('=');
+		if (decodeURIComponent(pair[0]) == variable) {
+			return decodeURIComponent(pair[1]);
+		}
+	}
+}
