@@ -37,7 +37,7 @@
 }
 
 .contact-container {
-  background-image: url("./wp-content/themes/phuket/css/build/img/bg.jpg");
+  background-image: url("../../themes/phuket/css/build/img/bg.jpg");
   height: 100%;
   background-position: center;
   background-repeat: no-repeat;

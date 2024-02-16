@@ -1,5 +1,5 @@
-const handleTogglesCard = () => {
-  const arrows = document.querySelectorAll(".program-list__arrow");
+const handleTogglesCard = (className) => {
+  const arrows = document.querySelectorAll(`.${className}`);
 
   arrows.forEach((arrow) => {
     arrow.addEventListener("click", (e) => {
@@ -13,6 +13,6 @@ const handleTogglesCard = () => {
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  console.log("here");
-  handleTogglesCard();
+    handleTogglesCard("program-list__arrow");
+  handleTogglesCard("price-list__arrow");
 });
