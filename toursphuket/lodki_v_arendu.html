@@ -9964,5 +9964,21 @@
       id="main_js-js"
     ></script>
     <script src="./wp-content/themes/phuket/js/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+    const categoryButtons = document.querySelectorAll(".boats-category__item");
+    const categoriesWrapper = document.querySelectorAll(".boats-list");
+
+    categoryButtons.forEach((btn, i) => {
+        btn.addEventListener("click", () => {
+            categoryButtons.forEach((b, j) => j === i ? b.classList.add("boats-category__item_active") : b.classList.remove("boats-category__item_active"))
+            categoriesWrapper.forEach((c, j) => {
+                c.style.display = i === j ? "block" : "none"
+            })
+        })
+    })
+});
+
+    </script>
   </body>
 </html>
