@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
 
     $ip = $_SERVER['REMOTE_ADDR'];
     $ipLink = 'http://www.ip2location.com/demo/' . $_SERVER['REMOTE_ADDR'];
-    $site = 'toursphuket.ru/';
+    $site = 'toursphuket.ru';
 
 
     $message = "<b>Toursphuket</b> \n";
