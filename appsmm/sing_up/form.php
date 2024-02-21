@@ -9,6 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
     $role = $_POST["role"] ?? '';
     $ip = $_SERVER['REMOTE_ADDR'];
     $date = date('Y-m-d H:i:s');
+    $lang = $_POST["lang"];
     $site = 'appsmm.ru';
 
 
@@ -50,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET")
 
     $jsonData = json_encode(['status' => true]);
     header('Content-Type: application/json');
-    header('Location: ' . 'https://appsmm.ru');
+    header('Location: ' . 'http://appsmm.ru?status=true&lang=' . $lang);
 }
 
 
