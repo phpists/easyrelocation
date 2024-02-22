@@ -1,6 +1,7 @@
 # Вимкнути відображення розширень файлів в URL
 Options -Indexes
 
+
 # Увімкнути модуль mod_rewrite
 RewriteEngine On
 
