@@ -1,460 +1,622 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<!-- BEGIN HEAD -->
-<head>
-    <meta charset="utf-8"/>
+  <!-- BEGIN HEAD -->
+  <head>
+    <meta charset="utf-8" />
     <title>appsmm.ru | User Login</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta content="" name="description"/>
-    <meta content="" name="author"/>
-    <meta name="robots" content="noIndex, nofollow">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="robots" content="noIndex, nofollow" />
 
-    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="assets/css/metro.css" rel="stylesheet"/>
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet"/>
-    <link href="assets/css/style.css@v=4.css" rel="stylesheet"/>
-    <link href="assets/css/style_responsive.css" rel="stylesheet"/>
-    <link href="assets/css/style_default.css" rel="stylesheet" id="style_color"/>
-    <link rel="stylesheet" type="text/css" href="assets/uniform/css/uniform.default.css"/>
-    <link rel="stylesheet" type="text/css" href="mycss.css@v=100.css"/>
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="assets/css/metro.css" rel="stylesheet" />
+    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="assets/css/style.css@v=4.css" rel="stylesheet" />
+    <link href="assets/css/style_responsive.css" rel="stylesheet" />
+    <link
+      href="assets/css/style_default.css"
+      rel="stylesheet"
+      id="style_color"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="assets/uniform/css/uniform.default.css"
+    />
+    <link rel="stylesheet" type="text/css" href="mycss.css@v=100.css" />
 
-    <link rel="shortcut icon" href="favicon.ico"/>
+    <link rel="shortcut icon" href="favicon.ico" />
 
     <!-- BEGIN JAVASCRIPTS -->
     <script src="assets/js/jquery-1.8.3.min.js.html"></script>
     <style>
-        .grecaptcha-badge {
-            visibility: hidden;
-        }
+      .grecaptcha-badge {
+        visibility: hidden;
+      }
 
-        .social-btn .btn {
-            border: none;
-            margin: 10px 3px 0;
-            opacity: 1;
-        }
+      .social-btn .btn {
+        border: none;
+        margin: 10px 3px 0;
+        opacity: 1;
+      }
 
-        .social-btn .btn:hover {
-            opacity: 0.9;
-        }
+      .social-btn .btn:hover {
+        opacity: 0.9;
+      }
 
-        .social-btn .btn-primary {
-            color: white;
-            background: #507cc0;
-        }
+      .social-btn .btn-primary {
+        color: white;
+        background: #507cc0;
+      }
 
-        .social-btn .btn-info {
-            color: white;
-            background: #64ccf1;
-        }
+      .social-btn .btn-info {
+        color: white;
+        background: #64ccf1;
+      }
 
-        .social-btn .btn-danger {
-            color: white;
-            background: #df4930;
-        }
+      .social-btn .btn-danger {
+        color: white;
+        background: #df4930;
+      }
 
-        .or-seperator {
-            margin-top: 30px;
-            text-align: center;
-            border-top: 1px solid #ccc;
-        }
+      .or-seperator {
+        margin-top: 30px;
+        text-align: center;
+        border-top: 1px solid #ccc;
+      }
 
-        .or-seperator i {
-            padding: 0 10px;
-            background: #FFFFFF;
-            position: relative;
-            top: -11px;
-            z-index: 1;
-        }
+      .or-seperator i {
+        padding: 0 10px;
+        background: #ffffff;
+        position: relative;
+        top: -11px;
+        z-index: 1;
+      }
 
-        small {
-            line-height: 0px !important;
-        }
+      small {
+        line-height: 0px !important;
+      }
 
-        .logo img {
-            width: 220px;
-            margin-top: 70px;
-            margin-bottom: 30px;
-        }
+      .logo img {
+        width: 220px;
+        margin-top: 70px;
+        margin-bottom: 30px;
+      }
 
-        .login {
-            background-color: #100b0f !important;
-        }
-
+      .login {
+        background-color: #100b0f !important;
+      }
     </style>
 
     <!-- Yandex.Metrika counter -->
-    <script type="text/javascript" >
-        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-            m[i].l=1*new Date();
-            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    <script type="text/javascript">
+      (function (m, e, t, r, i, k, a) {
+        m[i] =
+          m[i] ||
+          function () {
+            (m[i].a = m[i].a || []).push(arguments);
+          };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+          if (document.scripts[j].src === r) {
+            return;
+          }
+        }
+        (k = e.createElement(t)),
+          (a = e.getElementsByTagName(t)[0]),
+          (k.async = 1),
+          (k.src = r),
+          a.parentNode.insertBefore(k, a);
+      })(
+        window,
+        document,
+        "script",
+        "https://mc.yandex.ru/metrika/tag.js",
+        "ym"
+      );
 
-        ym(96525220, "init", {
-            clickmap:true,
-            trackLinks:true,
-            accurateTrackBounce:true
-        });
+      ym(96525220, "init", {
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+      });
     </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/96525220" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <noscript
+      ><div>
+        <img
+          src="https://mc.yandex.ru/watch/96525220"
+          style="position: absolute; left: -9999px"
+          alt=""
+        /></div
+    ></noscript>
     <!-- /Yandex.Metrika counter -->
-</head>
->
-<!-- END HEAD -->
+  </head>
+  >
+  <!-- END HEAD -->
 
-<!-- BEGIN BODY -->
-<body class="login">
-<!-- BEGIN LOGO -->
-<div class="logo">
-    <a href="https://appsmm.ru" target="_blank"><img src="https://appsmm.ru/img/AppSMM.png" /></a>
-</div>
-<!-- END LOGO -->
-<!-- BEGIN LOGIN -->
-<div class="content">
-    <!-- BEGIN LOGIN FORM -->
-    <!-- ERR POPUP -->
-    <!-- ERR POPUP -->
+  <!-- BEGIN BODY -->
+  <body class="login">
+    <!-- BEGIN LOGO -->
+    <div class="logo">
+      <a href="https://appsmm.ru" target="_blank"
+        ><img src="https://appsmm.ru/img/AppSMM.png"
+      /></a>
+    </div>
+    <!-- END LOGO -->
+    <!-- BEGIN LOGIN -->
+    <div class="content">
+      <!-- BEGIN LOGIN FORM -->
+      <!-- ERR POPUP -->
+      <!-- ERR POPUP -->
 
-    <!-- BEGIN LOGIN FORM -->
-    <form method="post" class="form-vertical login-form" action="form_login.php">
-        <input type="hidden" name="action" value="user_login"/>
+      <!-- BEGIN LOGIN FORM -->
+      <form
+        method="post"
+        class="form-vertical login-form"
+        action="form_login.php"
+      >
+        <input type="hidden" name="action" value="user_login" />
         <h3 class="form-title">Войдите в свой аккаунт</h3>
 
         <div class="alert alert-error hide">
-            <button class="close" data-dismiss="alert"></button>
-            <span>Введите свою электронную почту и пароль.</span>
+          <button class="close" data-dismiss="alert"></button>
+          <span>Введите свою электронную почту и пароль.</span>
         </div>
 
         <div class="control-group">
-            <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-            <label class="control-label visible-ie8 visible-ie9">Email</label>
-            <div class="controls">
-                <div class="input-icon left">
-                    <i class="icon-envelope"></i>
-                    <input class="m-wrap placeholder-no-fix" type="text" placeholder="Email" name="email"
-                           autocomplete="username"
-                           value=""/>
-                </div>
+          <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+          <label class="control-label visible-ie8 visible-ie9">Email</label>
+          <div class="controls">
+            <div class="input-icon left">
+              <i class="icon-envelope"></i>
+              <input
+                class="m-wrap placeholder-no-fix"
+                type="text"
+                placeholder="Email"
+                name="email"
+                autocomplete="username"
+                value=""
+              />
             </div>
+          </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label visible-ie8 visible-ie9">Пароль</label>
-            <div class="controls">
-                <div class="input-icon left">
-                    <i class="icon-lock"></i>
-                    <input class="m-wrap placeholder-no-fix" type="password" placeholder="Пароль" name="password"
-                           autocomplete="current-password"/>
-                </div>
+          <label class="control-label visible-ie8 visible-ie9">Пароль</label>
+          <div class="controls">
+            <div class="input-icon left">
+              <i class="icon-lock"></i>
+              <input
+                class="m-wrap placeholder-no-fix"
+                type="password"
+                placeholder="Пароль"
+                name="password"
+                autocomplete="current-password"
+              />
             </div>
+          </div>
         </div>
-
-
 
         <div class="form-actions">
-            <button class="btn green pull-right" id="login-submit-btn" type="submit">Вход</button>
+          <button
+            class="btn green pull-right"
+            id="login-submit-btn"
+            type="submit"
+          >
+            Вход
+          </button>
         </div>
 
         <div class="control-group">
-            <h4 class="text-center">У вас еще нет аккаунта?</h4>
-            <div class="text-center">
-                <a class="btn blue" id='register-btn' style='cursor: pointer'><i class="icon-plus"></i>&nbsp;Создать новый
-                    аккаунт</a>
-            </div>
+          <h4 class="text-center">У вас еще нет аккаунта?</h4>
+          <div class="text-center">
+            <a class="btn blue" id="register-btn" style="cursor: pointer"
+              ><i class="icon-plus"></i>&nbsp;Создать новый аккаунт</a
+            >
+          </div>
         </div>
+      </form>
+      <!-- END LOGIN FORM -->
 
-    </form>
-    <!-- END LOGIN FORM -->
-
-    <!-- BEGIN FORGOT PASSWORD FORM -->
-    <form class="form-vertical forget-form" action="/sing_up/login-ru.html/scripts/glib.php">
-        <input type="hidden" name="action" value="user_forgetpassword"/>
+      <!-- BEGIN FORGOT PASSWORD FORM -->
+      <form
+        class="form-vertical forget-form"
+        action="/sing_up/login-ru.html/scripts/glib.php"
+      >
+        <input type="hidden" name="action" value="user_forgetpassword" />
         <h3 class="">Forget password?</h3>
         <p>Enter your email below to reset your password.</p>
         <div class="control-group">
-            <div class="controls">
-                <div class="input-icon left">
-                    <i class="icon-envelope"></i>
-                    <input class="m-wrap placeholder-no-fix" type="text" placeholder="Email" name="email"
-                           value=""/>
-                </div>
+          <div class="controls">
+            <div class="input-icon left">
+              <i class="icon-envelope"></i>
+              <input
+                class="m-wrap placeholder-no-fix"
+                type="text"
+                placeholder="Email"
+                name="email"
+                value=""
+              />
             </div>
+          </div>
         </div>
         <div class="form-actions">
-            <button type="button" id="back-btn" class="btn">
-                <i class="m-icon-swapleft"></i> Back
-            </button>
-            <button type="submit" class="btn green pull-right">
-                Submit <i class="m-icon-swapright m-icon-white"></i>
-            </button>
+          <button type="button" id="back-btn" class="btn">
+            <i class="m-icon-swapleft"></i> Back
+          </button>
+          <button type="submit" class="btn green pull-right">
+            Submit <i class="m-icon-swapright m-icon-white"></i>
+          </button>
         </div>
-    </form>
-    <!-- END FORGOT PASSWORD FORM -->
+      </form>
+      <!-- END FORGOT PASSWORD FORM -->
 
-    <!-- BEGIN REGISTRATION FORM -->
-    <form method="post" class="form-vertical register-form" action="form.php">
-        <input type="hidden" name="action" value="user_register"/>
-        <input type="hidden" name="lang" value="ru"/>
-        <h3 class="">Создать учетную запись </h3>
+      <!-- BEGIN REGISTRATION FORM -->
+      <form method="post" class="form-vertical register-form" action="form.php">
+        <input type="hidden" name="action" value="user_register" />
+        <input type="hidden" name="lang" value="ru" />
+        <h3 class="">Создать учетную запись</h3>
 
         <div class="control-group">
-            <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-            <label class="control-label visible-ie8 visible-ie9">Email</label>
-            <div class="controls">
-                <div class="input-icon left">
-                    <i class="icon-envelope"></i>
-                    <input class="m-wrap placeholder-no-fix" type="text" placeholder="Email" name="email"/>
-                </div>
+          <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+          <label class="control-label visible-ie8 visible-ie9">Email</label>
+          <div class="controls">
+            <div class="input-icon left">
+              <i class="icon-envelope"></i>
+              <input
+                class="m-wrap placeholder-no-fix"
+                type="text"
+                placeholder="Email"
+                name="email"
+              />
             </div>
-        </div>
-
-        <div class="control-group">
-            <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-            <label class="control-label visible-ie8 visible-ie9">Telegram</label>
-            <div class="controls">
-                <div class="input-icon left">
-                    <i class="icon-user"></i>
-                    <input class="m-wrap placeholder-no-fix" type="text" placeholder="Telegram" name="telegram"
-                           autocomplete="username"/>
-                </div>
-            </div>
+          </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label visible-ie8 visible-ie9">Телефон</label>
-            <div class="controls">
-                <div class="input-icon left">
-                    <i class="icon-phone"></i>
-                    <input class="m-wrap placeholder-no-fix" type="text" placeholder="Телефон" name="phone"
-                           autocomplete="phone"/>
-                </div>
+          <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+          <label class="control-label visible-ie8 visible-ie9">Telegram</label>
+          <div class="controls">
+            <div class="input-icon left">
+              <i class="icon-user"></i>
+              <input
+                class="m-wrap placeholder-no-fix"
+                type="text"
+                placeholder="Telegram"
+                name="telegram"
+                autocomplete="username"
+              />
             </div>
+          </div>
         </div>
 
         <div class="control-group">
-            <label class="control-label visible-ie8 visible-ie9">Пароль</label>
-            <div class="controls">
-                <div class="input-icon left">
-                    <i class="icon-lock"></i>
-                    <input class="m-wrap placeholder-no-fix" type="password" id="register_password"
-                           placeholder="Пароль" name="password" autocomplete="new-password"/>
-                </div>
+          <label class="control-label visible-ie8 visible-ie9">Телефон</label>
+          <div class="controls">
+            <div class="input-icon left">
+              <i class="icon-phone"></i>
+              <input
+                class="m-wrap placeholder-no-fix"
+                type="text"
+                placeholder="Телефон"
+                name="phone"
+                autocomplete="phone"
+              />
             </div>
+          </div>
         </div>
 
-        <div class="control-group" style="margin-bottom: 10px !important;">
-
-            <label class="control-label visible-ie8 visible-ie9">Роль в сервисе</label>
-            <div class="controls">
-                <div class="input-icon left">
-                    <select class="m-wrap placeholder-no-fix" name="role">
-                        <option value="Макетолог iOS">Макетолог iOS</option>
-                        <option value="Работник по отзывам">Работник по отзывам</option>
-                    </select>
-                </div>
+        <div class="control-group">
+          <label class="control-label visible-ie8 visible-ie9">Пароль</label>
+          <div class="controls">
+            <div class="input-icon left">
+              <i class="icon-lock"></i>
+              <input
+                class="m-wrap placeholder-no-fix"
+                type="password"
+                id="register_password"
+                placeholder="Пароль"
+                name="password"
+                autocomplete="new-password"
+              />
             </div>
+          </div>
+        </div>
+
+        <div class="control-group" style="margin-bottom: 10px !important">
+          <label class="control-label visible-ie8 visible-ie9"
+            >Роль в сервисе</label
+          >
+          <div class="controls">
+            <div class="input-icon left">
+              <select class="m-wrap placeholder-no-fix" name="role">
+                <option value="Маркетолог iOS">Маркетолог iOS</option>
+                <option value="Работник по отзывам">Работник по отзывам</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <div class="control-group margin-t10">
-            <label class="control-group checkbox" style="margin-bottom: 0px !important;">
-                <input type="checkbox" name="checkAgreeAge" value="" checked/>
-                <small>Я подтверждаю, что мне 18 лет или больше</small>
-            </label>
-            <small class="text-center">Создавая у нас аккаунт, вы автоматически принимаете наши <a
-                    href="/sing_up/terms.html" target="_blank">Правила и условия</a> и
-                <a href="/sing_up/privacy.html" target="_blank">Политику конфиденциальности</a>.</small>
+          <label
+            class="control-group checkbox"
+            style="margin-bottom: 0px !important"
+          >
+            <input type="checkbox" name="checkAgreeAge" value="" checked />
+            <small>Я подтверждаю, что мне 18 лет или больше</small>
+          </label>
+          <small class="text-center"
+            >Создавая у нас аккаунт, вы автоматически принимаете наши
+            <a href="/sing_up/terms.html" target="_blank">Правила и условия</a>
+            и
+            <a href="/sing_up/privacy.html" target="_blank"
+              >Политику конфиденциальности</a
+            >.</small
+          >
         </div>
 
-
         <div class="control-group form-actions social-btn text-center">
-            <button class="btn blue" type="submit" id="register-submit-btn"><i class="icon-plus"></i>&nbsp; Создать
-                аккаунт
-            </button>
+          <button class="btn blue" type="submit" id="register-submit-btn">
+            <i class="icon-plus"></i>&nbsp; Создать аккаунт
+          </button>
         </div>
 
         <div class="control-group">
-            <h4 class="text-center">У вас уже есть аккаунт?</h4>
-            <div class="text-center">
-                <button id="register-back-btn" type="button" class="btn green"><i
-                        class="m-icon-swapright m-icon-white"></i>&nbsp; Логин
-                </button>
-            </div>
+          <h4 class="text-center">У вас уже есть аккаунт?</h4>
+          <div class="text-center">
+            <button id="register-back-btn" type="button" class="btn green">
+              <i class="m-icon-swapright m-icon-white"></i>&nbsp; Логин
+            </button>
+          </div>
         </div>
+      </form>
+      <!-- END REGISTRATION FORM -->
+      <!-- END LOGIN -->
+    </div>
 
+    <!-- BEGIN FOOTER -->
+    <div class="footer">
+      2015-2023 &copy; appsmm.ru.
+      <a href="terms.html" target="_blank">Terms and Conditions</a> and
+      <a href="privacy.html" target="_blank">Privacy Policy</a>
+    </div>
+    <!-- END FOOTER -->
 
-    </form>
-    <!-- END REGISTRATION FORM -->
-    <!-- END LOGIN -->
+    <!-- BEGIN JAVASCRIPTS -->
+    <script src="assets/js/jquery-1.8.3.min.js.html"></script>
 
-</div>
+    <script src="assets/bootstrap/js/bootstrap.min.js.html"></script>
+    <script src="assets/uniform/jquery.uniform.min.js.html"></script>
+    <script src="assets/js/jquery.blockui.js.html"></script>
+    <script
+      type="text/javascript"
+      src="assets/jquery-validation/dist/jquery.validate.min.js.html"
+    ></script>
+    <script src="assets/js/app.js@v=4.html"></script>
+    <script src="scripts/misc/waitbox.js@v=3.html"></script>
+    <script src="core.js@v=214.html"></script>
+    <script src="scripts/misc/bootstrap-waitingfor.js.html"></script>
+    <script src="scripts/misc/sourcebuster.min.js.html"></script>
 
-<!-- BEGIN FOOTER -->
-<div class="footer">2015-2023 &copy; appsmm.ru. <a href="terms.html" target="_blank">Terms and Conditions</a> and <a
-        href="privacy.html" target="_blank">Privacy Policy</a></div><!-- END FOOTER -->
-
-<!-- BEGIN JAVASCRIPTS -->
-<script src="assets/js/jquery-1.8.3.min.js.html"></script>
-
-<script src="assets/bootstrap/js/bootstrap.min.js.html"></script>
-<script src="assets/uniform/jquery.uniform.min.js.html"></script>
-<script src="assets/js/jquery.blockui.js.html"></script>
-<script type="text/javascript" src="assets/jquery-validation/dist/jquery.validate.min.js.html"></script>
-<script src="assets/js/app.js@v=4.html"></script>
-<script src="scripts/misc/waitbox.js@v=3.html"></script>
-<script src='core.js@v=214.html'></script>
-<script src="scripts/misc/bootstrap-waitingfor.js.html"></script>
-<script src="scripts/misc/sourcebuster.min.js.html"></script>
-
-<script>
-    jQuery(document).ready(function () {
+    <script>
+      jQuery(document).ready(function () {
         App.initLogin();
 
         sbjs.init();
 
-        $('#register-btn').click();
+        $("#register-btn").click();
         //add Adwqords campaign params
         var frmLogin = $(".login-form");
         var frmRegiser = $(".register-form");
 
         //add params: sbjs
         if (sbjs.get.current.src) {
-            frmLogin.append("<input type='hidden' name='utm_source' value='" + sbjs.get.current.src + "'/>");
-            frmRegiser.append("<input type='hidden' name='utm_source' value='" + sbjs.get.current.src + "'/>");
+          frmLogin.append(
+            "<input type='hidden' name='utm_source' value='" +
+              sbjs.get.current.src +
+              "'/>"
+          );
+          frmRegiser.append(
+            "<input type='hidden' name='utm_source' value='" +
+              sbjs.get.current.src +
+              "'/>"
+          );
         }
         if (sbjs.get.current.mdm) {
-            frmLogin.append("<input type='hidden' name='utm_medium' value='" + sbjs.get.current.mdm + "'/>");
-            frmRegiser.append("<input type='hidden' name='utm_medium' value='" + sbjs.get.current.mdm + "'/>");
+          frmLogin.append(
+            "<input type='hidden' name='utm_medium' value='" +
+              sbjs.get.current.mdm +
+              "'/>"
+          );
+          frmRegiser.append(
+            "<input type='hidden' name='utm_medium' value='" +
+              sbjs.get.current.mdm +
+              "'/>"
+          );
         }
         if (sbjs.get.current.cmp) {
-            frmLogin.append("<input type='hidden' name='utm_campaign' value='" + sbjs.get.current.cmp + "'/>");
-            frmRegiser.append("<input type='hidden' name='utm_campaign' value='" + sbjs.get.current.cmp + "'/>");
+          frmLogin.append(
+            "<input type='hidden' name='utm_campaign' value='" +
+              sbjs.get.current.cmp +
+              "'/>"
+          );
+          frmRegiser.append(
+            "<input type='hidden' name='utm_campaign' value='" +
+              sbjs.get.current.cmp +
+              "'/>"
+          );
         }
         if (sbjs.get.current.cnt) {
-            frmLogin.append("<input type='hidden' name='utm_content' value='" + sbjs.get.current.cnt + "'/>");
-            frmRegiser.append("<input type='hidden' name='utm_content' value='" + sbjs.get.current.cnt + "'/>");
+          frmLogin.append(
+            "<input type='hidden' name='utm_content' value='" +
+              sbjs.get.current.cnt +
+              "'/>"
+          );
+          frmRegiser.append(
+            "<input type='hidden' name='utm_content' value='" +
+              sbjs.get.current.cnt +
+              "'/>"
+          );
         }
         if (sbjs.get.current.trm) {
-            frmLogin.append("<input type='hidden' name='utm_term' value='" + sbjs.get.current.trm + "'/>");
-            frmRegiser.append("<input type='hidden' name='utm_term' value='" + sbjs.get.current.trm + "'/>");
+          frmLogin.append(
+            "<input type='hidden' name='utm_term' value='" +
+              sbjs.get.current.trm +
+              "'/>"
+          );
+          frmRegiser.append(
+            "<input type='hidden' name='utm_term' value='" +
+              sbjs.get.current.trm +
+              "'/>"
+          );
         }
 
         //add gclib
-        var str = '';
-        if (str.length == 0) str = readCookie('gclid'); else createCookie('gclid', str);
+        var str = "";
+        if (str.length == 0) str = readCookie("gclid");
+        else createCookie("gclid", str);
         if (str) {
-            frmLogin.append("<input type='hidden' name='gclid' value='" + str + "'/>");
-            frmRegiser.append("<input type='hidden' name='gclid' value='" + str + "'/>");
+          frmLogin.append(
+            "<input type='hidden' name='gclid' value='" + str + "'/>"
+          );
+          frmRegiser.append(
+            "<input type='hidden' name='gclid' value='" + str + "'/>"
+          );
         }
 
         //read cid
-        var str = readCookie('_ga');
+        var str = readCookie("_ga");
         if (str) {
-            frmLogin.append("<input type='hidden' name='cid' value='" + str + "'/>");
-            frmRegiser.append("<input type='hidden' name='cid' value='" + str + "'/>");
+          frmLogin.append(
+            "<input type='hidden' name='cid' value='" + str + "'/>"
+          );
+          frmRegiser.append(
+            "<input type='hidden' name='cid' value='" + str + "'/>"
+          );
         }
 
         //add ref
-        var ref_cookie = parseInt(readCookie('ref')) || 0;
-        var ref_direct = parseInt('') || 0;
+        var ref_cookie = parseInt(readCookie("ref")) || 0;
+        var ref_direct = parseInt("") || 0;
         if (ref_cookie > 0 || ref_direct > 0) {
-            //console.log("ref_cookie=" + ref_cookie);
-            //console.log("ref_direct=" + ref_direct);
-            //create cokie
-            //if (ref_cookie > 0) createCookie('ref_cookie', ref_cookie.toString());
-            //if (ref_direct > 0) createCookie('ref_direct', ref_direct.toString());
+          //console.log("ref_cookie=" + ref_cookie);
+          //console.log("ref_direct=" + ref_direct);
+          //create cokie
+          //if (ref_cookie > 0) createCookie('ref_cookie', ref_cookie.toString());
+          //if (ref_direct > 0) createCookie('ref_direct', ref_direct.toString());
 
-            //login
-            ref = ref_direct > 0 ? ref_direct : ref_cookie;
-            if (ref > 0) frmLogin.append("<input type='hidden' name='ref' value='" + ref + "'/>");
+          //login
+          ref = ref_direct > 0 ? ref_direct : ref_cookie;
+          if (ref > 0)
+            frmLogin.append(
+              "<input type='hidden' name='ref' value='" + ref + "'/>"
+            );
 
-            //register
-            ref = ref_cookie > 0 ? ref_cookie : ref_direct;
-            if (ref > 0) frmRegiser.append("<input type='hidden' name='ref' value='" + ref + "'/>");
+          //register
+          ref = ref_cookie > 0 ? ref_cookie : ref_direct;
+          if (ref > 0)
+            frmRegiser.append(
+              "<input type='hidden' name='ref' value='" + ref + "'/>"
+            );
         }
 
         //add activation flag
-        var activate = parseInt('') || 0;
+        var activate = parseInt("") || 0;
         if (activate == 2) {
-            frmLogin.append("<input type='hidden' name='is_activated' value='1'/>");
+          frmLogin.append(
+            "<input type='hidden' name='is_activated' value='1'/>"
+          );
         }
 
         //add page param
-        var str = '';
+        var str = "";
         if (str) {
-            frmLogin.append("<input type='hidden' name='page' value='" + str + "'/>");
-            frmRegiser.append("<input type='hidden' name='page' value='" + str + "'/>");
+          frmLogin.append(
+            "<input type='hidden' name='page' value='" + str + "'/>"
+          );
+          frmRegiser.append(
+            "<input type='hidden' name='page' value='" + str + "'/>"
+          );
         }
 
         bWaitbox = true;
-        $('#btn_auth_login_google').on('click', function () {
-            frmLogin.append("<input type='hidden' name='auth' value='google'/>");
-            frmLogin.find("input[name='action']").val('user_auth');
-            frmLogin.find("button[type='submit']").addClass('cancel');	//disable form validation
-            bWaitbox = false;
-            $('#login-submit-btn').click();
+        $("#btn_auth_login_google").on("click", function () {
+          frmLogin.append("<input type='hidden' name='auth' value='google'/>");
+          frmLogin.find("input[name='action']").val("user_auth");
+          frmLogin.find("button[type='submit']").addClass("cancel"); //disable form validation
+          bWaitbox = false;
+          $("#login-submit-btn").click();
         });
 
-        $('#btn_auth_register_google').on('click', function () {
-            frmRegiser.append("<input type='hidden' name='auth' value='google'/>");
-            frmRegiser.append("<input type='hidden' name='reg' value='1'/>");
-            frmRegiser.find("button[type='submit']").addClass('cancel');	//disable form validation
-            frmRegiser.find("input[name='action']").val('user_auth');
-            $('#register-submit-btn').click();
+        $("#btn_auth_register_google").on("click", function () {
+          frmRegiser.append(
+            "<input type='hidden' name='auth' value='google'/>"
+          );
+          frmRegiser.append("<input type='hidden' name='reg' value='1'/>");
+          frmRegiser.find("button[type='submit']").addClass("cancel"); //disable form validation
+          frmRegiser.find("input[name='action']").val("user_auth");
+          $("#register-submit-btn").click();
         });
 
-        $('#btn_auth_login_fb').on('click', function () {
-            frmLogin.append("<input type='hidden' name='auth' value='fb'/>");
-            frmLogin.find("input[name='action']").val('user_auth');
-            frmLogin.find("button[type='submit']").addClass('cancel');	//disable form validation
-            bWaitbox = false;
-            $('#login-submit-btn').click();
+        $("#btn_auth_login_fb").on("click", function () {
+          frmLogin.append("<input type='hidden' name='auth' value='fb'/>");
+          frmLogin.find("input[name='action']").val("user_auth");
+          frmLogin.find("button[type='submit']").addClass("cancel"); //disable form validation
+          bWaitbox = false;
+          $("#login-submit-btn").click();
         });
 
-        $('#btn_auth_register_fb').on('click', function () {
-            frmRegiser.append("<input type='hidden' name='auth' value='fb'/>");
-            frmRegiser.append("<input type='hidden' name='reg' value='1'/>");
-            frmRegiser.find("button[type='submit']").addClass('cancel');	//disable form validation
-            frmRegiser.find("input[name='action']").val('user_auth');
-            $('#register-submit-btn').click();
+        $("#btn_auth_register_fb").on("click", function () {
+          frmRegiser.append("<input type='hidden' name='auth' value='fb'/>");
+          frmRegiser.append("<input type='hidden' name='reg' value='1'/>");
+          frmRegiser.find("button[type='submit']").addClass("cancel"); //disable form validation
+          frmRegiser.find("input[name='action']").val("user_auth");
+          $("#register-submit-btn").click();
         });
 
-        frmLogin.on('submit', function (e) {
-            if (bWaitbox) {
-                var isValid = frmLogin.valid();
-                if (!isValid) {
-                    e.preventDefault();
-                    return;
-                }
-
-                //show msgbox
-                waitBox.show("<img src='img/loader.gif' width='16px'> Authenticating...", "", 350);
-
-                //get repatcha again
-                grecaptcha.ready(function () {
-                    grecaptcha.execute('6LdpLvIZAAAAABXcPSsfge44RJnOPbuRZy7-xqUS', {action: 'login'}).then(function (token) {
-                        document.getElementById('token').value = token;
-
-                        //submit form
-                        bWaitbox = false;
-                        frmLogin.submit();
-                    });
-                });
-                //stop submit until new captcha is loaded
-                e.preventDefault();
-            } else {
-                // TODO remove form validation script
+        frmLogin.on("submit", function (e) {
+          if (bWaitbox) {
+            var isValid = frmLogin.valid();
+            if (!isValid) {
+              e.preventDefault();
+              return;
             }
+
+            //show msgbox
+            waitBox.show(
+              "<img src='img/loader.gif' width='16px'> Authenticating...",
+              "",
+              350
+            );
+
+            //get repatcha again
+            grecaptcha.ready(function () {
+              grecaptcha
+                .execute("6LdpLvIZAAAAABXcPSsfge44RJnOPbuRZy7-xqUS", {
+                  action: "login",
+                })
+                .then(function (token) {
+                  document.getElementById("token").value = token;
+
+                  //submit form
+                  bWaitbox = false;
+                  frmLogin.submit();
+                });
+            });
+            //stop submit until new captcha is loaded
+            e.preventDefault();
+          } else {
+            // TODO remove form validation script
+          }
         });
 
         $('input[name="username"]').change(function () {
-            this.value = $.trim(this.value);
+          this.value = $.trim(this.value);
         });
-
-    });
-</script>
-
-
-</body>
-<!-- END BODY -->
+      });
+    </script>
+  </body>
+  <!-- END BODY -->
 </html>

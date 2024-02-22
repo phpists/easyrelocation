@@ -11940,7 +11940,7 @@
                      data-field-top-res-960-value="165" data-field-left-res-960-value="270"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1651474840990'>$ 0,19</div>
+                    <div class='tn-atom' field='tn_text_1651474840990'>$ 1,19</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311651474876523' data-elem-id='1651474876523'
                      data-elem-type='text' data-field-top-value="225" data-field-left-value="320"
@@ -11954,7 +11954,7 @@
                      data-field-top-res-960-value="225" data-field-left-res-960-value="270"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1651474876523'>$ 0,18</div>
+                    <div class='tn-atom' field='tn_text_1651474876523'>$ 1,18</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311651474884679' data-elem-id='1651474884679'
                      data-elem-type='text' data-field-top-value="285" data-field-left-value="320"
@@ -11968,7 +11968,7 @@
                      data-field-top-res-960-value="285" data-field-left-res-960-value="270"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1651474884679'>$ 0,17</div>
+                    <div class='tn-atom' field='tn_text_1651474884679'>$ 1,17</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311651474891046' data-elem-id='1651474891046'
                      data-elem-type='text' data-field-top-value="345" data-field-left-value="320"
@@ -11982,7 +11982,7 @@
                      data-field-top-res-960-value="345" data-field-left-res-960-value="270"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1651474891046'>$ 0,16</div>
+                    <div class='tn-atom' field='tn_text_1651474891046'>$ 1,16</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019419454' data-elem-id='1688019419454'
                      data-elem-type='text' data-field-top-value="405" data-field-left-value="320"
@@ -11996,7 +11996,7 @@
                      data-field-top-res-960-value="405" data-field-left-res-960-value="270"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019419454'>$ 0,13</div>
+                    <div class='tn-atom' field='tn_text_1688019419454'>$ 1,13</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019487878' data-elem-id='1688019487878'
                      data-elem-type='text' data-field-top-value="165" data-field-left-value="560"
@@ -12010,7 +12010,7 @@
                      data-field-top-res-960-value="165" data-field-left-res-960-value="470"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019487878'>$ 0,14</div>
+                    <div class='tn-atom' field='tn_text_1688019487878'>$ 1,14</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019487884' data-elem-id='1688019487884'
                      data-elem-type='text' data-field-top-value="225" data-field-left-value="560"
@@ -12024,7 +12024,7 @@
                      data-field-top-res-960-value="225" data-field-left-res-960-value="470"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019487884'>$ 0,13</div>
+                    <div class='tn-atom' field='tn_text_1688019487884'>$ 1,13</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019487888' data-elem-id='1688019487888'
                      data-elem-type='text' data-field-top-value="285" data-field-left-value="560"
@@ -12038,7 +12038,7 @@
                      data-field-top-res-960-value="285" data-field-left-res-960-value="470"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019487888'>$ 0,12</div>
+                    <div class='tn-atom' field='tn_text_1688019487888'>$ 1,12</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019487891' data-elem-id='1688019487891'
                      data-elem-type='text' data-field-top-value="345" data-field-left-value="560"
@@ -12052,7 +12052,7 @@
                      data-field-top-res-960-value="345" data-field-left-res-960-value="470"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019487891'>$ 0,11</div>
+                    <div class='tn-atom' field='tn_text_1688019487891'>$ 1,11</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019487911' data-elem-id='1688019487911'
                      data-elem-type='text' data-field-top-value="405" data-field-left-value="560"
@@ -12066,7 +12066,7 @@
                      data-field-top-res-960-value="405" data-field-left-res-960-value="470"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019487911'>$ 0,10</div>
+                    <div class='tn-atom' field='tn_text_1688019487911'>$ 1,10</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019524951' data-elem-id='1688019524951'
                      data-elem-type='text' data-field-top-value="165" data-field-left-value="800"
@@ -12080,7 +12080,7 @@
                      data-field-top-res-960-value="165" data-field-left-res-960-value="670"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019524951'>$ 0,35</div>
+                    <div class='tn-atom' field='tn_text_1688019524951'>$ 1,35</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019524957' data-elem-id='1688019524957'
                      data-elem-type='text' data-field-top-value="225" data-field-left-value="800"
@@ -12094,7 +12094,7 @@
                      data-field-top-res-960-value="225" data-field-left-res-960-value="670"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019524957'>$ 0,34</div>
+                    <div class='tn-atom' field='tn_text_1688019524957'>$ 1,34</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019524962' data-elem-id='1688019524962'
                      data-elem-type='text' data-field-top-value="285" data-field-left-value="800"
@@ -12108,7 +12108,7 @@
                      data-field-top-res-960-value="285" data-field-left-res-960-value="670"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019524962'>$ 0,33</div>
+                    <div class='tn-atom' field='tn_text_1688019524962'>$ 1,33</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019524965' data-elem-id='1688019524965'
                      data-elem-type='text' data-field-top-value="345" data-field-left-value="800"
@@ -12122,7 +12122,7 @@
                      data-field-top-res-960-value="345" data-field-left-res-960-value="670"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019524965'>$ 0,32</div>
+                    <div class='tn-atom' field='tn_text_1688019524965'>$ 1,32</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688019524985' data-elem-id='1688019524985'
                      data-elem-type='text' data-field-top-value="405" data-field-left-value="800"
@@ -12136,7 +12136,7 @@
                      data-field-top-res-960-value="405" data-field-left-res-960-value="670"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1688019524985'>$ 0,30</div>
+                    <div class='tn-atom' field='tn_text_1688019524985'>$ 1,30</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116548311688111287197 t-animate' data-elem-id='1688111287197'
                      data-elem-type='text' data-field-top-value="617" data-field-left-value="480"
@@ -13395,7 +13395,7 @@
                      data-field-top-res-960-value="88" data-field-left-res-960-value="190"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1650281976023'>1,95$</div>
+                    <div class='tn-atom' field='tn_text_1650281976023'>2,95$</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116549211650281976032 t-animate' data-elem-id='1650281976032'
                      data-elem-type='text' data-field-top-value="120" data-field-left-value="680"
@@ -18970,7 +18970,7 @@
                     >
                         <div class='tn-atom' field='tn_text_1475147601290'><a href="../about-us.html"
                                                                               style="color:#ffffff !important;text-decoration: none;border-bottom: 0px solid;box-shadow: inset 0px -0px 0px 0px;-webkit-box-shadow: inset 0px -0px 0px 0px;-moz-box-shadow: inset 0px -0px 0px 0px;">About
-                                us<br></a><a href="../keyapptop-at-conferences.html"
+                                us<br></a><a href="../appsmm-at-conferences.html"
                                              style="color:rgb(255, 255, 255) !important;">We are on
                                 conferences</a><br><a href="../our-clients.html"
                                                       style="color:#ffffff !important;text-decoration: none;border-bottom: 0px solid;box-shadow: inset 0px -0px 0px 0px;-webkit-box-shadow: inset 0px -0px 0px 0px;-moz-box-shadow: inset 0px -0px 0px 0px;">Our
