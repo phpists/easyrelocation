@@ -13410,7 +13410,7 @@
                      data-field-top-res-960-value="88" data-field-left-res-960-value="570"
                      data-field-width-res-960-value="200"
                 >
-                    <div class='tn-atom' field='tn_text_1650281976032'>1,45$</div>
+                    <div class='tn-atom' field='tn_text_1650281976032'>2,45$</div>
                 </div>
                 <div class='t396__elem tn-elem tn-elem__6116549211650281976036 t-animate' data-elem-id='1650281976036'
                      data-elem-type='text' data-field-top-value="225" data-field-left-value="280"
