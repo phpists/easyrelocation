@@ -42,7 +42,7 @@ function scriptSrc() {
   var src = widget.getAttribute('src');
   var domain = src.split('/')[2];
   if (domain.includes('localhost')) {
-    return "http://".concat(domain, "/build/bundle.js");
+    return "http://".concat(domain, "/build/bundle.js.html");
   }
   return "https://".concat(domain, "/bundle.js.gz");
 }

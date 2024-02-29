@@ -44,7 +44,7 @@
     />
     <!-- Assets -->
     <script
-            src="https://neo.tildacdn.com/js/tilda-fallback-1.0.min.js"
+            src="https://neo.tildacdn.com/js/tilda-fallback-1.0.min.js.html"
             async
             charset="utf-8"
     ></script>
@@ -107,7 +107,7 @@
     />
     <script
             nomodule
-            src="https://Appsmm.ru/ru/js/tilda-polyfill-1.0.min.js"
+            src="https://Appsmm.ru/ru/js/tilda-polyfill-1.0.min.js.html"
             charset="utf-8"
     ></script>
     <script type="text/javascript">
@@ -208,12 +208,12 @@
         }
     </script>
     <script
-            src="ru/js/jquery-1.10.2.min.js"
+            src="ru/js/jquery-1.10.2.min.js.html"
             charset="utf-8"
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-scripts-3.0.min.js"
+            src="ru/js/tilda-scripts-3.0.min.js.html"
             charset="utf-8"
             defer
             onerror="this.loaderr='y';"
@@ -225,78 +225,78 @@
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/lazyload-1.3.min.export.js"
+            src="ru/js/lazyload-1.3.min.export.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-animation-2.0.min.js"
+            src="ru/js/tilda-animation-2.0.min.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-zero-1.1.min.js"
+            src="ru/js/tilda-zero-1.1.min.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/highlight.min.js"
+            src="ru/js/highlight.min.js.html"
             charset="utf-8"
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-menusub-1.0.min.js"
-            charset="utf-8"
-            async
-            onerror="this.loaderr='y';"
-    ></script>
-    <script
-            src="ru/js/tilda-menu-1.0.min.js"
+            src="ru/js/tilda-menusub-1.0.min.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-forms-1.0.min.js"
+            src="ru/js/tilda-menu-1.0.min.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-zero-forms-1.0.min.js"
+            src="ru/js/tilda-forms-1.0.min.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-animation-sbs-1.0.min.js"
+            src="ru/js/tilda-zero-forms-1.0.min.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-zero-scale-1.0.min.js"
+            src="ru/js/tilda-animation-sbs-1.0.min.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-skiplink-1.0.min.js"
+            src="ru/js/tilda-zero-scale-1.0.min.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-events-1.0.min.js"
+            src="ru/js/tilda-skiplink-1.0.min.js.html"
+            charset="utf-8"
+            async
+            onerror="this.loaderr='y';"
+    ></script>
+    <script
+            src="ru/js/tilda-events-1.0.min.js.html"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <!-- sourcebuster Code -->
-    <script src="ru/js/sourcebuster.min.js"></script>
+    <script src="ru/js/sourcebuster.min.js.html"></script>
 
     <!-- скрипт для включения куки после действия пользователя -->
     <script type="text/plain" data-tilda-cookie-type="analytics"></script>
@@ -416,7 +416,7 @@
             }
             k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
         })
-        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js.html", "ym");
 
         ym(96459616, "init", {
             clickmap: true,

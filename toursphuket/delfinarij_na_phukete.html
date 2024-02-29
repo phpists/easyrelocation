@@ -837,7 +837,7 @@
         window,
         document,
         "script",
-        "https://connect.facebook.net/en_US/fbevents.js"
+        "https://connect.facebook.net/en_US/fbevents.js.html"
       );
       fbq("init", "430191827811653");
       fbq("track", "PageView");
@@ -875,7 +875,7 @@
         w.roistatHost = h;
         var p = d.location.protocol == "https:" ? "https://" : "http://";
         var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie)
-          ? "/dist/module.js"
+          ? "/dist/module.js.html"
           : "/api/site/1.0/" +
             id +
             "/init?referrer=" +
@@ -2555,7 +2555,7 @@
               mc.async = true;
               mc.src =
                 ("https:" == document.location.protocol ? "https" : "http") +
-                "://cackle.me/widget.js";
+                "://cackle.me/widget.js.html";
               var s = document.getElementsByTagName("script")[0];
               s.parentNode.insertBefore(mc, s.nextSibling);
             })();
@@ -2587,7 +2587,6 @@
                 border: none;
               }
             </style>
-
           </div>
 
           <nav class="footer__nav">
@@ -2669,8 +2668,6 @@
                 alt="Tours Phuket в Tours Phuket в YouTube"
               />
             </a>
-
-
           </div>
         </div>
         <script src="https://www.google.com/recaptcha/api.js?render=6LcKL8QnAAAAAMnCmZIM11ewVLQ2OEF4w8cF-f0N"></script>
@@ -2990,7 +2987,7 @@
     </div>
     <!-- end up button -->
     <script
-      src="https://cdn.pulse.is/livechat/loader.js"
+      src="https://cdn.pulse.is/livechat/loader.js.html"
       data-live-chat-id="65bfbb5cc69ac62e1a0f6902"
       async
     ></script>
@@ -3010,6 +3007,6 @@
       src="./wp-content/themes/phuket/js/build/main.min.e6f7e1828ec7b62562fe.js@ver=6.3"
       id="main_js-js"
     ></script>
-    <script src="./wp-content/themes/phuket/js/script.js"></script>
+    <script src="./wp-content/themes/phuket/js/script.js.html"></script>
   </body>
 </html>

@@ -21,7 +21,7 @@
     <link rel="dns-prefetch" href="https://ws.tildacdn.com">
     <link rel="dns-prefetch" href="https://static.tildacdn.com">
     <link rel="shortcut icon" href="img/cd68bd0bff4ecfff27280a8dae6ce857.ico" type="image/x-icon"/><!-- Assets -->
-    <script src="https://neo.tildacdn.com/js/tilda-fallback-1.0.min.js" async charset="utf-8"></script>
+    <script src="https://neo.tildacdn.com/js/tilda-fallback-1.0.min.js.html" async charset="utf-8"></script>
     <link rel="stylesheet" href="css/tilda-grid-3.0.min.css" type="text/css" media="all" onerror="this.loaderr='y';"/>
     <link rel="stylesheet" href="css/tilda-blocks-page8545816.min.css@t=1706728915.css" type="text/css" media="all"
           onerror="this.loaderr='y';"/>
@@ -42,7 +42,7 @@
         <link rel="stylesheet" href="css/tilda-menusub-1.0.min.css" type="text/css" media="all"/>
     </noscript>
     <link rel="stylesheet" href="css/tilda-forms-1.0.min.css" type="text/css" media="all" onerror="this.loaderr='y';"/>
-    <script nomodule src="https://Appsmm.ru/en/js/tilda-polyfill-1.0.min.js" charset="utf-8"></script>
+    <script nomodule src="https://Appsmm.ru/en/js/tilda-polyfill-1.0.min.js.html" charset="utf-8"></script>
     <script type="text/javascript">function t_onReady(func) {
             if (document.readyState != 'loading') {
                 func();
@@ -106,25 +106,25 @@
             }
             return i
         }</script>
-    <script src="js/jquery-1.10.2.min.js" charset="utf-8" onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-scripts-3.0.min.js" charset="utf-8" defer onerror="this.loaderr='y';"></script>
+    <script src="js/jquery-1.10.2.min.js.html" charset="utf-8" onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-scripts-3.0.min.js.html" charset="utf-8" defer onerror="this.loaderr='y';"></script>
     <script src="js/tilda-blocks-page8545816.min.js@t=1706728915.html" charset="utf-8" async
             onerror="this.loaderr='y';"></script>
-    <script src="js/lazyload-1.3.min.export.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-animation-2.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-menu-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-zero-1.1.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-forms-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-popup-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/highlight.min.js" charset="utf-8" onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-menusub-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-zero-forms-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-animation-sbs-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-zero-scale-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-skiplink-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
-    <script src="js/tilda-events-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/lazyload-1.3.min.export.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-animation-2.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-menu-1.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-zero-1.1.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-forms-1.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-popup-1.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/highlight.min.js.html" charset="utf-8" onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-menusub-1.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-zero-forms-1.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-animation-sbs-1.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-zero-scale-1.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-skiplink-1.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
+    <script src="js/tilda-events-1.0.min.js.html" charset="utf-8" async onerror="this.loaderr='y';"></script>
     <!-- sourcebuster Code -->
-    <script src="js/sourcebuster.min.js"></script>
+    <script src="js/sourcebuster.min.js.html"></script>
 
     <!-- скрипт для включения куки после действия пользователя -->
     <script type="text/plain" data-tilda-cookie-type="analytics"></script>
