@@ -21134,7 +21134,7 @@
                     >
                         <div class="tn-atom" field="tn_text_1475147601290">
                             <a
-                                    href="ru/about-us.html"
+                                    href="/ru/about-us"
                                     style="
                       color: #ffffff !important;
                       text-decoration: none;
@@ -21144,7 +21144,18 @@
                       -moz-box-shadow: inset 0px -0px 0px 0px;
                     "
                             >О нас<br/></a
-                            ><a
+                            > <a
+                    href="/ru/jobhire"
+                    style="
+                      color: #ffffff !important;
+                      text-decoration: none;
+                      border-bottom: 0px solid;
+                      box-shadow: inset 0px -0px 0px 0px;
+                      -webkit-box-shadow: inset 0px -0px 0px 0px;
+                      -moz-box-shadow: inset 0px -0px 0px 0px;
+                    "
+                    >Работа у нас<br /></a
+                  ><a
                                     href="ru/appsmm-at-conferences.html"
                                     style="color: #ffffff !important"
                             >Мы на конференциях</a
