@@ -208,12 +208,12 @@
         }
     </script>
     <script
-            src="ru/js/jquery-1.10.2.min.js.html"
+            src="ru/js/jquery-1.10.2.min.js"
             charset="utf-8"
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-scripts-3.0.min.js.html"
+            src="ru/js/tilda-scripts-3.0.min.js"
             charset="utf-8"
             defer
             onerror="this.loaderr='y';"
@@ -225,78 +225,78 @@
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/lazyload-1.3.min.export.js.html"
+            src="ru/js/lazyload-1.3.min.export.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-animation-2.0.min.js.html"
+            src="ru/js/tilda-animation-2.0.min.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-zero-1.1.min.js.html"
+            src="ru/js/tilda-zero-1.1.min.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/highlight.min.js.html"
+            src="ru/js/highlight.min.js"
             charset="utf-8"
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-menusub-1.0.min.js.html"
-            charset="utf-8"
-            async
-            onerror="this.loaderr='y';"
-    ></script>
-    <script
-            src="ru/js/tilda-menu-1.0.min.js.html"
+            src="ru/js/tilda-menusub-1.0.min.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-forms-1.0.min.js.html"
+            src="ru/js/tilda-menu-1.0.min.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-zero-forms-1.0.min.js.html"
+            src="ru/js/tilda-forms-1.0.min.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-animation-sbs-1.0.min.js.html"
+            src="ru/js/tilda-zero-forms-1.0.min.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-zero-scale-1.0.min.js.html"
+            src="ru/js/tilda-animation-sbs-1.0.min.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-skiplink-1.0.min.js.html"
+            src="ru/js/tilda-zero-scale-1.0.min.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <script
-            src="ru/js/tilda-events-1.0.min.js.html"
+            src="ru/js/tilda-skiplink-1.0.min.js"
+            charset="utf-8"
+            async
+            onerror="this.loaderr='y';"
+    ></script>
+    <script
+            src="ru/js/tilda-events-1.0.min.js"
             charset="utf-8"
             async
             onerror="this.loaderr='y';"
     ></script>
     <!-- sourcebuster Code -->
-    <script src="ru/js/sourcebuster.min.js.html"></script>
+    <script src="ru/js/sourcebuster.min.js"></script>
 
     <!-- скрипт для включения куки после действия пользователя -->
     <script type="text/plain" data-tilda-cookie-type="analytics"></script>
@@ -3141,7 +3141,7 @@
                         data-field-width-res-960-value="320"
                         style="z-index: 0"
                 >
-                    <a class="tn-atom" href="/sing_up/signup-ru.html"
+                    <a class="tn-atom" href="/sing_up/signup-ru"
                     >Зарегистрироваться</a
                     >
                 </div>
@@ -14144,7 +14144,7 @@
                         data-field-height-res-960-value="55"
                         data-field-width-res-960-value="420"
                 >
-                    <a class="tn-atom" href="/sing_up/signup-ru.html"
+                    <a class="tn-atom" href="/sing_up/signup-ru"
                     >Продвигать со скидкой -50%</a
                     >
                 </div>
